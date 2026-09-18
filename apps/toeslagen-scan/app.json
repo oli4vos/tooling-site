@@ -1,0 +1,33 @@
+{
+  "slug": "toeslagen-scan",
+  "enabled": false,
+  "title": "Welke toeslagen passen mogelijk bij mij?",
+  "description": "Bekijk welke van vier toeslagen mogelijk passen en krijg waar mogelijk een bedragindicatie voor 2026.",
+  "type": "frontend",
+  "category": "Regelingen en maandruimte",
+  "tags": [
+    "toeslagen",
+    "zorgtoeslag",
+    "huurtoeslag",
+    "kindgebonden budget",
+    "kinderopvangtoeslag",
+    "inkomen",
+    "huishouden"
+  ],
+  "status": "beta",
+  "visibility": "public",
+  "requiredProfileFields": [],
+  "reasonHint": "2026-scan: zorgtoeslag, huurtoeslag, kindgebonden budget en kinderopvangtoeslag kunnen voor ondersteunde standaardscenario's een bedragindicatie tonen.",
+  "assumptionsUsed": [
+    "tax"
+  ],
+  "calculationDomains": [
+    "tax",
+    "cashflow"
+  ],
+  "riskLevel": "high",
+  "disclaimerType": "taxIndicative",
+  "outputType": "checklist",
+  "version": "1.0.0-beta.1",
+  "entry": "Calculator.tsx"
+}

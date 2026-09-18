@@ -1,0 +1,201 @@
+import type { AppManifest } from "@/lib/app-types";
+
+// AUTO-GENERATED FILE. DO NOT EDIT MANUALLY.
+// Run: npm run generate:apps
+
+export const appRegistry = [
+  {
+    "slug": "duo-aanvullende-beurs",
+    "title": "Aanvullende beurs berekenen",
+    "description": "Schat je aanvullende beurs voor 2026 met het ouderinkomen uit het peiljaar.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Schulden",
+    "tags": [
+      "DUO",
+      "aanvullende beurs",
+      "studiefinanciering",
+      "ouderinkomen"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [],
+    "reasonHint": "Handig als je wilt zien welk maandbedrag bij mbo, hbo of universiteit past.",
+    "assumptionsUsed": [
+      "duo"
+    ],
+    "calculationDomains": [
+      "studentDebt",
+      "cashflow"
+    ],
+    "riskLevel": "medium",
+    "disclaimerType": "duoIndicative",
+    "outputType": "singleResult",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "duo-extra-aflossen",
+    "title": "Wat doet extra aflossen?",
+    "description": "Bekijk feitelijk wat een extra DUO-aflossing doet met maandtermijn, looptijd en rentelast.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Schulden",
+    "tags": [
+      "DUO",
+      "studieschuld",
+      "extra aflossen",
+      "looptijd"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "studentDebt.remainingDebt",
+      "studentDebt.currentMonthlyPayment",
+      "studentDebt.repaymentRule"
+    ],
+    "reasonHint": "Handig als je wilt zien wat extra aflossen bij DUO verandert in maandlast en looptijd.",
+    "assumptionsUsed": [
+      "duo",
+      "charts"
+    ],
+    "calculationDomains": [
+      "studentDebt",
+      "cashflow"
+    ],
+    "riskLevel": "medium",
+    "disclaimerType": "duoIndicative",
+    "outputType": "timeline",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "duo-leenbedrag-impact",
+    "title": "Impact van mijn leenbedrag",
+    "description": "Bereken simpel wat een nieuw leenbedrag per maand doet met je eindschuld terwijl je al studeert.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Schulden",
+    "tags": [
+      "DUO",
+      "leenbedrag",
+      "eindschuld",
+      "studieschuld"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [],
+    "reasonHint": "Handig als je al studeert en wilt zien wat meer of minder lenen per maand doet.",
+    "assumptionsUsed": [
+      "duo"
+    ],
+    "calculationDomains": [
+      "studentDebt",
+      "cashflow"
+    ],
+    "riskLevel": "medium",
+    "disclaimerType": "duoIndicative",
+    "outputType": "singleResult",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "duo-maandbedrag",
+    "title": "Wat wordt mijn DUO-maandbedrag?",
+    "description": "Bereken je wettelijke DUO-maandtermijn en bekijk optioneel een draagkrachtindicatie.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Schulden",
+    "tags": [
+      "DUO",
+      "studieschuld",
+      "maandbedrag",
+      "draagkracht"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "studentDebt.remainingDebt",
+      "studentDebt.repaymentRule",
+      "income.grossAnnualIncome",
+      "income.householdType"
+    ],
+    "reasonHint": "Handig als je wilt begrijpen welk DUO-maandbedrag bij je schuld hoort.",
+    "assumptionsUsed": [
+      "duo"
+    ],
+    "calculationDomains": [
+      "studentDebt",
+      "cashflow"
+    ],
+    "riskLevel": "medium",
+    "disclaimerType": "duoIndicative",
+    "outputType": "singleResult",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "duo-schuld-bij-starten-lenen",
+    "title": "Wat wordt mijn studieschuld?",
+    "description": "Bereken simpel wat je schuld wordt als je nu begint met studeren en per maand gaat lenen.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Schulden",
+    "tags": [
+      "DUO",
+      "studieschuld",
+      "lenen",
+      "student"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [],
+    "reasonHint": "Handig als je wilt weten wat je schuld wordt voordat je begint met lenen.",
+    "assumptionsUsed": [
+      "duo"
+    ],
+    "calculationDomains": [
+      "studentDebt",
+      "cashflow"
+    ],
+    "riskLevel": "medium",
+    "disclaimerType": "duoIndicative",
+    "outputType": "singleResult",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "duo-stoppen-kosten-prestatiebeurs",
+    "title": "Wat kost stoppen met studeren?",
+    "description": "Bekijk welk deel van je prestatiebeurs schuld blijft als je stopt zonder diploma.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Schulden",
+    "tags": [
+      "DUO",
+      "stoppen",
+      "prestatiebeurs",
+      "studieschuld"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [],
+    "reasonHint": "Handig als je wilt weten welk prestatiebeursbedrag schuld blijft als je stopt zonder diploma.",
+    "assumptionsUsed": [
+      "duo"
+    ],
+    "calculationDomains": [
+      "studentDebt",
+      "cashflow"
+    ],
+    "riskLevel": "medium",
+    "disclaimerType": "duoIndicative",
+    "outputType": "singleResult",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  }
+] satisfies AppManifest[];
+
+export const appRegistryBySlug = Object.fromEntries(
+  appRegistry.map((app) => [app.slug, app]),
+) as Record<string, AppManifest>;

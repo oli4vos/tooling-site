@@ -1,0 +1,264 @@
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
+import { ToolDisclosure } from "@/components/ToolDisclosure";
+import {
+  getDefaultFinancialYear,
+  getFinancialConstants,
+} from "@/lib/financial-constants";
+import type { AssumptionStatus, SourceTier } from "@/lib/financial-constants";
+import { SOURCE_TIER_LABELS, isApproximation } from "@/lib/source-tier";
+
+function formatPercent(value: number) {
+  return new Intl.NumberFormat("nl-NL", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
+function formatCurrency(value: number) {
+  return new Intl.NumberFormat("nl-NL", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(value);
+}
+
+function formatIsoDate(value: string) {
+  const date = new Date(`${value}T00:00:00`);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("nl-NL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(date);
+}
+
+function formatStatusLabel(status: AssumptionStatus) {
+  if (status === "voorlopig") {
+    return "Voorlopig";
+  }
+
+  if (status === "indicatief") {
+    return "Indicatief";
+  }
+
+  return "Definitief";
+}
+
+function ValueRow({
+  name,
+  value,
+}: {
+  name: string;
+  value: React.ReactNode;
+}) {
+  return (
+    <div className="hair-b grid gap-2 py-3 text-[13.5px] sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center last:border-b-0">
+      <div className="text-[var(--muted)]">{name}</div>
+      <div className="font-mono tabular text-[var(--ink)]">{value}</div>
+    </div>
+  );
+}
+
+function MetaBlock({
+  year,
+  sourceLabel,
+  status,
+  lastChecked,
+  notes,
+  sourceUrl,
+  sourceTier,
+}: {
+  year: number;
+  sourceLabel: string;
+  status: AssumptionStatus;
+  lastChecked: string;
+  notes?: string;
+  sourceUrl: string | null;
+  sourceTier: SourceTier;
+}) {
+  const isApprox = isApproximation(sourceTier);
+
+  return (
+    <div className="mt-4 rounded-xl border border-[var(--hair)] bg-[var(--paper-soft)] px-4 py-3 text-[12.5px] leading-[1.6] text-[var(--muted)]">
+      <p>Geldt voor: {year}</p>
+      <p>Zekerheid: {formatStatusLabel(status)}</p>
+      <p>Laatst gecontroleerd: {formatIsoDate(lastChecked)}</p>
+      <p>
+        Gebruikte bron:{" "}
+        {sourceUrl ? (
+          <a
+            href={sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline text-[var(--ink)] hover:text-[var(--ink-2)]"
+          >
+            {sourceLabel}
+          </a>
+        ) : (
+          sourceLabel
+        )}
+      </p>
+      <p className="mt-2">
+        Soort bron:{" "}
+        <span
+          className={`inline-block rounded-md px-2 py-1 text-[11px] font-medium ${
+            isApprox
+              ? "bg-amber-100/50 text-amber-900"
+              : "bg-slate-200/50 text-slate-900"
+          }`}
+        >
+          {SOURCE_TIER_LABELS[sourceTier]}
+        </span>
+      </p>
+      {notes ? <p className="mt-2">Toelichting: {notes}</p> : null}
+    </div>
+  );
+}
+
+function SummaryCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-[var(--hair)] bg-[var(--paper-soft)] p-4">
+      <div className="text-[12px] text-[var(--muted)]">{label}</div>
+      <div className="mt-1 font-mono text-[16px] tabular text-[var(--ink)]">
+        {value}
+      </div>
+    </div>
+  );
+}
+
+export default function VariabelenPage() {
+  const year = getDefaultFinancialYear();
+  const constants = getFinancialConstants(year);
+
+  return (
+    <>
+      <SiteHeader />
+      <main
+        id="main-content"
+        className="page-shell min-h-[100dvh] pb-10 pt-8 lg:pb-14"
+      >
+        <section className="rounded-[1.5rem] border hair bg-white/80 p-6 shadow-paper">
+          <h1 className="text-fluid-h2 max-w-4xl font-serif tracking-[-0.03em] text-[var(--ink)]">
+            Aannames en vaste variabelen
+          </h1>
+          <p className="mt-4 max-w-[70ch] text-[14px] leading-[1.7] text-[var(--ink-2)]">
+            Hier zie je met welke standaardwaarden de site rekent. In de tools kun
+            je vaak je eigen waarden invullen.
+          </p>
+          <div className="mt-4 rounded-xl border border-[var(--hair)] bg-[var(--paper-soft)] px-4 py-3 text-[13px] leading-[1.65] text-[var(--muted)]">
+            <p>Voorlopig betekent dat het percentage later nog kan wijzigen.</p>
+            <p className="mt-1">
+              Indicatief betekent dat de site deze waarde gebruikt als rekengemak,
+              maar je in tools vaak zelf een andere waarde kunt invullen.
+            </p>
+          </div>
+        </section>
+
+        <section className="mt-6 rounded-[1.5rem] border hair bg-white p-6 shadow-paper">
+          <h2 className="font-serif text-[24px] tracking-[-0.02em] text-[var(--ink)]">
+            Belangrijkste waarden
+          </h2>
+          <p className="mt-2 text-[13px] leading-[1.65] text-[var(--muted)]">
+            Snelle samenvatting van de meest gebruikte standaardwaarden.
+          </p>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <SummaryCard
+              label="DUO-rente SF35"
+              value={`${formatPercent(constants.duo.rates.SF35)}%`}
+            />
+            <SummaryCard
+              label="DUO-rente SF15"
+              value={`${formatPercent(constants.duo.rates.SF15)}%`}
+            />
+            <SummaryCard
+              label="Standaard hypotheekrente"
+              value={`${formatPercent(constants.mortgage.defaultMortgageRate)}%`}
+            />
+            <SummaryCard
+              label="Standaard hypotheeklooptijd"
+              value={`${constants.mortgage.defaultMortgageTermYears} jaar`}
+            />
+          </div>
+        </section>
+
+        <section className="mt-6 space-y-4">
+          <ToolDisclosure
+            title="DUO"
+            subtitle="Rentes, standaard looptijden en draagkrachtregels."
+          >
+            <ValueRow
+              name="DUO-rente SF35"
+              value={`${formatPercent(constants.duo.rates.SF35)}%`}
+            />
+            <ValueRow
+              name="DUO-rente SF15"
+              value={`${formatPercent(constants.duo.rates.SF15)}%`}
+            />
+            <ValueRow
+              name="DUO-rente SF15-oud"
+              value={`${formatPercent(constants.duo.rates.SF15_OLD)}%`}
+            />
+            <ValueRow
+              name="DUO-rente SF15-lllk"
+              value={`${formatPercent(constants.duo.rates.SF15_LLLK)}%`}
+            />
+            <ValueRow
+              name="Standaard looptijd SF35"
+              value={`${constants.duo.defaultTerms.SF35} jaar`}
+            />
+            <ValueRow
+              name="Standaard looptijd SF15"
+              value={`${constants.duo.defaultTerms.SF15} jaar`}
+            />
+            <ValueRow
+              name="Draagkracht SF35 (alleenstaand)"
+              value={`${formatCurrency(constants.duo.incomeBasedRules.SF35.singleAllowance)} vrijstelling, ${formatPercent(constants.duo.incomeBasedRules.SF35.percentage ?? 0)}% over restant`}
+            />
+            <ValueRow
+              name="Draagkracht SF35 (partner of alleenstaande ouder)"
+              value={`${formatCurrency(constants.duo.incomeBasedRules.SF35.partnerOrSingleParentAllowance)} vrijstelling, ${formatPercent(constants.duo.incomeBasedRules.SF35.percentage ?? 0)}% over restant`}
+            />
+            <ValueRow
+              name="Draagkracht SF15"
+              value={`${formatCurrency(constants.duo.incomeBasedRules.SF15.singleAllowance)} vrijstelling alleenstaand, ${formatPercent(constants.duo.incomeBasedRules.SF15.percentage ?? 0)}% over restant`}
+            />
+            <MetaBlock year={year} {...constants.duo.meta} />
+          </ToolDisclosure>
+
+          <ToolDisclosure
+            title="Hypotheek"
+            subtitle="Standaard rente, looptijd en omrekening van de DUO-maandlast."
+          >
+            <ValueRow
+              name="Standaard hypotheekrente"
+              value={`${formatPercent(constants.mortgage.defaultMortgageRate)}%`}
+            />
+            <ValueRow
+              name="Standaard hypotheeklooptijd"
+              value={`${constants.mortgage.defaultMortgageTermYears} jaar`}
+            />
+            <ValueRow
+              name="Indicatieve inkomensruimte voor hypotheeklast"
+              value={`${formatPercent(constants.mortgage.indicativeIncomeHousingCostRatio)}% van bruto jaarinkomen`}
+            />
+            {constants.mortgage.studentDebtGrossUpFactors.map((band) => (
+              <ValueRow
+                key={`${band.minRate}-${band.maxRate ?? "plus"}`}
+                name={`Omrekening ${band.label}`}
+                value={`${formatPercent(band.factor)}x`}
+              />
+            ))}
+            <MetaBlock year={year} {...constants.mortgage.meta} />
+          </ToolDisclosure>
+        </section>
+      </main>
+      <SiteFooter />
+    </>
+  );
+}

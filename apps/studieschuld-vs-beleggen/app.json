@@ -1,0 +1,46 @@
+{
+  "slug": "studieschuld-vs-beleggen",
+  "enabled": true,
+  "title": "Studieschuld extra aflossen of beleggen?",
+  "description": "Vergelijk wat extra aflossen op je studieschuld doet ten opzichte van sparen of beleggen.",
+  "type": "frontend",
+  "category": "Schulden",
+  "tags": [
+    "studieschuld",
+    "beleggen",
+    "rente"
+  ],
+  "status": "active",
+  "visibility": "hidden",
+  "requiredProfileFields": [
+    "studentDebt.remainingDebt",
+    "studentDebt.duoInterestRate",
+    "studentDebt.remainingTermYears",
+    "income.grossAnnualIncome",
+    "income.partnerGrossAnnualIncome",
+    "savingInvesting.monthlyFreeCashflow",
+    "savingInvesting.expectedAnnualReturn",
+    "savingInvesting.investmentHorizonYears",
+    "savingInvesting.currentSavings",
+    "tax.preferredTaxYear",
+    "tax.hasFiscalPartner",
+    "tax.preferredBox3Method"
+  ],
+  "reasonHint": "Handig als je wilt vergelijken wat extra aflossen op je studieschuld doet ten opzichte van beleggen.",
+  "assumptionsUsed": [
+    "duo",
+    "box3",
+    "investment"
+  ],
+  "calculationDomains": [
+    "studentDebt",
+    "investing",
+    "saving",
+    "tax"
+  ],
+  "riskLevel": "medium",
+  "disclaimerType": "financialEducation",
+  "outputType": "scenarioComparison",
+  "version": "1.0.0",
+  "entry": "Calculator.tsx"
+}

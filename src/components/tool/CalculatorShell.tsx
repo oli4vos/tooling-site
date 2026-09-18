@@ -1,0 +1,47 @@
+import type { ReactNode } from "react";
+
+type CalculatorShellProps = {
+  children?: ReactNode;
+  intro?: ReactNode;
+  startActions?: ReactNode;
+  inputs?: ReactNode;
+  submitAction?: ReactNode;
+  result?: ReactNode;
+  details?: ReactNode;
+  disclaimer?: ReactNode;
+};
+
+export function CalculatorShell({
+  children,
+  intro,
+  startActions,
+  inputs,
+  submitAction,
+  result,
+  details,
+  disclaimer,
+}: CalculatorShellProps) {
+  if (children) {
+    return (
+      <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] [&>*]:min-w-0">
+        {children}
+      </div>
+    );
+  }
+
+  return (
+    <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] [&>*]:min-w-0">
+      <section className="surface-panel order-1 min-w-0 p-5 sm:p-6 xl:order-1">
+        {intro}
+        {startActions ? <div className="mt-4">{startActions}</div> : null}
+        {inputs ? <div className="mt-6">{inputs}</div> : null}
+        {submitAction ? <div className="mt-4">{submitAction}</div> : null}
+      </section>
+      <section className="order-2 min-w-0 space-y-5 xl:order-2">
+        {result}
+        {details}
+        {disclaimer}
+      </section>
+    </div>
+  );
+}

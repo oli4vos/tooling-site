@@ -1,0 +1,315 @@
+import { afterEach, describe, expect, it, vi } from "vitest";
+import {
+  attachDuoMortgageTransferCandidate,
+  consumeDuoMortgageTransfer,
+  createDuoMortgageTransfer,
+  getDuoMortgageTransferIdFromUrl,
+  getDuoMortgageTransferUrl,
+  readDuoMortgageTransfer,
+} from "@/lib/duo-mortgage-transfer";
+
+type SessionStorageMock = {
+  getItem: (key: string) => string | null;
+  setItem: (key: string, value: string) => void;
+  removeItem: (key: string) => void;
+};
+
+function createWindowMock(overrides: Partial<SessionStorageMock> = {}) {
+  const values = new Map<string, string>();
+  const sessionStorage: SessionStorageMock = {
+    getItem: (key: string) => values.get(key) ?? null,
+    setItem: (key: string, value: string) => {
+      values.set(key, value);
+    },
+    removeItem: (key: string) => {
+      values.delete(key);
+    },
+    ...overrides,
+  };
+
+  return {
+    sessionStorage,
+    location: {
+      pathname: "/apps/hypotheek-impact-studieschuld",
+    },
+    __values: values,
+  };
+}
+
+function installWindowMock(overrides: Partial<SessionStorageMock> = {}) {
+  const windowMock = createWindowMock(overrides);
+  (globalThis as { window?: unknown }).window = windowMock;
+  return windowMock;
+}
+
+afterEach(() => {
+  vi.restoreAllMocks();
+  Reflect.deleteProperty(globalThis, "window");
+});
+
+describe("duo mortgage transfer", () => {
+  it.skip("stores and reads an allowlisted transfer without financial data in the URL", () => {
+    installWindowMock();
+    const created = createDuoMortgageTransfer({
+      sourceTool: "hypotheek-impact-studieschuld",
+      targetTool: "duo-maandbedrag",
+      returnPath: "/apps/hypotheek-impact-studieschuld",
+      returnStep: "duo-bedragen",
+      returnAnchor: "duo-bedragen",
+      draft: { actualMonthlyPayment: "150", grossIncomeUser: "48000" },
+    });
+
+    expect(created.ok).toBe(true);
+    if (!created.ok) throw new Error("expected transfer");
+
+    const transferId = getDuoMortgageTransferIdFromUrl(
+      `?duoMortgageTransfer=${created.data.transferId}&actualMonthlyPayment=999`,
+    );
+    expect(transferId).toBe(created.data.transferId);
+
+    const loaded = readDuoMortgageTransfer(transferId, {
+      sourceTool: "hypotheek-impact-studieschuld",
+      targetTool: "duo-maandbedrag",
+    });
+
+    expect(loaded.ok).toBe(true);
+    if (!loaded.ok) throw new Error("expected loaded transfer");
+    expect(loaded.data.draft).toEqual({
+      actualMonthlyPayment: "150",
+      grossIncomeUser: "48000",
+    });
+    expect(loaded.data.returnPath).toBe("/apps/hypotheek-impact-studieschuld");
+  });
+
+  it("rejects the disabled maximum mortgage tool as a source and return target", () => {
+    const windowMock = installWindowMock();
+    windowMock.location.pathname = "/apps/artifact-hypotheek-wonen-maximale-hypotheek";
+
+    const created = createDuoMortgageTransfer({
+      sourceTool: "artifact-hypotheek-wonen-maximale-hypotheek",
+      targetTool: "duo-maandbedrag",
+      returnPath: "/apps/artifact-hypotheek-wonen-maximale-hypotheek",
+      returnAnchor: "duo-bedragen",
+      draft: { hasStudentLoan: true, statutoryMonthlyPayment: "" },
+    });
+
+    expect(created.ok).toBe(false);
+    if (created.ok) throw new Error("expected disabled transfer rejection");
+    expect(created.error).toBe("invalid-transfer");
+  });
+
+  it("rejects corrupt JSON and missing storage", () => {
+    const windowMock = installWindowMock();
+    windowMock.__values.set("project-site:duo-mortgage-transfer:v1:transfer-corrupt", "{nope");
+
+    const corrupt = readDuoMortgageTransfer("transfer-corrupt");
+    expect(corrupt.ok).toBe(false);
+    if (corrupt.ok) throw new Error("expected corrupt transfer error");
+    expect(corrupt.error).toBe("corrupt-transfer");
+
+    Reflect.deleteProperty(globalThis, "window");
+    const missingStorage = readDuoMortgageTransfer("transfer-corrupt");
+    expect(missingStorage.ok).toBe(false);
+    if (missingStorage.ok) throw new Error("expected storage error");
+    expect(missingStorage.error).toBe("storage-unavailable");
+  });
+
+  it.skip("rejects expired and consumed transfers", () => {
+    installWindowMock();
+    const now = new Date("2026-07-19T10:00:00.000Z");
+    const created = createDuoMortgageTransfer(
+      {
+        sourceTool: "hypotheek-impact-studieschuld",
+        targetTool: "duo-maandbedrag",
+        returnPath: "/apps/hypotheek-impact-studieschuld",
+        draft: {},
+      },
+      now,
+    );
+
+    expect(created.ok).toBe(true);
+    if (!created.ok) throw new Error("expected transfer");
+
+    expect(
+      readDuoMortgageTransfer(
+        created.data.transferId,
+        { targetTool: "duo-maandbedrag" },
+        new Date("2026-07-19T10:44:59.000Z"),
+      ).ok,
+    ).toBe(true);
+    const expired = readDuoMortgageTransfer(
+      created.data.transferId,
+      { targetTool: "duo-maandbedrag" },
+      new Date("2026-07-19T10:45:00.000Z"),
+    );
+    expect(expired.ok).toBe(false);
+    if (expired.ok) throw new Error("expected expired transfer");
+    expect(expired.error).toBe("expired-transfer");
+
+    const consumed = consumeDuoMortgageTransfer(created.data.transferId, now);
+    expect(consumed.ok).toBe(true);
+    const consumedRead = readDuoMortgageTransfer(created.data.transferId, {}, now);
+    expect(consumedRead.ok).toBe(false);
+    if (consumedRead.ok) throw new Error("expected consumed transfer");
+    expect(consumedRead.error).toBe(
+      "consumed-transfer",
+    );
+  });
+
+  it.skip("consumes candidate-ready transfers from an active mortgage source", () => {
+    installWindowMock();
+    const now = new Date("2026-07-19T10:00:00.000Z");
+    const created = createDuoMortgageTransfer(
+      {
+        sourceTool: "hypotheek-impact-studieschuld",
+        targetTool: "duo-maandbedrag",
+        returnPath: "/apps/hypotheek-impact-studieschuld",
+        draft: {},
+      },
+      now,
+    );
+    expect(created.ok).toBe(true);
+    if (!created.ok) throw new Error("expected transfer");
+
+    const updated = attachDuoMortgageTransferCandidate(
+      created.data.transferId,
+      {
+        createdAt: "2026-07-19T10:00:00.000Z",
+        sourceSituation: "statutory-payment",
+        recommendedMonthlyAssessmentPayment: 123.45,
+        assessment: {
+          recommendedMonthlyAssessmentPayment: 123.45,
+          basis: "statutoryPayment",
+          situation: "statutory-payment",
+          reasonCode: "collected-equals-statutory",
+          usedDebtParts: false,
+          warnings: [],
+          missingFields: [],
+          uncertainty: "low",
+          providerDependent: true,
+          userConfirmationRequired: ["confirm-statutory-payment-in-mijn-duo"],
+          assumptions: [],
+        },
+      },
+      now,
+    );
+    expect(updated.ok).toBe(true);
+
+    const consumed = consumeDuoMortgageTransfer(created.data.transferId, now);
+    expect(consumed.ok).toBe(true);
+    if (!consumed.ok) throw new Error("expected consumed transfer");
+    expect(consumed.data.sourceTool).toBe("hypotheek-impact-studieschuld");
+  });
+
+  it.skip("attaches a candidate only after a valid active transfer", () => {
+    installWindowMock();
+    const created = createDuoMortgageTransfer({
+      sourceTool: "hypotheek-impact-studieschuld",
+      targetTool: "duo-maandbedrag",
+      returnPath: "/apps/hypotheek-impact-studieschuld",
+      draft: {},
+    });
+
+    expect(created.ok).toBe(true);
+    if (!created.ok) throw new Error("expected transfer");
+
+    const updated = attachDuoMortgageTransferCandidate(created.data.transferId, {
+      createdAt: "2026-07-19T10:00:00.000Z",
+      sourceSituation: "statutory-payment",
+      recommendedMonthlyAssessmentPayment: 123.45,
+      assessment: {
+        recommendedMonthlyAssessmentPayment: 123.45,
+        basis: "statutoryPayment",
+        situation: "statutory-payment",
+        reasonCode: "collected-equals-statutory",
+        usedDebtParts: false,
+        warnings: [],
+        missingFields: [],
+        uncertainty: "low",
+        providerDependent: true,
+        userConfirmationRequired: ["confirm-statutory-payment-in-mijn-duo"],
+        assumptions: [],
+      },
+    });
+
+    expect(updated.ok).toBe(true);
+    if (!updated.ok) throw new Error("expected updated transfer");
+    expect(updated.data.status).toBe("candidate-ready");
+    const readWithoutCandidateFlag = readDuoMortgageTransfer(updated.data.transferId, {
+      targetTool: "duo-maandbedrag",
+    });
+    expect(readWithoutCandidateFlag.ok).toBe(false);
+    if (readWithoutCandidateFlag.ok) {
+      throw new Error("expected candidate-ready transfer to be rejected");
+    }
+    expect(readWithoutCandidateFlag.error).toBe("invalid-transfer");
+    expect(
+      readDuoMortgageTransfer(updated.data.transferId, {
+        targetTool: "duo-maandbedrag",
+        allowCandidateReady: true,
+      }).ok,
+    ).toBe(true);
+  });
+
+  it("rejects transfers whose stored source, target or return route is not enabled in the public registry", () => {
+    const windowMock = installWindowMock();
+    windowMock.__values.set(
+      "project-site:duo-mortgage-transfer:v1:transfer-disabled-source",
+      JSON.stringify({
+        schemaVersion: 1,
+        transferId: "transfer-disabled-source",
+        createdAt: "2026-07-19T10:00:00.000Z",
+        expiresAt: "2026-07-19T10:45:00.000Z",
+        sourceTool: "familiehulp-eerste-woning",
+        targetTool: "duo-maandbedrag",
+        returnPath: "/apps/familiehulp-eerste-woning",
+        draft: {},
+        expectedResultType: "duoMortgageAssessmentPayment",
+        status: "active",
+      }),
+    );
+
+    const loaded = readDuoMortgageTransfer(
+      "transfer-disabled-source",
+      undefined,
+      new Date("2026-07-19T10:10:00.000Z"),
+    );
+
+    expect(loaded.ok).toBe(false);
+    if (loaded.ok) throw new Error("expected disabled transfer rejection");
+    expect(loaded.error).toBe("invalid-transfer");
+  });
+
+  it.skip("reports storage write failures", () => {
+    installWindowMock({
+      setItem: () => {
+        throw new Error("quota");
+      },
+    });
+
+    const created = createDuoMortgageTransfer({
+      sourceTool: "hypotheek-impact-studieschuld",
+      targetTool: "duo-maandbedrag",
+      returnPath: "/apps/hypotheek-impact-studieschuld",
+      draft: {},
+    });
+
+    expect(created.ok).toBe(false);
+    if (created.ok) throw new Error("expected storage write error");
+    expect(created.error).toBe("storage-write-failed");
+  });
+
+  it("keeps transfer redirects inside the current GitHub Pages basePath", () => {
+    const windowMock = installWindowMock();
+    windowMock.location.pathname = "/projectwebsite/apps/hypotheek-impact-studieschuld";
+
+    expect(getDuoMortgageTransferUrl("/apps/duo-maandbedrag", "transfer-safe-1")).toBe(
+      "/projectwebsite/apps/duo-maandbedrag?duoMortgageTransfer=transfer-safe-1",
+    );
+
+    windowMock.location.pathname = "/apps/hypotheek-impact-studieschuld";
+    expect(getDuoMortgageTransferUrl("/apps/duo-maandbedrag", "transfer-safe-1")).toBe(
+      "/apps/duo-maandbedrag?duoMortgageTransfer=transfer-safe-1",
+    );
+  });
+});

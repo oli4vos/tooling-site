@@ -1,0 +1,38 @@
+{
+  "slug": "annuitair-lineair",
+  "enabled": true,
+  "title": "Annuïtair of lineair",
+  "description": "Vergelijk hoe je maandlasten en schuld dalen bij een annuïtaire of lineaire hypotheek.",
+  "type": "frontend",
+  "category": "Hypotheek",
+  "tags": [
+    "hypotheek",
+    "annuiteit",
+    "lineair",
+    "maandlasten"
+  ],
+  "status": "active",
+  "visibility": "hidden",
+  "requiredProfileFields": [
+    "income.grossAnnualIncome",
+    "income.partnerGrossAnnualIncome",
+    "housing.mortgageRate",
+    "housing.mortgageTermYears"
+  ],
+  "reasonHint": "Handig als je annuïtaire en lineaire hypotheeklasten naast elkaar wilt zetten.",
+  "assumptionsUsed": [
+    "mortgage",
+    "tax",
+    "investment"
+  ],
+  "calculationDomains": [
+    "mortgage",
+    "housing",
+    "investing"
+  ],
+  "riskLevel": "medium",
+  "disclaimerType": "mortgageIndicative",
+  "outputType": "scenarioComparison",
+  "version": "1.0.0",
+  "entry": "Calculator.tsx"
+}

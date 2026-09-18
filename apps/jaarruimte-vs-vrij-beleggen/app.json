@@ -1,0 +1,43 @@
+{
+  "slug": "jaarruimte-vs-vrij-beleggen",
+  "enabled": true,
+  "title": "Jaarruimte of vrij beleggen?",
+  "description": "Vergelijk pensioeninleg met vrij beleggen: belastingvoordeel nu, box 3 later en flexibiliteit.",
+  "type": "frontend",
+  "category": "Belasting",
+  "tags": [
+    "jaarruimte",
+    "pensioen",
+    "box 3",
+    "beleggen",
+    "FIRE"
+  ],
+  "status": "beta",
+  "visibility": "hidden",
+  "requiredProfileFields": [
+    "income.grossAnnualIncome",
+    "savingInvesting.currentSavings",
+    "savingInvesting.expectedAnnualReturn",
+    "savingInvesting.investmentHorizonYears",
+    "tax.preferredTaxYear",
+    "tax.hasFiscalPartner",
+    "savingInvesting.pensionBuildUp"
+  ],
+  "reasonHint": "Handig als je twijfelt tussen pensioeninleg met belastingvoordeel en flexibel vrij beleggen.",
+  "assumptionsUsed": [
+    "tax",
+    "box1",
+    "box3",
+    "investment"
+  ],
+  "calculationDomains": [
+    "tax",
+    "investing",
+    "pension"
+  ],
+  "riskLevel": "high",
+  "disclaimerType": "taxIndicative",
+  "outputType": "scenarioComparison",
+  "version": "1.0.0",
+  "entry": "Calculator.tsx"
+}

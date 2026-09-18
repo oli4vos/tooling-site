@@ -1,0 +1,33 @@
+{
+  "slug": "schulden-volgorde",
+  "enabled": false,
+  "title": "Vergelijk mijn schulden",
+  "description": "Vergelijk je studieschuld met andere schulden en zie waar extra aflossen waarschijnlijk het meeste verschil maakt.",
+  "type": "frontend",
+  "category": "Schulden",
+  "tags": [
+    "schulden",
+    "BNPL",
+    "DUO",
+    "hypotheek",
+    "aflossen"
+  ],
+  "status": "beta",
+  "visibility": "public",
+  "reasonHint": "Handig als je DUO naast andere schulden wilt zetten zonder verplichte betalingen uit het oog te verliezen.",
+  "assumptionsUsed": [
+    "duo",
+    "mortgage"
+  ],
+  "calculationDomains": [
+    "cashflow",
+    "studentDebt",
+    "mortgage"
+  ],
+  "riskLevel": "high",
+  "disclaimerType": "financialEducation",
+  "outputType": "checklist",
+  "requiredProfileFields": [],
+  "version": "1.0.0",
+  "entry": "Calculator.tsx"
+}

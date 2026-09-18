@@ -1,0 +1,74 @@
+export {
+  applyExtraRepaymentToDuoDebtPortfolio,
+  calculateDuoDebtPortfolio,
+  calculateIndicativeIncomeBasedMonthlyPayment,
+  calculateDuoMonthlyPaymentAfterExtraRepayment,
+  calculateDuoExtraRepaymentProjection,
+  calculateExtraRepaymentPayoffImpact,
+  calculateExtraRepaymentVsInvesting,
+  calculatePayoffDate,
+  calculateRemainingMonthsToPayOff,
+  calculateRemainingDebtAfterExtraRepayment,
+  calculateStatutoryDuoMonthlyPayment,
+  determineRelevantDuoPayment,
+  sanitizeDuoMoney,
+  sanitizeDuoPercent,
+} from "@/lib/duo/calculations";
+export { projectDuoLoan } from "@/lib/duo/project-duo-loan";
+export { calculateDuoBorrowingCapacity } from "@/lib/duo/borrowing-capacity";
+export type {
+  DuoBorrowingCapacityInput,
+  DuoBorrowingCapacityResult,
+} from "@/lib/duo/borrowing-capacity";
+export { determineDuoMortgageAssessmentPayment } from "@/lib/duo/mortgage-assessment";
+export { calculateDuoAdditionalGrant } from "@/lib/duo/additional-grant";
+export type {
+  DuoMortgageAssessmentBasis,
+  DuoMortgageAssessmentInput,
+  DuoMortgageAssessmentResult,
+  DuoMortgageAssessmentSituation,
+  DuoMortgageAssessmentUncertainty,
+} from "@/lib/duo/mortgage-assessment";
+export type {
+  DuoLoanProjectionContext,
+  DuoExtraRepaymentProjectionInput,
+  DuoExtraRepaymentProjectionResult,
+  DuoDebtPartInput,
+  DuoDebtPartResolved,
+  DuoDebtPortfolioSummary,
+  DuoLoanProjectionInput,
+  DuoLoanProjectionMortgageImpact,
+  DuoLoanProjectionResult,
+  DuoIncomeBasedMonthlyPaymentResult,
+  DuoIncomeBasedInput,
+  DuoMonthlyPaymentAfterExtraRepaymentInput,
+  DuoPayoffTimingInput,
+  DuoPayoffTimingResult,
+  DuoPaymentSource,
+  DuoRelevantPaymentInput,
+  DuoRepaymentInput,
+  DuoSituation,
+  ExtraRepaymentPayoffImpactInput,
+  ExtraRepaymentPayoffImpactResult,
+  ExtraRepaymentStrategy,
+  ExtraRepaymentVsInvestingInput,
+  RelevantDuoPaymentResult,
+  RepaymentRule,
+  DuoRepaymentTimelinePoint,
+  DuoRepaymentTimelineSummary,
+} from "@/lib/duo/types";
+export type {
+  DuoAdditionalGrantFamilySituation,
+  DuoAdditionalGrantInput,
+  DuoAdditionalGrantMissingInput,
+  DuoAdditionalGrantParentContribution,
+  DuoAdditionalGrantReferenceYearComparison,
+  DuoAdditionalGrantReferenceYearLikelihood,
+  DuoAdditionalGrantResidence,
+  DuoAdditionalGrantResult,
+  DuoAdditionalGrantScenarioInput,
+  DuoAdditionalGrantScenarioResult,
+  DuoAdditionalGrantSpecialCase,
+  DuoAdditionalGrantStatus,
+  DuoAdditionalGrantTraceStep,
+} from "@/lib/duo/additional-grant";

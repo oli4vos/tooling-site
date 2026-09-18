@@ -1,0 +1,112 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Logo } from "@/components/ui";
+import { ENABLE_PROFILE } from "@/lib/feature-flags";
+
+const navItems = [
+  { href: "/#route", label: "Stappenplan", mobileLabel: "Stappen" },
+  { href: "/apps", label: "Alle tools", mobileLabel: "Tools" },
+  { href: "/kennisbank", label: "Kennisbank", mobileLabel: "Kennis" },
+  { href: "/variabelen", label: "Aannames", mobileLabel: "Aannames" },
+  { href: "/over", label: "Over", mobileLabel: "Over" },
+] as const;
+
+const mobileNavItems = navItems.slice(0, 3);
+
+function navClassName(active: boolean) {
+  return `touch-link inline-flex min-h-11 shrink-0 items-center rounded-lg px-3 py-2 text-[13px] font-medium focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2 ${
+    active
+      ? "bg-white text-[var(--ink)] shadow-paper"
+      : "text-[var(--muted)] hover:bg-white/76 hover:text-[var(--ink)]"
+  }`;
+}
+
+function mobileNavClassName(active: boolean) {
+  return `touch-link inline-flex min-h-11 min-w-0 items-center justify-center rounded-lg px-2 py-2 text-center text-[12px] font-medium focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2 ${
+    active
+      ? "bg-white text-[var(--ink)] shadow-paper"
+      : "text-[var(--muted)] hover:bg-white/76 hover:text-[var(--ink)]"
+  }`;
+}
+
+function isActivePath(pathname: string, href: string) {
+  if (href.startsWith("/#")) {
+    return pathname === "/";
+  }
+
+  return pathname === href;
+}
+
+export function SiteHeader() {
+  const pathname = usePathname();
+
+  return (
+    <header className="hair-b sticky top-0 z-20 bg-[rgba(247,245,240,0.88)] backdrop-blur-md">
+      <div className="page-shell py-3">
+        <div className="flex min-w-0 items-center justify-between gap-3">
+          <Link
+            href="/"
+            aria-label="Naar home"
+            className="inline-flex min-h-11 items-center rounded-lg px-1 focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2"
+          >
+            <Logo size={22} />
+          </Link>
+
+          <nav
+            aria-label="Hoofdnavigatie"
+            className="hidden items-center gap-1 text-[13px] md:flex"
+          >
+            {navItems.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
+                className={navClassName(isActivePath(pathname, item.href))}
+              >
+                {item.label}
+              </Link>
+            ))}
+            {ENABLE_PROFILE ? (
+              <Link
+                href="/profiel"
+                aria-current={pathname === "/profiel" ? "page" : undefined}
+                className={navClassName(pathname === "/profiel")}
+              >
+                Profiel
+              </Link>
+            ) : null}
+          </nav>
+        </div>
+
+        <nav
+          aria-label="Mobiele navigatie"
+          className={`mt-3 grid min-h-11 gap-1 pb-1 md:hidden ${
+            ENABLE_PROFILE ? "grid-cols-4" : "grid-cols-3"
+          }`}
+        >
+          {mobileNavItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={isActivePath(pathname, item.href) ? "page" : undefined}
+              className={mobileNavClassName(isActivePath(pathname, item.href))}
+            >
+              {item.mobileLabel}
+            </Link>
+          ))}
+          {ENABLE_PROFILE ? (
+            <Link
+              href="/profiel"
+              aria-current={pathname === "/profiel" ? "page" : undefined}
+              className={mobileNavClassName(pathname === "/profiel")}
+            >
+              Profiel
+            </Link>
+          ) : null}
+        </nav>
+      </div>
+    </header>
+  );
+}

@@ -1,0 +1,49 @@
+{
+  "slug": "familiehulp-eerste-woning",
+  "enabled": false,
+  "title": "Lenen of schenken voor eerste woning",
+  "description": "Vergelijk studieschuld, bankhypotheek, eigen geld, familielening en schenkingen voor een eerste woning.",
+  "type": "frontend",
+  "category": "Studieschuld & wonen",
+  "tags": [
+    "familielening",
+    "schenking",
+    "studieschuld",
+    "hypotheek",
+    "starter"
+  ],
+  "status": "beta",
+  "visibility": "public",
+  "requiredProfileFields": [
+    "income.grossAnnualIncome",
+    "income.partnerGrossAnnualIncome",
+    "studentDebt.remainingDebt",
+    "studentDebt.currentMonthlyPayment",
+    "studentDebt.statutoryMonthlyPayment",
+    "studentDebt.repaymentRule",
+    "studentDebt.duoSituation",
+    "studentDebt.duoInterestRate",
+    "studentDebt.remainingTermYears",
+    "housing.targetHomePrice",
+    "housing.ownFunds",
+    "housing.mortgageRate",
+    "housing.mortgageTermYears",
+    "savingInvesting.targetEmergencyFund"
+  ],
+  "reasonHint": "Handig als je door studieschuld wilt zien hoe bankhypotheek, eigen geld, familielening en schenking samen uitpakken.",
+  "assumptionsUsed": [
+    "duo",
+    "mortgage"
+  ],
+  "calculationDomains": [
+    "studentDebt",
+    "mortgage",
+    "housing",
+    "cashflow"
+  ],
+  "riskLevel": "high",
+  "disclaimerType": "financialEducation",
+  "outputType": "scenarioComparison",
+  "version": "1.0.0",
+  "entry": "Calculator.tsx"
+}

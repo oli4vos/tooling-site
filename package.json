@@ -1,0 +1,53 @@
+{
+  "name": "financial-tools-platform",
+  "version": "0.1.0",
+  "license": "AGPL-3.0-or-later",
+  "private": true,
+  "scripts": {
+    "create:tool": "node scripts/create-tool.mjs",
+    "generate:apps": "node scripts/generate-app-registry.mjs",
+    "generate:source-overview": "tsx scripts/generate-source-overview.ts",
+    "validate:source-data": "tsx scripts/validate-source-data.ts",
+    "check:source-freshness": "tsx scripts/check-source-freshness.ts",
+    "process:check": "tsx scripts/validate-process-docs.ts",
+    "process:index": "tsx scripts/generate-process-index.ts",
+    "process:update": "tsx scripts/update-process-docs-metadata.ts",
+    "update:mortgage-financing-load-table": "node scripts/update-mortgage-financing-load-table.mjs",
+    "import:artifact-tools": "node scripts/import-artifact-staging-to-apps.mjs",
+    "browser:compare": "tsx scripts/hypotheek-browser-compare.ts",
+    "predev": "npm run generate:apps",
+    "dev": "next dev",
+    "prebuild": "npm run generate:apps",
+    "build": "next build",
+    "start": "next start",
+    "test": "vitest run",
+    "test:ux": "playwright test",
+    "check": "npm run generate:apps && git diff --exit-code src/lib/app-registry.ts src/lib/app-components.tsx && npm run process:check && npm run validate:source-data && npm run generate:source-overview && git diff --exit-code docs/source-data-overview.md && npm run check:source-freshness && npm run test && npm run lint && npm run typecheck && npm run build",
+    "lint": "eslint .",
+    "typecheck": "next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.106.1",
+    "jspdf": "^4.2.1",
+    "next": "16.2.11",
+    "react": "19.2.4",
+    "react-dom": "19.2.4"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.51.1",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.11",
+    "tailwindcss": "^4",
+    "tsx": "^4.8.1",
+    "typescript": "^5",
+    "vitest": "^4.1.6"
+  },
+  "overrides": {
+    "postcss": "8.5.23",
+    "sharp": "0.35.3"
+  }
+}

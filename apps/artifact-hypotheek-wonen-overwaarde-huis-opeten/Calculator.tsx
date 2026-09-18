@@ -1,0 +1,19 @@
+"use client";
+
+import { ArtifactCalculator } from "../_artifact_shared/ArtifactCalculator";
+import { getProfileFixture } from "../_artifact_shared/runtime";
+import { calculateOverwaardeHuisOpeten, TOOL_PROFILE } from "./logic";
+
+const TOOL_TITLE = "Overwaarde huis opeten";
+const DEFAULT_INPUT = getProfileFixture(TOOL_PROFILE, "artifact-hypotheek-wonen-overwaarde-huis-opeten").input;
+
+export default function Calculator() {
+  return (
+    <ArtifactCalculator
+      title={TOOL_TITLE}
+      defaultInput={DEFAULT_INPUT}
+      profile={TOOL_PROFILE}
+      calculate={calculateOverwaardeHuisOpeten}
+    />
+  );
+}

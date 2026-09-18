@@ -1,0 +1,936 @@
+"use client";
+
+import { useEffect, useMemo, useRef, type ReactNode } from "react";
+import { DisclosureSection } from "@/components/DisclosureSection";
+import { FieldError } from "@/components/forms/FieldError";
+import { CalculatorShell } from "@/components/tool/CalculatorShell";
+import {
+  ExampleValuesNotice,
+  ResultContextNotice,
+} from "@/components/tool/CalculationContextNotice";
+import { ToolActionButton } from "@/components/tool/ToolActionButton";
+import { ToolNextSteps } from "@/components/tool/ToolNextSteps";
+import { useSubmittedCalculation } from "@/hooks/useSubmittedCalculation";
+import { getToolNextSteps } from "@/lib/tool-journeys";
+import {
+  createAllowanceQuestionFlowView,
+  createAllowanceScanView,
+  defaultValues,
+  exampleValues,
+  validateAllowanceScanForm,
+} from "./logic";
+import type {
+  AllowanceQuestionFlowView,
+  AllowanceResultCardView,
+  AllowanceScanField,
+  AllowanceScanFormState,
+  YesNoUnknown,
+} from "./types";
+
+const yesNoUnknownOptions = [
+  { value: "unknown", label: "Weet ik niet" },
+  { value: "yes", label: "Ja" },
+  { value: "no", label: "Nee" },
+] as const;
+
+function FieldShell({ children }: { children: ReactNode }) {
+  return <div className="grid gap-2">{children}</div>;
+}
+
+function Label({ htmlFor, children }: { htmlFor: string; children: ReactNode }) {
+  return (
+    <label
+      htmlFor={htmlFor}
+      className="text-[12px] font-medium uppercase tracking-[0.04em] text-[var(--muted)]"
+    >
+      {children}
+    </label>
+  );
+}
+
+function TextInput({
+  id,
+  value,
+  label,
+  error,
+  hint,
+  inputMode = "decimal",
+  onChange,
+}: {
+  id: AllowanceScanField;
+  value: string;
+  label: string;
+  error?: string;
+  hint?: string;
+  inputMode?: "decimal" | "numeric" | "text";
+  onChange: (value: string) => void;
+}) {
+  const errorId = `${id}-error`;
+  const hintId = `${id}-hint`;
+  const describedBy =
+    [hint ? hintId : null, error ? errorId : null].filter(Boolean).join(" ") ||
+    undefined;
+
+  return (
+    <FieldShell>
+      <Label htmlFor={id}>{label}</Label>
+      <input
+        id={id}
+        value={value}
+        inputMode={inputMode}
+        onChange={(event) => onChange(event.target.value)}
+        aria-invalid={error ? "true" : "false"}
+        aria-describedby={describedBy}
+        className="ring-focus hair h-12 min-w-0 rounded-md border bg-white px-4 font-mono text-[15px] tabular text-[var(--ink)] outline-none"
+      />
+      {hint ? (
+        <p id={hintId} className="text-[12px] leading-[1.5] text-[var(--soft)]">
+          {hint}
+        </p>
+      ) : null}
+      <div id={errorId}>
+        <FieldError message={error} />
+      </div>
+    </FieldShell>
+  );
+}
+
+function SelectField<T extends string>({
+  id,
+  value,
+  label,
+  options,
+  hint,
+  onChange,
+}: {
+  id: AllowanceScanField;
+  value: T;
+  label: string;
+  options: readonly { value: T; label: string }[];
+  hint?: string;
+  onChange: (value: T) => void;
+}) {
+  const hintId = `${id}-hint`;
+
+  return (
+    <FieldShell>
+      <Label htmlFor={id}>{label}</Label>
+      <select
+        id={id}
+        value={value}
+        onChange={(event) => onChange(event.target.value as T)}
+        aria-describedby={hint ? hintId : undefined}
+        className="ring-focus hair h-12 min-w-0 rounded-md border bg-white px-4 text-[15px] text-[var(--ink)] outline-none"
+      >
+        {options.map((option) => (
+          <option key={option.value} value={option.value}>
+            {option.label}
+          </option>
+        ))}
+      </select>
+      {hint ? (
+        <p id={hintId} className="text-[12px] leading-[1.5] text-[var(--soft)]">
+          {hint}
+        </p>
+      ) : null}
+    </FieldShell>
+  );
+}
+
+function YesNoUnknownField({
+  id,
+  value,
+  label,
+  hint,
+  onChange,
+}: {
+  id: AllowanceScanField;
+  value: YesNoUnknown;
+  label: string;
+  hint?: string;
+  onChange: (value: YesNoUnknown) => void;
+}) {
+  return (
+    <SelectField
+      id={id}
+      value={value}
+      label={label}
+      hint={hint}
+      options={yesNoUnknownOptions}
+      onChange={onChange}
+    />
+  );
+}
+
+function ResultList({ title, items }: { title: string; items: readonly string[] }) {
+  if (items.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="mt-3">
+      <h4 className="text-[12px] font-medium uppercase tracking-[0.05em] text-[var(--muted)]">
+        {title}
+      </h4>
+      <ul className="mt-2 list-disc space-y-1.5 pl-5 text-[13px] leading-[1.55] text-[var(--ink-2)]">
+        {[...new Set(items)].map((item) => (
+          <li key={item}>{item}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+function ResultCard({ card }: { card: AllowanceResultCardView }) {
+  return (
+    <details className="surface-panel p-5" data-allowance-result={card.kind}>
+      <summary className="cursor-pointer list-none">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+          <h3 id={`${card.kind}-title`} className="text-lg font-semibold text-[var(--ink)]">
+            {card.title}
+          </h3>
+            <p className="mt-1 text-[12px] text-[var(--muted)]">{card.statusLabel}</p>
+            {card.monthlyAmountLabel ? (
+              <p className="mt-2 font-mono text-xl tabular text-[var(--ink)]">
+                {card.monthlyAmountLabel} per maand
+              </p>
+            ) : null}
+          </div>
+          <span className="text-[13px] font-medium text-[var(--ink)]">Bekijk uitleg</span>
+        </div>
+      </summary>
+      {card.monthlyAmountLabel || card.annualAmountLabel ? (
+        <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+          {card.monthlyAmountLabel ? (
+            <div className="rounded-lg border border-[var(--hair)] bg-[var(--paper-soft)] p-3">
+              <dt className="text-[12px] font-medium uppercase tracking-[0.05em] text-[var(--muted)]">
+                Per maand
+              </dt>
+              <dd className="mt-1 font-mono text-xl tabular text-[var(--ink)]">
+                {card.monthlyAmountLabel}
+              </dd>
+            </div>
+          ) : null}
+          {card.annualAmountLabel ? (
+            <div className="rounded-lg border border-[var(--hair)] bg-[var(--paper-soft)] p-3">
+              <dt className="text-[12px] font-medium uppercase tracking-[0.05em] text-[var(--muted)]">
+                Per jaar
+              </dt>
+              <dd className="mt-1 font-mono text-xl tabular text-[var(--ink)]">
+                {card.annualAmountLabel}
+              </dd>
+            </div>
+          ) : null}
+        </dl>
+      ) : null}
+      <p className="mt-3 text-[14px] leading-[1.65] text-[var(--ink-2)]">{card.summary}</p>
+      <p className="mt-2 text-[13px] leading-[1.6] text-[var(--muted)]">
+        {card.reliabilityDescription}
+      </p>
+      {card.components && card.components.length > 0 ? (
+        <dl className="mt-3 grid gap-2 text-[13px] sm:grid-cols-2">
+          {card.components.map((component) => (
+            <div
+              key={`${component.label}-${component.value}`}
+              className="rounded-lg border border-[var(--hair)] bg-white p-3"
+            >
+              <dt className="text-[12px] font-medium uppercase tracking-[0.05em] text-[var(--muted)]">
+                {component.label}
+              </dt>
+              <dd className="mt-1 font-mono tabular text-[var(--ink)]">{component.value}</dd>
+            </div>
+          ))}
+        </dl>
+      ) : null}
+      <ResultList title="Redenen" items={card.reasonMessages} />
+      {card.missingInputs.length > 0 ? (
+        <div className="mt-3">
+          <h4 className="text-[12px] font-medium uppercase tracking-[0.05em] text-[var(--muted)]">
+            Ontbrekende informatie
+          </h4>
+          <ul className="mt-2 space-y-2 text-[13px] leading-[1.55] text-[var(--ink-2)]">
+            {card.missingInputs.map((item) => (
+              <li key={item.label} className="rounded-lg border border-[var(--hair)] bg-white p-3">
+                <strong className="block text-[var(--ink)]">{item.label}</strong>
+                <span className="mt-1 block">{item.whyNeeded}</span>
+                <span className="mt-1 block text-[var(--muted)]">
+                  Alternatieve vraag: {item.alternativeQuestions[0]}
+                </span>
+                <span className="mt-1 block text-[var(--muted)]">
+                  Waar vind je dit: {item.whereToFind.slice(0, 2).join(", ")}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
+      <ResultList title="Afgeleid uit je invoer" items={card.inferredInputMessages} />
+      <ResultList title="Nog te bevestigen" items={card.confirmationMessages} />
+      <ResultList title="Onzekerheden" items={card.uncertaintyMessages} />
+    </details>
+  );
+}
+
+function QuestionFlowSummary({ flow }: { flow: AllowanceQuestionFlowView }) {
+  if (!flow.isValid) {
+    return null;
+  }
+
+  const { reporting } = flow;
+  const nextStepText = flow.decisionReason === "blocked"
+    ? reporting.blockingFieldLabels.length > 0
+      ? `Nog nodig: ${reporting.blockingFieldLabels.join(", ")}.`
+      : "Er ontbreekt nog verplichte informatie."
+    : flow.nextFieldLabel
+      ? `Volgende stap: vul ${flow.nextFieldLabel.toLowerCase()} in.`
+      : "Alle nu relevante vragen zijn verwerkt voor deze scan.";
+
+  return (
+    <section className="surface-panel p-4" aria-labelledby="toeslagen-question-flow-title">
+      <h3 id="toeslagen-question-flow-title" className="text-base font-semibold text-[var(--ink)]">
+        Wat is je volgende stap?
+      </h3>
+      <p className="mt-2 text-[13px] leading-[1.6] text-[var(--ink-2)]">
+        {nextStepText}
+      </p>
+      {flow.blocked > 0 ? (
+        <p className="mt-2 text-[13px] leading-[1.6] text-[oklch(35%_0.13_28)]">
+          Vul de verplichte gegevens aan voordat je de toeslagenindicatie bekijkt.
+        </p>
+      ) : null}
+      <ResultList title="Nog verplicht onbekend" items={reporting.blockingFieldLabels} />
+      <ResultList title="Afgeleid uit eerdere antwoorden" items={reporting.inferredFieldLabels} />
+    </section>
+  );
+}
+
+export default function ToeslagenScanCalculator() {
+  const resultRef = useRef<HTMLDivElement | null>(null);
+  const {
+    formValues,
+    setFormValues,
+    submittedValues,
+    submit,
+    hasDirtyChanges,
+    replaceValues,
+    reset,
+  } = useSubmittedCalculation<AllowanceScanFormState>(defaultValues);
+  const errors = validateAllowanceScanForm(formValues);
+  const submittedView = useMemo(
+    () => (submittedValues ? createAllowanceScanView(submittedValues) : null),
+    [submittedValues],
+  );
+  const nextSteps = getToolNextSteps("toeslagen-scan");
+  const resultSourceLinks = submittedView?.result
+    ? [
+        ...new Map(
+          submittedView.result.cards
+            .flatMap((card) => card.sourceLinks)
+            .map((link) => [link.href, link]),
+        ).values(),
+      ]
+    : [];
+  const questionFlowView = useMemo(
+    () => createAllowanceQuestionFlowView(formValues),
+    [formValues],
+  );
+  const hasErrors = Object.keys(errors).length > 0;
+  const hasPartner = formValues.partnerStatus === "yes";
+  const renting = formValues.tenure === "rent";
+  const hasCoResidents = renting && formValues.hasCoResidents === "yes";
+  const hasChildren = formValues.hasChildren === "yes";
+  const usesChildcare = hasChildren && formValues.usesChildcare === "yes";
+  const isExampleInput =
+    JSON.stringify(formValues) === JSON.stringify(exampleValues);
+  const isExampleResult =
+    submittedValues !== null &&
+    JSON.stringify(submittedValues) === JSON.stringify(exampleValues);
+
+  useEffect(() => {
+    if (!submittedView?.result) {
+      return;
+    }
+
+    resultRef.current?.focus();
+  }, [submittedView]);
+
+  function updateField<K extends keyof AllowanceScanFormState>(
+    field: K,
+    value: AllowanceScanFormState[K],
+  ) {
+    setFormValues((current) => ({ ...current, [field]: value }));
+  }
+
+  function handleSubmit() {
+    if (hasErrors) {
+      document.getElementById("toeslagen-foutsummary")?.focus();
+      return;
+    }
+    submit();
+  }
+
+  const inputs = (
+    <div className="space-y-7">
+      {hasErrors ? (
+        <div
+          id="toeslagen-foutsummary"
+          tabIndex={-1}
+          className="rounded-xl border border-[var(--neg-soft)] bg-[var(--neg-soft)]/55 px-4 py-3 text-sm text-[oklch(35%_0.13_28)]"
+        >
+          Controleer de gemarkeerde invoer. Onbekende gegevens mag je als
+          “Weet ik niet” laten staan.
+        </div>
+      ) : null}
+
+      <QuestionFlowSummary flow={questionFlowView} />
+
+      <section className="space-y-4" aria-labelledby="toeslagen-step-household">
+        <h3 id="toeslagen-step-household" className="font-serif text-[23px] text-[var(--ink)]">
+          Stap 1 · Over jou en je huishouden
+        </h3>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <TextInput
+            id="age"
+            label="Leeftijd"
+            value={formValues.age}
+            error={errors.age}
+            inputMode="numeric"
+            onChange={(value) => updateField("age", value)}
+          />
+          <SelectField
+            id="partnerStatus"
+            label="Heb je een toeslagpartner?"
+            value={formValues.partnerStatus}
+            options={yesNoUnknownOptions}
+            onChange={(value) => updateField("partnerStatus", value)}
+          />
+          <SelectField
+            id="isFullYear"
+            label="Geldt je situatie het hele kalenderjaar?"
+            value={formValues.isFullYear}
+            options={yesNoUnknownOptions}
+            hint="De publieke bedragen ondersteunen nu standaard een volledig kalenderjaar."
+            onChange={(value) => updateField("isFullYear", value)}
+          />
+          <SelectField
+            id="residenceCountry"
+            label="Woonland"
+            value={formValues.residenceCountry}
+            options={[
+              { value: "unknown", label: "Weet ik niet" },
+              { value: "NL", label: "Nederland" },
+              { value: "other", label: "Ander land" },
+            ]}
+            onChange={(value) => updateField("residenceCountry", value)}
+          />
+          <TextInput
+            id="assessmentIncome"
+            label="Geschat toetsingsinkomen"
+            value={formValues.assessmentIncome}
+            error={errors.assessmentIncome}
+            hint="Verwacht verzamelinkomen of belastbaar loon over heel 2026"
+            onChange={(value) => updateField("assessmentIncome", value)}
+          />
+          <TextInput
+            id="assets"
+            label="Vermogen op 1 januari"
+            value={formValues.assets}
+            error={errors.assets}
+            hint="Denk aan spaargeld en beleggingen min aftrekbare schulden op 1 januari"
+            onChange={(value) => updateField("assets", value)}
+          />
+          {hasPartner ? (
+            <>
+              <TextInput
+                id="partnerAge"
+                label="Leeftijd toeslagpartner"
+                value={formValues.partnerAge}
+                error={errors.partnerAge}
+                inputMode="numeric"
+                hint="Nodig voor huurtoeslagregels wanneer jullie huren."
+                onChange={(value) => updateField("partnerAge", value)}
+              />
+              <TextInput
+                id="jointAssessmentIncome"
+                label="Gezamenlijk toetsingsinkomen"
+                value={formValues.jointAssessmentIncome}
+                error={errors.jointAssessmentIncome}
+                hint="Jullie verwachte gezamenlijke jaarinkomen voor toeslagen in 2026"
+                onChange={(value) => updateField("jointAssessmentIncome", value)}
+              />
+              <TextInput
+                id="jointAssets"
+                label="Gezamenlijk vermogen op 1 januari"
+                value={formValues.jointAssets}
+                error={errors.jointAssets}
+                hint="Jullie gezamenlijke vermogen op de peildatum 1 januari"
+                onChange={(value) => updateField("jointAssets", value)}
+              />
+            </>
+          ) : null}
+        </div>
+        <DisclosureSection title="Wanneer heb je een toeslagpartner?">
+          <p className="text-[13px] leading-[1.65] text-[var(--muted)]">
+            Je hebt meestal een toeslagpartner als je getrouwd bent, een
+            geregistreerd partner hebt of volgens de toeslagregels samenwoont.
+            Kies “Weet ik niet” als je twijfelt; de scan laat dan zien wat nog
+            moet worden opgehelderd.
+          </p>
+          <a
+            href="https://www.belastingdienst.nl/wps/wcm/connect/nl/toeslagen/content/toeslagpartner"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="touch-link ring-focus inline-flex min-h-11 items-center rounded-lg text-[13px] font-medium text-[var(--ink)] underline outline-none"
+          >
+            Officiële uitleg over toeslagpartner <span className="sr-only">(opent extern)</span>
+          </a>
+        </DisclosureSection>
+        <details className="surface-subtle p-4">
+          <summary className="cursor-pointer text-[13px] font-medium text-[var(--ink)]">
+            Bijzondere situatie toevoegen
+          </summary>
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <YesNoUnknownField
+              id="complexSituation"
+              label="Complexe of uitzonderlijke situatie?"
+              value={formValues.complexSituation}
+              onChange={(value) => updateField("complexSituation", value)}
+            />
+            <YesNoUnknownField
+              id="foreignOrResidenceSituation"
+              label="Buitenland of verblijfsstatus relevant?"
+              value={formValues.foreignOrResidenceSituation}
+              onChange={(value) => updateField("foreignOrResidenceSituation", value)}
+            />
+            <YesNoUnknownField
+              id="specialAssets"
+              label="Bijzonder vermogen?"
+              value={formValues.specialAssets}
+              onChange={(value) => updateField("specialAssets", value)}
+            />
+            <YesNoUnknownField
+              id="partYearPartner"
+              label="Partner voor deel van het jaar?"
+              value={formValues.partYearPartner}
+              onChange={(value) => updateField("partYearPartner", value)}
+            />
+          </div>
+        </details>
+      </section>
+
+      <section className="space-y-4" aria-labelledby="toeslagen-step-healthcare">
+        <h3 id="toeslagen-step-healthcare" className="font-serif text-[23px] text-[var(--ink)]">
+          Stap 2 · Zorgverzekering
+        </h3>
+        <YesNoUnknownField
+          id="hasDutchHealthInsurance"
+          label="Heb je een Nederlandse zorgverzekering?"
+          value={formValues.hasDutchHealthInsurance}
+          onChange={(value) => updateField("hasDutchHealthInsurance", value)}
+        />
+      </section>
+
+      <section className="space-y-4" aria-labelledby="toeslagen-step-rent">
+        <h3 id="toeslagen-step-rent" className="font-serif text-[23px] text-[var(--ink)]">
+          Stap 3 · Wonen
+        </h3>
+        <SelectField
+          id="tenure"
+          label="Woonsituatie"
+          value={formValues.tenure}
+          options={[
+            { value: "unknown", label: "Weet ik niet" },
+            { value: "rent", label: "Huurwoning" },
+            { value: "owner", label: "Koopwoning" },
+            { value: "other", label: "Anders" },
+          ]}
+          onChange={(value) => updateField("tenure", value)}
+        />
+        {renting ? (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <YesNoUnknownField
+              id="independentHome"
+              label="Zelfstandige woonruimte?"
+              value={formValues.independentHome}
+              hint="Eigen toegangsdeur, keuken en toilet voor jouw huishouden"
+              onChange={(value) => updateField("independentHome", value)}
+            />
+            <TextInput
+              id="basicRent"
+              label="Kale huur per maand"
+              value={formValues.basicRent}
+              error={errors.basicRent}
+              hint="Huur zonder servicekosten; meestal apart vermeld in je huurcontract"
+              onChange={(value) => updateField("basicRent", value)}
+            />
+            <TextInput
+              id="serviceCosts"
+              label="Servicekosten per maand"
+              value={formValues.serviceCosts}
+              error={errors.serviceCosts}
+              hint="Servicekosten worden apart gevraagd en niet als kale huur meegerekend."
+              onChange={(value) => updateField("serviceCosts", value)}
+            />
+            <YesNoUnknownField
+              id="hasCoResidents"
+              label="Zijn er medebewoners?"
+              value={formValues.hasCoResidents}
+              onChange={(value) => updateField("hasCoResidents", value)}
+            />
+            <YesNoUnknownField
+              id="complexHousing"
+              label="Bijzondere of complexe woonsituatie?"
+              value={formValues.complexHousing}
+              onChange={(value) => updateField("complexHousing", value)}
+            />
+            {hasCoResidents ? (
+              <>
+                <TextInput
+                  id="coResidentAges"
+                  label="Leeftijden medebewoners"
+                  value={formValues.coResidentAges}
+                  error={errors.coResidentAges}
+                  inputMode="text"
+                  hint="Bijvoorbeeld: 5, 22"
+                  onChange={(value) => updateField("coResidentAges", value)}
+                />
+                <TextInput
+                  id="coResidentAssets"
+                  label="Vermogen per medebewoner"
+                  value={formValues.coResidentAssets}
+                  error={errors.coResidentAssets}
+                  inputMode="text"
+                  hint="Gebruik dezelfde volgorde als bij leeftijden."
+                  onChange={(value) => updateField("coResidentAssets", value)}
+                />
+                <TextInput
+                  id="householdIncome"
+                  label="Huishoudinkomen voor huurtoeslag"
+                  value={formValues.householdIncome}
+                  error={errors.householdIncome}
+                  onChange={(value) => updateField("householdIncome", value)}
+                />
+                <TextInput
+                  id="householdAssets"
+                  label="Huishoudvermogen"
+                  value={formValues.householdAssets}
+                  error={errors.householdAssets}
+                  onChange={(value) => updateField("householdAssets", value)}
+                />
+              </>
+            ) : null}
+            <YesNoUnknownField
+              id="adaptedHomeOrDisability"
+              label="Aangepaste woning of beperking relevant?"
+              value={formValues.adaptedHomeOrDisability}
+              onChange={(value) => updateField("adaptedHomeOrDisability", value)}
+            />
+            <YesNoUnknownField
+              id="uncertainSubsidiableRent"
+              label="Twijfel over kale huur of servicekosten?"
+              value={formValues.uncertainSubsidiableRent}
+              onChange={(value) => updateField("uncertainSubsidiableRent", value)}
+            />
+          </div>
+        ) : null}
+      </section>
+
+      <section className="space-y-4" aria-labelledby="toeslagen-step-children">
+        <h3 id="toeslagen-step-children" className="font-serif text-[23px] text-[var(--ink)]">
+          Stap 4 · Kinderen
+        </h3>
+        <YesNoUnknownField
+          id="hasChildren"
+          label="Heb je kinderen?"
+          value={formValues.hasChildren}
+          onChange={(value) => updateField("hasChildren", value)}
+        />
+        {hasChildren ? (
+          <div className="grid gap-4 sm:grid-cols-2">
+            <TextInput
+              id="childCount"
+              label="Aantal kinderen"
+              value={formValues.childCount}
+              error={errors.childCount}
+              inputMode="numeric"
+              onChange={(value) => updateField("childCount", value)}
+            />
+            <TextInput
+              id="childAges"
+              label="Leeftijden kinderen"
+              value={formValues.childAges}
+              error={errors.childAges}
+              inputMode="text"
+              hint="Bijvoorbeeld: 3, 7"
+              onChange={(value) => updateField("childAges", value)}
+            />
+            <YesNoUnknownField
+              id="receivesChildBenefit"
+              label="Is er kinderbijslag voor je kind?"
+              value={formValues.receivesChildBenefit}
+              onChange={(value) => updateField("receivesChildBenefit", value)}
+            />
+            <SelectField
+              id="childLivesWithApplicant"
+              label="Woont het kind bij jou?"
+              value={formValues.childLivesWithApplicant}
+              options={[
+                { value: "unknown", label: "Weet ik niet" },
+                { value: "yes", label: "Ja" },
+                { value: "no", label: "Nee" },
+                { value: "partial", label: "Gedeeltelijk / co-ouderschap" },
+              ]}
+              onChange={(value) => updateField("childLivesWithApplicant", value)}
+            />
+            <YesNoUnknownField
+              id="complexFamily"
+              label="Complexe gezinssituatie?"
+              value={formValues.complexFamily}
+              onChange={(value) => updateField("complexFamily", value)}
+            />
+          </div>
+        ) : null}
+      </section>
+
+      {hasChildren ? (
+        <section className="space-y-4" aria-labelledby="toeslagen-step-childcare">
+          <h3 id="toeslagen-step-childcare" className="font-serif text-[23px] text-[var(--ink)]">
+            Stap 5 · Kinderopvang
+          </h3>
+          <YesNoUnknownField
+            id="usesChildcare"
+            label="Gebruik je betaalde kinderopvang?"
+            value={formValues.usesChildcare}
+            onChange={(value) => updateField("usesChildcare", value)}
+          />
+          {usesChildcare ? (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <YesNoUnknownField
+                id="registeredChildcare"
+                label="Staat de opvang geregistreerd in het LRK?"
+                value={formValues.registeredChildcare}
+                hint="LRK is het Landelijk Register Kinderopvang; het nummer staat op contract of factuur"
+                onChange={(value) => updateField("registeredChildcare", value)}
+              />
+              <YesNoUnknownField
+                id="paysOwnContribution"
+                label="Betaal je zelf een deel van de opvang?"
+                value={formValues.paysOwnContribution}
+                onChange={(value) => updateField("paysOwnContribution", value)}
+              />
+              <SelectField
+                id="childcareCareType"
+                label="Soort opvang"
+                value={formValues.childcareCareType}
+                options={[
+                  { value: "unknown", label: "Weet ik niet" },
+                  { value: "daycare", label: "Dagopvang" },
+                  { value: "after-school", label: "Buitenschoolse opvang" },
+                  { value: "childminder", label: "Gastouderopvang" },
+                ]}
+                onChange={(value) => updateField("childcareCareType", value)}
+              />
+              <TextInput
+                id="childcareHoursPerMonth"
+                label="Opvanguren per maand"
+                value={formValues.childcareHoursPerMonth}
+                error={errors.childcareHoursPerMonth}
+                onChange={(value) => updateField("childcareHoursPerMonth", value)}
+              />
+              <TextInput
+                id="childcareHourlyRate"
+                label="Betaald uurtarief"
+                value={formValues.childcareHourlyRate}
+                error={errors.childcareHourlyRate}
+                hint="Gebruik het tarief van contract of factuur voor deze opvangsoort."
+                onChange={(value) => updateField("childcareHourlyRate", value)}
+              />
+              <SelectField
+                id="applicantActivity"
+                label="Jouw activiteit"
+                value={formValues.applicantActivity}
+                options={[
+                  { value: "unknown", label: "Weet ik niet" },
+                  { value: "work", label: "Werk" },
+                  { value: "study", label: "Studie" },
+                  { value: "trajectory", label: "Traject / inburgering" },
+                  { value: "none", label: "Geen" },
+                ]}
+                onChange={(value) => updateField("applicantActivity", value)}
+              />
+              {hasPartner ? (
+                <SelectField
+                  id="partnerActivity"
+                  label="Activiteit toeslagpartner"
+                  value={formValues.partnerActivity}
+                  options={[
+                    { value: "unknown", label: "Weet ik niet" },
+                    { value: "work", label: "Werk" },
+                    { value: "study", label: "Studie" },
+                    { value: "trajectory", label: "Traject / inburgering" },
+                    { value: "none", label: "Geen" },
+                  ]}
+                  onChange={(value) => updateField("partnerActivity", value)}
+                />
+              ) : null}
+              <YesNoUnknownField
+                id="complexChildcare"
+                label="Meerdere opvangvormen of wisselende situatie?"
+                value={formValues.complexChildcare}
+                onChange={(value) => updateField("complexChildcare", value)}
+              />
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+    </div>
+  );
+
+  const result = submittedView?.result ? (
+    <div
+      id="tool-result-summary"
+      ref={resultRef}
+      tabIndex={-1}
+      className="space-y-5 outline-none"
+      aria-live="polite"
+    >
+      <ResultContextNotice kind="allowances" isExample={isExampleResult} />
+      <section className="surface-panel-strong p-6 text-white">
+        <h2 className="text-xl font-semibold">Samenvatting</h2>
+        <p className="mt-3 text-[14px] leading-[1.65] text-white/80">
+          {submittedView.result.summary}
+        </p>
+        <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+          <div className="rounded-lg bg-white/10 p-3">
+            <dt className="text-[12px] font-medium uppercase tracking-[0.05em] text-white/70">
+              Totaal per maand
+            </dt>
+            <dd className="mt-1 font-mono text-2xl tabular text-white">
+              {submittedView.result.totalMonthlyAmountLabel}
+            </dd>
+          </div>
+          <div className="rounded-lg bg-white/10 p-3">
+            <dt className="text-[12px] font-medium uppercase tracking-[0.05em] text-white/70">
+              Totaal per jaar
+            </dt>
+            <dd className="mt-1 font-mono text-2xl tabular text-white">
+              {submittedView.result.totalAnnualAmountLabel}
+            </dd>
+          </div>
+        </dl>
+        <p className="mt-3 text-[13px] leading-[1.6] text-white/75">
+          Meegeteld: {submittedView.result.totalIncludedAllowanceTitles.length > 0
+            ? submittedView.result.totalIncludedAllowanceTitles.join(", ")
+            : "geen concreet berekende toeslagen"}.
+        </p>
+        {hasDirtyChanges ? (
+          <p
+            role="status"
+            aria-live="polite"
+            className="mt-3 rounded-lg bg-white/10 px-3 py-2 text-[13px] text-white/80"
+          >
+            Je hebt de invoer gewijzigd na de laatste scan. Klik opnieuw op
+            Bekijk mijn toeslagenindicatie voor een actuele uitkomst.
+          </p>
+        ) : null}
+      </section>
+      <div className="grid gap-4">
+        {submittedView.result.cards.map((card) => (
+          <ResultCard key={card.kind} card={card} />
+        ))}
+      </div>
+      {resultSourceLinks.length > 0 ? (
+        <DisclosureSection
+          title="Gebruikte bronnen"
+          subtitle="Open de officiële onderbouwing van de scan."
+        >
+          <div className="flex flex-wrap gap-2">
+            {resultSourceLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="touch-link ring-focus inline-flex min-h-11 items-center rounded-lg border border-[var(--hair)] bg-white px-3 py-2 text-[12px] font-medium text-[var(--ink)] underline-offset-4 hover:underline"
+              >
+                {link.label} <span className="sr-only">(opent extern)</span>
+              </a>
+            ))}
+          </div>
+        </DisclosureSection>
+      ) : null}
+      <ToolNextSteps {...nextSteps} />
+    </div>
+  ) : (
+    <section id="tool-result-summary" className="surface-panel p-5">
+      <h2 className="text-lg font-semibold tracking-tight text-[var(--ink)]">
+        Nog geen scan uitgevoerd
+      </h2>
+      <p className="mt-2 text-[13px] leading-[1.65] text-[var(--muted)]">
+        Vul in wat je weet. “Weet ik niet” mag; de scan toont dan
+        vervolgstappen, alternatieve vragen en ontbrekende informatie.
+      </p>
+    </section>
+  );
+
+  return (
+    <CalculatorShell
+      intro={
+        <>
+          <div className="text-[11px] uppercase tracking-[0.14em] text-[var(--muted)]">
+            Toeslagenindicatie 2026
+          </div>
+          <h1 className="mt-2 font-serif text-[30px] tracking-[-0.02em] text-[var(--ink)]">
+            Welke toeslagen passen mogelijk bij mij?
+          </h1>
+          <p className="mt-3 text-[14px] leading-[1.7] text-[var(--ink-2)]">
+            Bekijk zorgtoeslag, huurtoeslag, kindgebonden budget en
+            kinderopvangtoeslag. Je krijgt een bedrag waar je gegevens dat toelaten.
+          </p>
+        </>
+      }
+      startActions={
+        <div>
+          <div className="flex flex-wrap gap-2">
+            <ToolActionButton
+              type="button"
+              onClick={() =>
+                replaceValues(
+                  exampleValues,
+                  "Voorbeeld ingevuld. Start de scan voor de voorbeeldberekening.",
+                )
+              }
+            >
+              Voorbeeld invullen
+            </ToolActionButton>
+            <ToolActionButton type="button" onClick={() => reset("Invoer gewist.")}>
+              Wis invoer
+            </ToolActionButton>
+          </div>
+          {isExampleInput ? <ExampleValuesNotice /> : null}
+        </div>
+      }
+      inputs={inputs}
+      submitAction={
+        <ToolActionButton
+          type="button"
+          variant="accent"
+          size="md"
+          onClick={handleSubmit}
+          full
+        >
+          Bekijk mijn toeslagenindicatie
+        </ToolActionButton>
+      }
+      result={result}
+      disclaimer={
+        <p className="surface-subtle p-4 text-[12.5px] leading-[1.7] text-[var(--muted)]">
+          De scan gebruikt de regels en bedragen voor 2026 en is geen officiële
+          beschikking. Bij een onvolledige situatie zie je welke gegevens nog
+          nodig zijn.
+        </p>
+      }
+    />
+  );
+}
