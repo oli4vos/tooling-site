@@ -19,6 +19,8 @@ De inhoudelijke focus ligt op domeinen waar veel mensen onzekerheid ervaren en w
 - belasting;
 - persoonlijke financiële planning.
 
+De actuele publieke positionering is een brede financiële tooling-site. Naast de bestaande DUO-tools zijn Box 3-impact, een neutrale vergelijking van jaarruimte met vrij beleggen en ZZP-uurtariefplanning publiek. De Toeslagenscan blijft bewust geparkeerd totdat een afzonderlijk publicatiebesluit en actuele bron- en releasecontrole zijn afgerond.
+
 De toon is feitelijk, terughoudend en uitlegbaar. De site helpt gebruikers grip krijgen, maar doet geen rechtstoekenning, productadvies of automatische aanvraag namens de gebruiker.
 
 ## 2. Architectuur
@@ -193,7 +195,7 @@ De roadmap beweegt van een betrouwbare set browser-first tools naar een breder f
 
 De globale fasen zijn:
 
-- MVP: stabiele publieke tools voor studieschuld, hypotheek, toeslagen, familiehulp en maandruimte.
+- MVP: stabiele publieke tools voor studieschuld, belasting, vermogen en ZZP-planning; andere domeinen blijven manifestgestuurd geparkeerd totdat ze gecontroleerd worden geactiveerd.
 - Regulations Engine: centrale primitives voor definitions, unknown answers, inference, evaluation, confidence, reason codes en action plans.
 - Estimate Engine: verantwoord omgaan met bedragen en bandbreedtes wanneer brondata, regels en onzekerheden dat toelaten.
 - UI-integratie: formulieren en resultaten die domeinoutput renderen in plaats van beslisregels lokaal te dupliceren.

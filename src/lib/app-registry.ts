@@ -5,6 +5,43 @@ import type { AppManifest } from "@/lib/app-types";
 
 export const appRegistry = [
   {
+    "slug": "box-3-impact",
+    "title": "Wat kost mijn vermogen in box 3?",
+    "description": "Zie hoeveel belasting je indicatief betaalt over spaargeld, beleggingen en schulden.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Belasting",
+    "tags": [
+      "box 3",
+      "belasting",
+      "sparen",
+      "beleggen",
+      "vermogen"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "savingInvesting.currentSavings",
+      "tax.hasFiscalPartner",
+      "tax.preferredTaxYear"
+    ],
+    "reasonHint": "Handig als je wilt zien wat spaargeld, beleggingen en schulden indicatief doen in box 3.",
+    "assumptionsUsed": [
+      "tax",
+      "box3"
+    ],
+    "calculationDomains": [
+      "tax",
+      "saving",
+      "investing"
+    ],
+    "riskLevel": "medium",
+    "disclaimerType": "taxIndicative",
+    "outputType": "singleResult",
+    "version": "1.1.0",
+    "entry": "Calculator.tsx"
+  },
+  {
     "slug": "duo-aanvullende-beurs",
     "title": "Aanvullende beurs berekenen",
     "description": "Schat je aanvullende beurs voor 2026 met het ouderinkomen uit het peiljaar.",
@@ -192,6 +229,92 @@ export const appRegistry = [
     "disclaimerType": "duoIndicative",
     "outputType": "singleResult",
     "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "jaarruimte-vs-vrij-beleggen",
+    "title": "Jaarruimte versus vrij beleggen",
+    "description": "Vergelijk twee scenario's met hetzelfde netto budget: pensioeninleg binnen je ingevulde jaarruimte en vrij beleggen.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Belasting",
+    "tags": [
+      "jaarruimte",
+      "pensioen",
+      "box 3",
+      "beleggen",
+      "FIRE"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "income.grossAnnualIncome",
+      "savingInvesting.currentSavings",
+      "savingInvesting.expectedAnnualReturn",
+      "savingInvesting.investmentHorizonYears",
+      "tax.preferredTaxYear",
+      "tax.hasFiscalPartner",
+      "savingInvesting.pensionBuildUp"
+    ],
+    "reasonHint": "Handig als je twijfelt tussen pensioeninleg met belastingvoordeel en flexibel vrij beleggen.",
+    "assumptionsUsed": [
+      "tax",
+      "box1",
+      "box3",
+      "investment"
+    ],
+    "calculationDomains": [
+      "tax",
+      "investing",
+      "pension"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "taxIndicative",
+    "outputType": "scenarioComparison",
+    "version": "1.1.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "zzp-uurtarief",
+    "title": "Welk ZZP-uurtarief heb ik nodig?",
+    "description": "Plan een indicatief uurtarief exclusief btw, met eigen reserveringen voor belasting, buffer, pensioen, AOV en kosten.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Werk",
+    "tags": [
+      "ZZP",
+      "uurtarief",
+      "AOV",
+      "pensioen",
+      "inkomen"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "income.employmentType",
+      "income.grossAnnualIncome",
+      "savingInvesting.targetEmergencyFund",
+      "tax.preferredTaxYear",
+      "employment.grossAnnualSalary",
+      "employment.businessProfitBeforeTax",
+      "employment.aovPremiumAnnual",
+      "employment.pensionContributionAnnual"
+    ],
+    "reasonHint": "Handig als je wilt weten welk uurtarief past bij inkomen, belasting, pensioen, AOV en buffer.",
+    "assumptionsUsed": [
+      "tax",
+      "box1"
+    ],
+    "calculationDomains": [
+      "employment",
+      "cashflow",
+      "pension",
+      "tax"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "taxIndicative",
+    "outputType": "singleResult",
+    "version": "1.1.0",
     "entry": "Calculator.tsx"
   }
 ] satisfies AppManifest[];

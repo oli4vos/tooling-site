@@ -11,8 +11,6 @@ import {
 } from "@/lib/pension";
 import { calculateBox1Tax, calculateBox3Tax } from "@/lib/tax";
 
-export type FlexibilityPreference = "low" | "medium" | "high";
-
 export type JaarruimteVsVrijBeleggenInput = {
   year?: number;
   grossAnnualIncome?: number;
@@ -26,7 +24,6 @@ export type JaarruimteVsVrijBeleggenInput = {
   overrideCurrentTaxRate?: number;
   expectedTaxRateAtPayout?: number;
   includeBox3Effect?: boolean;
-  flexibilityPreference?: FlexibilityPreference;
 };
 
 export type JaarruimteVsVrijBeleggenResult = {
@@ -55,8 +52,6 @@ export type JaarruimteVsVrijBeleggenResult = {
   };
   comparison: {
     netDifferencePensionMinusInvesting: number;
-    pensionFitScore: number;
-    investingFitScore: number;
     headline: string;
   };
   assumptions: {
@@ -102,34 +97,16 @@ function roundPercent(value: number) {
   return Math.round(Math.max(value, 0) * 100) / 100;
 }
 
-function clampScore(score: number) {
-  return Math.min(Math.max(Math.round(score), 0), 100);
-}
-
-function getFlexibilityAdjustment(preference: FlexibilityPreference) {
-  if (preference === "low") {
-    return { pension: 18, investing: -18 };
-  }
-  if (preference === "high") {
-    return { pension: -18, investing: 18 };
-  }
-  return { pension: 0, investing: 0 };
-}
-
-function chooseHeadline(input: {
-  netDiff: number;
-  pensionScore: number;
-  investingScore: number;
-}) {
-  if (input.netDiff > 0 && input.pensionScore >= input.investingScore) {
-    return "Pensioeninleg lijkt in dit scenario fiscaal aantrekkelijker.";
+function chooseHeadline(netDiff: number) {
+  if (netDiff > 0) {
+    return "De berekende netto eindwaarde van pensioeninleg is in dit scenario hoger.";
   }
 
-  if (input.netDiff < 0 && input.investingScore >= input.pensionScore) {
-    return "Vrij beleggen lijkt in dit scenario sterker of flexibeler.";
+  if (netDiff < 0) {
+    return "De berekende netto eindwaarde van vrij beleggen is in dit scenario hoger.";
   }
 
-  return "De uitkomst ligt dicht bij elkaar; flexibiliteit en timing bepalen de keuze.";
+  return "De berekende netto eindwaarden zijn in dit scenario gelijk.";
 }
 
 function buildWealthPlanning(input: {
@@ -172,20 +149,19 @@ function buildWealthPlanning(input: {
       const baseBox3 = calculateBox3Tax({
         year: input.year,
         hasFiscalPartner: input.hasFiscalPartner,
-        method: "actual",
-        bankDeposits: input.currentInvestableAssets,
-        investmentsAndOtherAssets: 0,
+        method: "forfaitary",
+        bankDeposits: 0,
+        investmentsAndOtherAssets: input.currentInvestableAssets,
         debts: 0,
-        actualAnnualReturnRate: input.expectedAnnualReturn,
       });
       const scenarioBox3 = calculateBox3Tax({
         year: input.year,
         hasFiscalPartner: input.hasFiscalPartner,
-        method: "actual",
-        bankDeposits: input.currentInvestableAssets,
-        investmentsAndOtherAssets: investingBeforeTax,
+        method: "forfaitary",
+        bankDeposits: 0,
+        investmentsAndOtherAssets:
+          input.currentInvestableAssets + investingBeforeTax,
         debts: 0,
-        actualAnnualReturnRate: input.expectedAnnualReturn,
       });
       box3TaxThisYear = roundMoney(
         Math.max(scenarioBox3.box3Tax - baseBox3.box3Tax, 0),
@@ -236,7 +212,6 @@ export function calculateJaarruimteVsVrijBeleggen(
   const includeBox3Effect = Boolean(input.includeBox3Effect);
   const hasFiscalPartner = Boolean(input.hasFiscalPartner);
   const currentInvestableAssets = sanitizePensionMoney(input.currentInvestableAssets);
-  const flexibilityPreference = input.flexibilityPreference ?? "medium";
 
   const box1Result = calculateBox1Tax({
     taxableIncome: usedTaxableIncome,
@@ -288,28 +263,15 @@ export function calculateJaarruimteVsVrijBeleggen(
     pensionScenario.futureValueNetIndicative - freeInvestingFutureValueNetIndicative,
   );
 
-  const flexibilityAdjustment = getFlexibilityAdjustment(flexibilityPreference);
-  const taxEdgeScore = contributionRequested > 0
-    ? Math.min((pensionScenario.taxBenefitNow / contributionRequested) * 100, 20)
-    : 0;
-  const pensionFitScore = clampScore(
-    50 + flexibilityAdjustment.pension + taxEdgeScore,
-  );
-  const investingFitScore = clampScore(
-    50 +
-      flexibilityAdjustment.investing +
-      (includeBox3Effect ? -8 : 0) +
-      (contributionOutsideJaarruimte > 0 ? 8 : 0),
-  );
-
   const warnings = [
     "Deze tool is indicatief en geen officiële pensioen- of aangifteberekening.",
-    "Controleer je echte jaarruimte altijd in je pensioenoverzicht of met een adviseur.",
+    "De tool berekent je jaarruimte niet. Vul het bedrag in uit het officiële hulpmiddel van de Belastingdienst; jaarruimte 2026 is gebaseerd op je situatie in 2025.",
+    "Het berekende box 1-voordeel gebruikt je marginale schijftarief en houdt geen rekening met heffingskortingen of alle persoonlijke aftrekposten.",
     "Pensioen/lijfrente kan fiscaal voordeel geven, maar geld staat meestal vast tot pensioendatum.",
   ];
   if (includeBox3Effect) {
     warnings.push(
-      "Het box 3-effect is indicatief en wordt hier als jaarlijkse benadering over de horizon verwerkt.",
+      "Het box 3-effect gebruikt elk toekomstig jaar opnieuw de voorlopige forfaitaire regels van 2026. Dit is een scenario en geen voorspelling van toekomstige wetgeving.",
     );
   }
   for (const pensionWarning of pensionScenario.warnings) {
@@ -319,9 +281,9 @@ export function calculateJaarruimteVsVrijBeleggen(
   }
 
   const guidance = [
-    "Pensioeninleg is vaak logisch als je nu in een hoger tarief valt en later lager verwacht uit te keren.",
-    "Vrij beleggen is vaak logischer als flexibiliteit en tussentijdse opneembaarheid belangrijk zijn.",
-    "Voor FIRE-planning telt naast rendement ook beschikbaarheid van vermogen vóór pensioendatum.",
+    "De vergelijking gebruikt voor beide routes hetzelfde netto budget en hetzelfde verwachte rendement.",
+    "Pensioeninleg is doorgaans niet tussentijds vrij opneembaar; vrij belegd vermogen meestal wel.",
+    "Een onbekend belastingtarief bij uitkering wordt niet automatisch geschat; vul dit in om die belasting mee te nemen.",
   ];
 
   return {
@@ -350,13 +312,7 @@ export function calculateJaarruimteVsVrijBeleggen(
     },
     comparison: {
       netDifferencePensionMinusInvesting,
-      pensionFitScore,
-      investingFitScore,
-      headline: chooseHeadline({
-        netDiff: netDifferencePensionMinusInvesting,
-        pensionScore: pensionFitScore,
-        investingScore: investingFitScore,
-      }),
+      headline: chooseHeadline(netDifferencePensionMinusInvesting),
     },
     assumptions: {
       sourceLabel: constants.box1.meta.sourceLabel,

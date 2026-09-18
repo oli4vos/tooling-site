@@ -7,7 +7,7 @@ import { appRegistry } from "@/lib/app-registry";
 export const metadata: Metadata = {
   title: "Alle tools",
   description:
-    "Overzicht van alle publieke tools voor studieschuld, wonen en schulden.",
+    "Overzicht van publieke rekentools voor studieschuld, belasting, vermogen en ZZP-planning.",
 };
 
 export default function AppsPage() {

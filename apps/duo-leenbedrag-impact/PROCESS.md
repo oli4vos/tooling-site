@@ -3,8 +3,8 @@ tool: duo-leenbedrag-impact
 title: Impact van mijn leenbedrag
 route: /apps/duo-leenbedrag-impact
 status: active-public
-lastReviewed: 2026-08-11
-sourceHash: sha256:785a47c7b05eeb5b91c071c1b38d6323c81c720462718e3b6a730f68c5c0ccbb
+lastReviewed: 2026-09-18
+sourceHash: sha256:19f8c3433e8ad95cfbb35e813141823fd12fd26184ce5989bcb761ba40d380ba
 sources:
   - apps/duo-leenbedrag-impact/app.json
   - apps/duo-leenbedrag-impact/Calculator.tsx

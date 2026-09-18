@@ -59,7 +59,7 @@ export default function TermsPage() {
         <p>
           De softwarecode is beschikbaar onder{" "}
           <a
-            href="https://github.com/oli4vos/projectwebsite/blob/main/LICENSE"
+            href="https://github.com/oli4vos/tooling-site/blob/main/LICENSE"
             target="_blank"
             rel="noopener noreferrer"
             className="underline text-[var(--ink)]"
@@ -77,7 +77,7 @@ export default function TermsPage() {
           zij officieel zijn of worden onderschreven. De volledige scheiding
           staat in het{" "}
           <a
-            href="https://github.com/oli4vos/projectwebsite/blob/main/NOTICE.md"
+            href="https://github.com/oli4vos/tooling-site/blob/main/NOTICE.md"
             target="_blank"
             rel="noopener noreferrer"
             className="underline text-[var(--ink)]"

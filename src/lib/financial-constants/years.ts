@@ -256,10 +256,10 @@ export const FINANCIAL_CONSTANTS_BY_YEAR: Record<number, AnnualFinancialConstant
       },
       box1: {
         meta: {
-          sourceLabel: "Rijksoverheid box 1 tarieven 2026",
-          lastChecked: "2026-05-18",
+          sourceLabel: "Belastingdienst box 1-tarieven 2026",
+          lastChecked: "2026-09-18",
           status: "definitief",
-          sourceUrl: "https://www.belastingdienst.nl/inkomstenbelasting",
+          sourceUrl: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/inkomstenbelasting/heffingskortingen_boxen_tarieven/boxen_en_tarieven/box_1/",
           sourceTier: "overheidsuitleg",
         },
         brackets: [
@@ -271,9 +271,9 @@ export const FINANCIAL_CONSTANTS_BY_YEAR: Record<number, AnnualFinancialConstant
       box3: {
         meta: {
           sourceLabel: "Belastingdienst box 3 voorlopige aanslag 2026",
-          lastChecked: "2026-05-18",
+          lastChecked: "2026-09-18",
           status: "voorlopig",
-          sourceUrl: "https://www.belastingdienst.nl/box3",
+          sourceUrl: "https://www.belastingdienst.nl/wps/wcm/connect/nl/box-3/content/berekening-box-3-inkomen-2026",
           sourceTier: "overheidsuitleg",
           notes:
             "Box 3-percentages voor banktegoeden en schulden kunnen voorlopig zijn en later definitief worden vastgesteld.",
@@ -281,6 +281,8 @@ export const FINANCIAL_CONSTANTS_BY_YEAR: Record<number, AnnualFinancialConstant
         taxRate: 36,
         taxFreeAllowanceSingle: 59357,
         taxFreeAllowancePartners: 118714,
+        debtThresholdSingle: 3800,
+        debtThresholdPartners: 7600,
         deemedReturns: {
           bankDeposits: 1.28,
           investmentsAndOtherAssets: 6.0,

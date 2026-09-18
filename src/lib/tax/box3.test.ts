@@ -130,4 +130,39 @@ describe("calculateBox3Tax", () => {
     expect(result.deemedReturnInvestments).toBeGreaterThan(0);
     expect(result.box3Tax).toBeGreaterThan(0);
   });
+
+  it("only deducts box 3 debts above the 2026 debt threshold", () => {
+    const belowThreshold = calculateBox3Tax({
+      bankDeposits: 100000,
+      debts: 3000,
+      hasFiscalPartner: false,
+      method: "forfaitary",
+      year: 2026,
+    });
+    const aboveThreshold = calculateBox3Tax({
+      bankDeposits: 100000,
+      debts: 10000,
+      hasFiscalPartner: false,
+      method: "forfaitary",
+      year: 2026,
+    });
+
+    expect(belowThreshold.debtThreshold).toBe(3800);
+    expect(belowThreshold.deductibleDebts).toBe(0);
+    expect(aboveThreshold.deductibleDebts).toBe(6200);
+    expect(aboveThreshold.netWorthAfterDebtThreshold).toBe(93800);
+  });
+
+  it("doubles the debt threshold for fiscal partners", () => {
+    const result = calculateBox3Tax({
+      bankDeposits: 150000,
+      debts: 10000,
+      hasFiscalPartner: true,
+      method: "forfaitary",
+      year: 2026,
+    });
+
+    expect(result.debtThreshold).toBe(7600);
+    expect(result.deductibleDebts).toBe(2400);
+  });
 });

@@ -7,6 +7,13 @@ import type { ComponentType } from "react";
 export type AppCalculatorComponent = ComponentType<Record<string, never>>;
 
 export const appComponents: Record<string, AppCalculatorComponent> = {
+  "box-3-impact": dynamic(() => import("../../apps/box-3-impact/Calculator"), {
+    loading: () => (
+      <div className="rounded-[2rem] border border-line bg-white/80 p-6 text-sm text-muted">
+        Rekentool laden...
+      </div>
+    ),
+  }),
   "duo-aanvullende-beurs": dynamic(() => import("../../apps/duo-aanvullende-beurs/Calculator"), {
     loading: () => (
       <div className="rounded-[2rem] border border-line bg-white/80 p-6 text-sm text-muted">
@@ -43,6 +50,20 @@ export const appComponents: Record<string, AppCalculatorComponent> = {
     ),
   }),
   "duo-stoppen-kosten-prestatiebeurs": dynamic(() => import("../../apps/duo-stoppen-kosten-prestatiebeurs/Calculator"), {
+    loading: () => (
+      <div className="rounded-[2rem] border border-line bg-white/80 p-6 text-sm text-muted">
+        Rekentool laden...
+      </div>
+    ),
+  }),
+  "jaarruimte-vs-vrij-beleggen": dynamic(() => import("../../apps/jaarruimte-vs-vrij-beleggen/Calculator"), {
+    loading: () => (
+      <div className="rounded-[2rem] border border-line bg-white/80 p-6 text-sm text-muted">
+        Rekentool laden...
+      </div>
+    ),
+  }),
+  "zzp-uurtarief": dynamic(() => import("../../apps/zzp-uurtarief/Calculator"), {
     loading: () => (
       <div className="rounded-[2rem] border border-line bg-white/80 p-6 text-sm text-muted">
         Rekentool laden...

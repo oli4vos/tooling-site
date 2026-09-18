@@ -301,10 +301,10 @@ describe("duo mortgage transfer", () => {
 
   it("keeps transfer redirects inside the current GitHub Pages basePath", () => {
     const windowMock = installWindowMock();
-    windowMock.location.pathname = "/projectwebsite/apps/hypotheek-impact-studieschuld";
+    windowMock.location.pathname = "/tooling-site/apps/hypotheek-impact-studieschuld";
 
     expect(getDuoMortgageTransferUrl("/apps/duo-maandbedrag", "transfer-safe-1")).toBe(
-      "/projectwebsite/apps/duo-maandbedrag?duoMortgageTransfer=transfer-safe-1",
+      "/tooling-site/apps/duo-maandbedrag?duoMortgageTransfer=transfer-safe-1",
     );
 
     windowMock.location.pathname = "/apps/hypotheek-impact-studieschuld";

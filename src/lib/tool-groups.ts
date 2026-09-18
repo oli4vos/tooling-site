@@ -23,6 +23,16 @@ export const toolGroups: ToolGroup[] = [
     description: "Bereken je maandbedrag, het effect van extra aflossen en een logische schuldvolgorde.",
     slugs: ["duo-extra-aflossen", "duo-maandbedrag", "schulden-volgorde"],
   },
+  {
+    title: "Belasting & vermogen",
+    description: "Bekijk de voorlopige box 3-impact en vergelijk pensioeninleg binnen je eigen jaarruimte met vrij beleggen.",
+    slugs: ["box-3-impact", "jaarruimte-vs-vrij-beleggen"],
+  },
+  {
+    title: "Werk & ZZP",
+    description: "Plan welk uurtarief past bij je gewenste inkomen, declarabele uren, kosten en eigen reserveringen.",
+    slugs: ["zzp-uurtarief"],
+  },
 ];
 
 const categoryToGroupTitle: Record<string, string> = {
@@ -52,7 +62,7 @@ const preferredSlugsByCategory: Record<string, string[]> = {
     "familiehulp-eerste-woning",
   ],
   Beleggen: ["duo-extra-aflossen", "duo-maandbedrag"],
-  Belasting: ["duo-maandbedrag"],
+  Belasting: ["box-3-impact", "jaarruimte-vs-vrij-beleggen"],
   Werk: ["zzp-uurtarief"],
   "Persoonlijke financiën": [
     "duo-maandbedrag",

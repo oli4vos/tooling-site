@@ -113,4 +113,23 @@ describe("calculateZzpUurtarief", () => {
       true,
     );
   });
+
+  it("treats the tax reserve as a share of required revenue", () => {
+    const result = calculateZzpUurtarief({
+      targetNetMonthlyIncome: 3000,
+      billableHoursPerWeek: 30,
+      workingWeeksPerYear: 48,
+      vacationWeeksPerYear: 6,
+      taxReservePercent: 40,
+    });
+
+    expect(result.annualTaxReserve).toBeCloseTo(
+      result.requiredAnnualRevenue * 0.4,
+      2,
+    );
+    expect(result.requiredAnnualRevenue).toBeCloseTo(
+      result.subtotalBeforeTaxReserve + result.annualTaxReserve,
+      2,
+    );
+  });
 });

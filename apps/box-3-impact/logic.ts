@@ -45,6 +45,9 @@ export type Box3ImpactResult = {
   method: Box3Method;
   assetsTotal: number;
   debtsTotal: number;
+  debtThreshold: number;
+  deductibleDebts: number;
+  netWorthAfterDebtThreshold: number;
   netWorth: number;
   taxFreeAllowance: number;
   taxableBase: number;
@@ -66,15 +69,6 @@ export type Box3ImpactResult = {
     endNetWorthAfterTax: number;
     endNetWorthWithoutBox3: number;
     wealthGapVsNoBox3: number;
-    endSaleExample: {
-      taxRateUsed: number;
-      totalPrincipalInflow: number;
-      taxableGainAtEndSale: number;
-      taxDueAtEndSale: number;
-      endNetWorthAfterEndSaleTax: number;
-      pointsWithoutBox3: Array<{ yearIndex: number; value: number }>;
-      pointsEndSaleTax: Array<{ yearIndex: number; value: number }>;
-    };
   };
   assumptions: {
     sourceLabel: string;
@@ -285,7 +279,7 @@ function calculateHorizonPoints(input: {
 
 export function calculateBox3ImpactScenario(input: Box3ImpactInput): Box3ImpactResult {
   const year = sanitizeYear(input.year);
-  const method = input.method ?? "actual";
+  const method = input.method ?? "forfaitary";
   const bankDeposits = sanitizeMoney(input.bankDeposits);
   const investmentsAndOtherAssets = sanitizeMoney(input.investmentsAndOtherAssets);
   const debts = sanitizeMoney(input.debts);
@@ -362,41 +356,16 @@ export function calculateBox3ImpactScenario(input: Box3ImpactInput): Box3ImpactR
     yearlyInvestmentsContribution,
   });
 
-  const totalPrincipalInflow = roundMoney(
-    bankDeposits +
-      investmentsAndOtherAssets +
-      (yearlySavingsContribution + yearlyInvestmentsContribution) * horizonYears,
-  );
   const endNetWorthWithoutBox3 = points[points.length - 1]?.endNetWorthWithoutBox3 ?? netWorth;
-  const taxableGainAtEndSale = roundMoney(
-    Math.max(endNetWorthWithoutBox3 - totalPrincipalInflow, 0),
-  );
-  const taxDueAtEndSale = roundMoney(
-    taxableGainAtEndSale * (constants.taxRate / 100),
-  );
-  const endNetWorthAfterEndSaleTax = roundMoney(
-    Math.max(endNetWorthWithoutBox3 - taxDueAtEndSale, 0),
-  );
-  const pointsWithoutBox3 = [
-    { yearIndex: 0, value: netWorth },
-    ...points.map((point) => ({
-      yearIndex: point.yearIndex,
-      value: point.endNetWorthWithoutBox3,
-    })),
-  ];
-  const pointsEndSaleTax = [
-    ...pointsWithoutBox3.slice(0, -1),
-    {
-      yearIndex: horizonYears,
-      value: endNetWorthAfterEndSaleTax,
-    },
-  ];
 
   return {
     year: base.year,
     method: base.method,
     assetsTotal: base.assetsTotal,
     debtsTotal: base.debtsTotal,
+    debtThreshold: base.debtThreshold,
+    deductibleDebts: base.deductibleDebts,
+    netWorthAfterDebtThreshold: base.netWorthAfterDebtThreshold,
     netWorth,
     taxFreeAllowance: base.taxFreeAllowance,
     taxableBase: base.taxableBase,
@@ -418,15 +387,6 @@ export function calculateBox3ImpactScenario(input: Box3ImpactInput): Box3ImpactR
       endNetWorthAfterTax: points[points.length - 1]?.endNetWorthAfterTax ?? netWorth,
       endNetWorthWithoutBox3,
       wealthGapVsNoBox3: points[points.length - 1]?.wealthGapVsNoBox3 ?? 0,
-      endSaleExample: {
-        taxRateUsed: constants.taxRate,
-        totalPrincipalInflow,
-        taxableGainAtEndSale,
-        taxDueAtEndSale,
-        endNetWorthAfterEndSaleTax,
-        pointsWithoutBox3,
-        pointsEndSaleTax,
-      },
     },
     assumptions: {
       sourceLabel: constants.meta.sourceLabel,
@@ -439,9 +399,8 @@ export function calculateBox3ImpactScenario(input: Box3ImpactInput): Box3ImpactR
     },
     warnings: [
       ...base.warnings,
-      "Horizon-simulatie is indicatief; regels, forfaits en persoonlijke fiscale situatie kunnen wijzigen.",
+      "De horizon gebruikt in elk toekomstig jaar opnieuw de voorlopige box 3-regels van 2026. Dit is een scenario, geen voorspelling van toekomstige wetgeving.",
       "Jaarlijkse box 3-heffing wordt in deze simulatie ieder jaar betaald en telt daarna niet meer mee in verdere groei.",
-      "De eindverkoop-vergelijking is een hypothetisch voorbeeld op gerealiseerde winst en is geen weergave van de huidige Nederlandse box 3-systematiek.",
       "Deze tool is indicatief en geen officiële aangifteberekening.",
     ],
   };

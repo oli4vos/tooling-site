@@ -21,7 +21,7 @@ describe("public routing scope", () => {
     expect(fs.existsSync(path.join(appDirectory, "voorwaarden", "page.tsx"))).toBe(true);
     expect(footer).toContain('href="/privacy"');
     expect(footer).toContain('href="/voorwaarden"');
-    expect(footer).toContain('href="https://github.com/oli4vos/projectwebsite"');
+    expect(footer).toContain('href="https://github.com/oli4vos/tooling-site"');
   });
 
   it("keeps Grip's independent private status visible on public pages", () => {

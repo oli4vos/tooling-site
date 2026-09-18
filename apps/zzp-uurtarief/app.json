@@ -2,7 +2,7 @@
   "slug": "zzp-uurtarief",
   "enabled": true,
   "title": "Welk ZZP-uurtarief heb ik nodig?",
-  "description": "Bereken een indicatief uurtarief inclusief belasting, buffer, pensioen, AOV en kosten.",
+  "description": "Plan een indicatief uurtarief exclusief btw, met eigen reserveringen voor belasting, buffer, pensioen, AOV en kosten.",
   "type": "frontend",
   "category": "Werk",
   "tags": [
@@ -13,7 +13,7 @@
     "inkomen"
   ],
   "status": "beta",
-  "visibility": "hidden",
+  "visibility": "public",
   "requiredProfileFields": [
     "income.employmentType",
     "income.grossAnnualIncome",
@@ -38,6 +38,6 @@
   "riskLevel": "high",
   "disclaimerType": "taxIndicative",
   "outputType": "singleResult",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "entry": "Calculator.tsx"
 }

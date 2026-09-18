@@ -156,8 +156,8 @@ describe("profile recommendations", () => {
       },
     };
     const slugs = getRecommendedAppSlugsForProfile(profile, { availableSlugs });
-    expect(slugs).toEqual(["duo-maandbedrag"]);
-    expect(slugs).not.toContain("box-3-impact");
+    expect(slugs).toContain("box-3-impact");
+    expect(slugs).toContain("jaarruimte-vs-vrij-beleggen");
     expect(slugs).not.toContain("fire-na-belasting");
   });
 
@@ -170,8 +170,7 @@ describe("profile recommendations", () => {
       (item) => item.slug === "box-3-impact",
     );
 
-    expect(box3Recommendation).toBeUndefined();
-    expect(recommendations[0]?.reason).toContain("buffer");
+    expect(box3Recommendation?.reason).toContain("box 3");
   });
 
   it("recommends zzp tool for self-employed profile", () => {
@@ -181,8 +180,7 @@ describe("profile recommendations", () => {
       },
     };
     const slugs = getRecommendedAppSlugsForProfile(profile, { availableSlugs });
-    expect(slugs).toEqual(["duo-maandbedrag"]);
-    expect(slugs).not.toContain("zzp-uurtarief");
+    expect(slugs).toEqual(["zzp-uurtarief"]);
   });
 
   it("adds zzp specific reason text", () => {
@@ -194,8 +192,7 @@ describe("profile recommendations", () => {
       (item) => item.slug === "zzp-uurtarief",
     );
 
-    expect(zzpRecommendation).toBeUndefined();
-    expect(recommendations[0]?.reason).toContain("draagkrachtindicatie");
+    expect(zzpRecommendation?.reason).toContain("zelfstandig");
   });
 
   it("returns max 4 unique slugs", () => {

@@ -12,7 +12,7 @@ export function SiteFooter() {
         <div className="max-w-[72ch]">
           <div className="flex items-center gap-4">
             <Logo size={16} />
-            <span>Rekentools voor studieschuld en wonen.</span>
+            <span>Rekentools voor studieschuld, belasting, vermogen en ZZP.</span>
           </div>
           <p className="mt-2 leading-5">
             {GRIP_INDEPENDENCE_SHORT}{" "}
@@ -41,7 +41,7 @@ export function SiteFooter() {
             Voorwaarden
           </Link>
           <a
-            href="https://github.com/oli4vos/projectwebsite"
+            href="https://github.com/oli4vos/tooling-site"
             target="_blank"
             rel="noopener noreferrer"
             className={footerLinkClassName}

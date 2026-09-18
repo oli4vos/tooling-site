@@ -22,7 +22,6 @@ import {
 import { getJaarruimteVsVrijBeleggenDefaultsFromProfile } from "@/lib/profile-tool-mapping";
 import {
   calculateJaarruimteVsVrijBeleggen,
-  type FlexibilityPreference,
   type JaarruimteVsVrijBeleggenInput,
 } from "./logic";
 import { escapeHtml } from "./pdf-export";
@@ -40,7 +39,6 @@ type FormState = {
   overrideCurrentTaxRate: string;
   expectedTaxRateAtPayout: string;
   includeBox3Effect: boolean;
-  flexibilityPreference: FlexibilityPreference;
 };
 
 type ValidationErrors = Partial<Record<keyof FormState, string>>;
@@ -58,7 +56,6 @@ const exampleValues: FormState = {
   overrideCurrentTaxRate: "",
   expectedTaxRateAtPayout: "",
   includeBox3Effect: true,
-  flexibilityPreference: "medium",
 };
 
 const defaultValues: FormState = {
@@ -74,7 +71,6 @@ const defaultValues: FormState = {
   overrideCurrentTaxRate: "",
   expectedTaxRateAtPayout: "",
   includeBox3Effect: true,
-  flexibilityPreference: "medium",
 };
 
 type CalculatorContentProps = {
@@ -324,7 +320,6 @@ function validateForm(values: FormState) {
           overrideCurrentTaxRate,
           expectedTaxRateAtPayout,
           includeBox3Effect: values.includeBox3Effect,
-          flexibilityPreference: values.flexibilityPreference,
         }
       : null;
 
@@ -400,7 +395,6 @@ function CalculatorContent({
     "overrideCurrentTaxRate",
     "expectedTaxRateAtPayout",
     "includeBox3Effect",
-    "flexibilityPreference",
   ]);
 
   const isCurrentFieldBlocked = Boolean(
@@ -552,12 +546,12 @@ function CalculatorContent({
             <p className="text-[12px] leading-[1.55] text-[var(--muted)]">
               Weet je dit niet?{" "}
               <a
-                href="https://www.belastingdienst.nl/wps/wcm/connect/nl/aftrek-en-kortingen/content/jaarruimte-en-reserveringsruimte"
+                href="https://www.belastingdienst.nl/wps/wcm/connect/nl/aftrek-en-kortingen/content/hulpmiddel-lijfrentepremie-2016-en-daarna"
                 target="_blank"
                 rel="noreferrer"
                 className="font-medium text-[var(--ink)] underline underline-offset-2"
               >
-                Help mij berekenen
+                Bereken je jaarruimte bij de Belastingdienst
               </a>
               .
             </p>
@@ -677,23 +671,6 @@ function CalculatorContent({
             </span>
           </label>
 
-          <label className={mobileFlow.getFieldClassName("flexibilityPreference")}>
-            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">
-              Flexibiliteitsvoorkeur
-            </span>
-            <select
-              value={formValues.flexibilityPreference}
-              onChange={(event) =>
-                updateField("flexibilityPreference", event.target.value as FlexibilityPreference)
-              }
-              className="ring-focus hair h-12 rounded-md border bg-white px-4 text-[15px] text-[var(--ink)] outline-none"
-            >
-              <option value="low">Laag</option>
-              <option value="medium">Midden</option>
-              <option value="high">Hoog</option>
-            </select>
-          </label>
-
           <MobileFieldFlowControls
             current={mobileFlow.activeIndex + 1}
             total={mobileFlow.total}
@@ -725,8 +702,8 @@ function CalculatorContent({
             {result ? (
               <Pill tone={result.comparison.netDifferencePensionMinusInvesting >= 0 ? "pos" : "neg"}>
                 {result.comparison.netDifferencePensionMinusInvesting >= 0
-                  ? "Pensioenpot lijkt sterker"
-                  : "Vrij beleggen lijkt sterker"}
+                  ? "Pensioen hoger in dit scenario"
+                  : "Vrij beleggen hoger in dit scenario"}
               </Pill>
             ) : null}
           </div>
@@ -834,14 +811,6 @@ function CalculatorContent({
                 label="Verschil pensioen minus vrij beleggen"
                 value={formatCurrency(result.comparison.netDifferencePensionMinusInvesting)}
                 accent
-              />
-              <ResultRow
-                label="Flexibiliteitsscore pensioen"
-                value={`${result.comparison.pensionFitScore}/100`}
-              />
-              <ResultRow
-                label="Flexibiliteitsscore vrij beleggen"
-                value={`${result.comparison.investingFitScore}/100`}
               />
             </div>
             <p className="mt-4 text-[13px] leading-[1.65] text-[var(--ink-2)]">

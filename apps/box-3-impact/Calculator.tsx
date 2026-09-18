@@ -19,7 +19,6 @@ import { useUserProfile } from "@/hooks/useUserProfile";
 import { getGlossaryExplanation } from "@/lib/copy-glossary";
 import { getDefaultFinancialYear } from "@/lib/financial-constants";
 import { parseOptionalDecimalInput } from "@/lib/number-input";
-import type { Box3Method } from "@/lib/tax";
 import {
   createProfilePrefillState,
   mergeProfilePatchIntoValues,
@@ -34,7 +33,6 @@ import {
 type FormState = {
   year: string;
   hasFiscalPartner: boolean;
-  method: Box3Method;
   bankDeposits: string;
   investmentsAndOtherAssets: string;
   debts: string;
@@ -51,7 +49,6 @@ type ValidationErrors = Partial<Record<keyof FormState, string>>;
 const exampleValues: FormState = {
   year: String(getDefaultFinancialYear()),
   hasFiscalPartner: false,
-  method: "actual",
   bankDeposits: "25000",
   investmentsAndOtherAssets: "50000",
   debts: "0",
@@ -66,7 +63,6 @@ const exampleValues: FormState = {
 const defaultValues: FormState = {
   year: "",
   hasFiscalPartner: false,
-  method: "actual",
   bankDeposits: "",
   investmentsAndOtherAssets: "",
   debts: "",
@@ -185,7 +181,7 @@ function validateForm(values: FormState) {
       ? {
           year,
           hasFiscalPartner: values.hasFiscalPartner,
-          method: values.method,
+          method: "forfaitary",
           bankDeposits: bankDeposits ?? 0,
           investmentsAndOtherAssets: investmentsAndOtherAssets ?? 0,
           debts: debts ?? 0,
@@ -281,31 +277,9 @@ function CalculatorContent({
         ),
       )
     : [];
-  const saleExampleSeries = result
-    ? [
-        {
-          color: "oklch(45% 0.08 236)",
-          points: result.horizon.endSaleExample.pointsWithoutBox3.map((point) => point.value),
-        },
-        {
-          color: "oklch(70% 0.12 20)",
-          points: result.horizon.endSaleExample.pointsEndSaleTax.map((point) => point.value),
-        },
-      ]
-    : null;
-  const saleExampleYTicks = result
-    ? getAdaptiveEuroTicks(
-        Math.max(
-          ...result.horizon.endSaleExample.pointsWithoutBox3.map((point) => point.value),
-          ...result.horizon.endSaleExample.pointsEndSaleTax.map((point) => point.value),
-        ),
-      )
-    : [];
-
   const mobileFlow = useMobileFieldFlow([
     "year",
     "hasFiscalPartner",
-    "method",
     "bankDeposits",
     "investmentsAndOtherAssets",
     "debts",
@@ -436,23 +410,6 @@ function CalculatorContent({
                 className="size-4 accent-[var(--accent)]"
               />
               Ja
-            </span>
-          </label>
-
-          <label className={mobileFlow.getFieldClassName("method")}>
-            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">
-              Rekensysteem
-            </span>
-            <span className="flex items-center gap-3 text-[14px] text-[var(--ink)]">
-              <input
-                type="checkbox"
-                checked={formValues.method === "forfaitary"}
-                onChange={(event) =>
-                  updateField("method", event.target.checked ? "forfaitary" : "actual")
-                }
-                className="size-4 accent-[var(--accent)]"
-              />
-              Forfaitair rendement (default = werkelijk rendement)
             </span>
           </label>
 
@@ -683,7 +640,9 @@ function CalculatorContent({
               <div className="mt-5">
                 <ResultRow label="Totaal vermogen" value={formatCurrency(result.assetsTotal)} />
                 <ResultRow label="Schulden box 3" value={formatCurrency(result.debtsTotal)} />
-                <ResultRow label="Netto rendementsgrondslag" value={formatCurrency(result.netWorth)} />
+                <ResultRow label="Schuldendrempel" value={formatCurrency(result.debtThreshold)} />
+                <ResultRow label="Aftrekbare schulden" value={formatCurrency(result.deductibleDebts)} />
+                <ResultRow label="Rendementsgrondslag" value={formatCurrency(result.netWorthAfterDebtThreshold)} />
                 <ResultRow label="Heffingsvrij vermogen" value={formatCurrency(result.taxFreeAllowance)} />
                 <ResultRow label="Belastbare grondslag" value={formatCurrency(result.taxableBase)} />
                 <ResultRow label="Forfaitair rendement spaargeld" value={formatCurrency(result.deemedReturnBankDeposits)} />
@@ -813,84 +772,6 @@ function CalculatorContent({
                   </div>
                 </div>
               ))}
-            </div>
-          ) : null}
-        </ToolDisclosure>
-
-        <ToolDisclosure
-          title="Hypothetisch: alleen kopen, verkoop op eindhorizon"
-          subtitle="Verdieping: voorbeeld waarin belasting pas bij eindverkoop wordt afgerekend."
-        >
-          {result ? (
-            <div className="space-y-4">
-              <p className="text-[13px] leading-[1.65] text-[var(--muted)]">
-                Dit is een extra voorbeeldscenario: je verkoopt niets tussentijds, en rekent
-                alleen op de einddatum af over de gerealiseerde winst. Dit is niet hoe box 3 nu
-                jaarlijks werkt, maar helpt om het verschil in timing van belasting te zien.
-              </p>
-              <div className="rounded-xl border border-[var(--hair)] bg-[var(--paper-soft)] px-4 py-3">
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <ResultRow
-                    label="Totale inleg + startvermogen"
-                    value={formatCurrency(result.horizon.endSaleExample.totalPrincipalInflow)}
-                  />
-                  <ResultRow
-                    label="Winst bij verkoop op eindhorizon"
-                    value={formatCurrency(result.horizon.endSaleExample.taxableGainAtEndSale)}
-                  />
-                  <ResultRow
-                    label="Voorbeeldheffing bij eindverkoop"
-                    value={formatCurrency(result.horizon.endSaleExample.taxDueAtEndSale)}
-                    sub={`${formatPercent(result.horizon.endSaleExample.taxRateUsed)}% over winst`}
-                  />
-                  <ResultRow
-                    label="Eindvermogen na eindverkoop-heffing"
-                    value={formatCurrency(result.horizon.endSaleExample.endNetWorthAfterEndSaleTax)}
-                    accent
-                  />
-                </div>
-              </div>
-              {saleExampleSeries ? (
-                <div className="rounded-xl border border-[var(--hair)] bg-white px-4 py-4">
-                  <div className="flex items-center justify-between gap-4">
-                    <div className="text-[12px] uppercase tracking-[0.08em] text-[var(--muted)]">
-                      Timingvergelijking belasting
-                    </div>
-                    <ChartLegend
-                      items={[
-                        { label: "Zonder belasting", color: "oklch(45% 0.08 236)" },
-                        { label: "Alleen eindverkoop-heffing", color: "oklch(70% 0.12 20)" },
-                      ]}
-                    />
-                  </div>
-                  <div className="mt-4 grid gap-3 sm:grid-cols-[68px_minmax(0,1fr)]">
-                    <div className="hidden flex-col justify-between text-right text-[11px] text-[var(--soft)] sm:flex">
-                      {saleExampleYTicks
-                        .slice()
-                        .reverse()
-                        .map((tick) => (
-                          <span key={tick}>{formatCompactEuro(tick)}</span>
-                        ))}
-                    </div>
-                    <div className="min-w-0">
-                      <ChartContainer
-                        yearTicks={[0, ...xTicks]}
-                        xValues={[0, ...result.horizon.points.map((point) => point.yearIndex)]}
-                        chart={
-                          <AreaChart
-                            width={620}
-                            height={220}
-                            series={saleExampleSeries}
-                            yTicks={saleExampleYTicks}
-                            xValues={[0, ...result.horizon.points.map((point) => point.yearIndex)]}
-                            seriesLabels={["Zonder belasting", "Alleen eindverkoop-heffing"]}
-                          />
-                        }
-                      />
-                    </div>
-                  </div>
-                </div>
-              ) : null}
             </div>
           ) : null}
         </ToolDisclosure>

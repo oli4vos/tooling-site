@@ -11,7 +11,7 @@ Lees dit eerst voordat je berekeningen, manifests, routing, formulieren, uitleg 
 
 **`Weet ik niet` is nooit geldige eindinvoer voor een berekening. Het mag alleen een tijdelijke status in de intake zijn. De applicatie helpt de gebruiker vervolgens om het gegeven te vinden, te begrijpen of verantwoord af te leiden voordat het centrale rekenpad wordt aangeroepen.**
 
-De zichtbare site is in de huidige launch-scope puur informatief over studieschuld. Publieke UI-copy bevat geen beleggen-framing, geen aflossen-vs-beleggen-route en geen persoonlijk advies. `FUNCTIONALITY_STATUS.md` is leidend voor welke tools en flows publiek zichtbaar, hidden, voorbereid of uitgeschakeld zijn.
+De zichtbare site is een informatieve tooling-site voor studieschuld, belasting, vermogen en ZZP-planning. Publieke UI-copy bevat geen persoonlijk financieel, fiscaal of beleggingsadvies. Scenariovergelijkingen blijven feitelijk, tonen aannames en doen geen productaanbeveling. `FUNCTIONALITY_STATUS.md` is leidend voor welke tools en flows publiek zichtbaar, hidden, voorbereid of uitgeschakeld zijn.
 
 Alles wat niet meer actief aangeroepen wordt in de zichtbare site blijft wel in de codebase, maar wordt hidden/draft gehouden en uit de publieke registry, navigatie en route-oppervlakken gehouden totdat er expliciet een heractivatiebesluit is.
 

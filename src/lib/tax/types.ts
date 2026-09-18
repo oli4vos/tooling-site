@@ -51,6 +51,9 @@ export type Box3Result = {
   year: TaxYear;
   assetsTotal: number;
   debtsTotal: number;
+  debtThreshold: number;
+  deductibleDebts: number;
+  netWorthAfterDebtThreshold: number;
   taxFreeAllowance: number;
   taxableBase: number;
   deemedReturnBankDeposits: number;

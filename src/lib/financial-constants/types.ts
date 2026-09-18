@@ -72,6 +72,8 @@ export type SourceDatasetFamily =
   | "allowance-signal-rules"
   | "allowance-calculation-rules"
   | "planning-debt-priority-rules"
+  | "tax-box1-rates"
+  | "tax-box3-provisional"
   | "mortgage-provider-rate";
 
 export type SourceDataset<TData = unknown> = {
@@ -276,6 +278,8 @@ export type AnnualFinancialConstants = {
     taxRate: number;
     taxFreeAllowanceSingle: number;
     taxFreeAllowancePartners: number;
+    debtThresholdSingle: number;
+    debtThresholdPartners: number;
     deemedReturns: {
       bankDeposits: number;
       investmentsAndOtherAssets: number;

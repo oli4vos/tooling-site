@@ -167,9 +167,9 @@ function validateForm(values: FormState) {
     taxReservePercent === undefined ||
     !Number.isFinite(taxReservePercent) ||
     taxReservePercent < 0 ||
-    taxReservePercent > 100
+    taxReservePercent > 95
   ) {
-    errors.taxReservePercent = "Gebruik een percentage tussen 0 en 100.";
+    errors.taxReservePercent = "Gebruik een percentage tussen 0 en 95.";
   }
   if (
     grossAnnualSalaryComparison !== undefined &&
@@ -377,7 +377,7 @@ function CalculatorContent({
               ["billableHoursPerWeek", "Declarabele uren per week"],
               ["workingWeeksPerYear", "Werkweken per jaar"],
               ["vacationWeeksPerYear", "Vakantieweken per jaar"],
-              ["taxReservePercent", "Belastingreservering (%)"],
+              ["taxReservePercent", "Belastingreservering (% van omzet)"],
               ["grossAnnualSalaryComparison", "Bruto loondienstsalaris (optioneel)"],
             ] as Array<[keyof FormState, string]>
           ).map(([field, label]) => (
@@ -431,7 +431,7 @@ function CalculatorContent({
             <>
               <div className="mt-4 font-serif text-[28px] leading-none tracking-[-0.03em]">
                 Om dit netto doel te halen heb je indicatief ongeveer{" "}
-                {formatCurrency(result.requiredHourlyRate)} per uur nodig.
+                {formatCurrency(result.requiredHourlyRate)} per uur exclusief btw nodig.
               </div>
               <p className="mt-3 text-[14px] leading-[1.7] text-white/75">
                 Dit rekent met declarabele uren, reservering voor belasting, pensioen,
@@ -552,7 +552,7 @@ function CalculatorContent({
           {result ? (
             <div className="space-y-2 text-[13px] leading-[1.65] text-[var(--muted)]">
               <p>Belastingjaar: {result.taxYear}.</p>
-              <p>Indicatieve box 1-belasting op benodigde omzet: {formatCurrency(result.box1Reference.indicativeTaxOnRequiredRevenue)}.</p>
+              <p>Ruwe box 1-referentie over de benodigde omzet: {formatCurrency(result.box1Reference.indicativeTaxOnRequiredRevenue)}.</p>
               <p>Indicatieve effectieve druk (box 1 referentie): {formatPercent(result.box1Reference.effectiveRate)}%.</p>
               <p>Indicatief marginaal tarief (box 1 referentie): {formatPercent(result.box1Reference.marginalRate)}%.</p>
             </div>

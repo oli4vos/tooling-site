@@ -130,10 +130,13 @@ export function calculateZzpUurtarief(
       annualAovPremium +
       annualBusinessCosts,
   );
-  const annualTaxReserve = roundMoney(
-    subtotalBeforeTaxReserve * (taxReservePercent / 100),
+  const taxReserveFactor = Math.min(taxReservePercent / 100, 0.95);
+  const requiredAnnualRevenue = roundMoney(
+    subtotalBeforeTaxReserve / (1 - taxReserveFactor),
   );
-  const requiredAnnualRevenue = roundMoney(subtotalBeforeTaxReserve + annualTaxReserve);
+  const annualTaxReserve = roundMoney(
+    requiredAnnualRevenue - subtotalBeforeTaxReserve,
+  );
   const requiredHourlyRate =
     billableHoursPerYear > 0
       ? roundMoney(requiredAnnualRevenue / billableHoursPerYear)
@@ -157,8 +160,9 @@ export function calculateZzpUurtarief(
 
   const warnings = [
     "Dit is een indicatieve rekentool en geen volledige ZZP- of inkomstenbelastingaangifte.",
-    "Ondernemersaftrek, MKB-winstvrijstelling, btw, investeringsaftrek en persoonlijke aftrekposten zijn niet volledig meegenomen.",
-    "Gebruik deze uitkomst als richttarief en toets je situatie met een boekhouder of adviseur.",
+    "Het uurtarief is exclusief btw. De belastingreservering is jouw eigen planningspercentage van de benodigde omzet, niet een berekende belastingaanslag.",
+    "De box 1-referentie rekent alsof de benodigde omzet belastbaar inkomen is en houdt geen rekening met zakelijke kosten, heffingskortingen, ondernemersaftrek, MKB-winstvrijstelling, investeringsaftrek of persoonlijke aftrekposten.",
+    "Gebruik de uitkomst als planningsbedrag en controleer je belastingreservering met je boekhouder of adviseur.",
   ];
 
   if (billableHoursPerYear <= 0) {

@@ -36,11 +36,19 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
   const debts = sanitizeMoney(input.debts);
   const assetsTotal = roundMoney(bankDeposits + investmentsAndOtherAssets);
   const debtsTotal = roundMoney(debts);
-  const netWorth = roundMoney(Math.max(assetsTotal - debtsTotal, 0));
+  const debtThreshold = input.hasFiscalPartner
+    ? box3.debtThresholdPartners
+    : box3.debtThresholdSingle;
+  const deductibleDebts = roundMoney(Math.max(debtsTotal - debtThreshold, 0));
+  const netWorthAfterDebtThreshold = roundMoney(
+    Math.max(assetsTotal - deductibleDebts, 0),
+  );
   const taxFreeAllowance = input.hasFiscalPartner
     ? box3.taxFreeAllowancePartners
     : box3.taxFreeAllowanceSingle;
-  const taxableBase = roundMoney(Math.max(netWorth - taxFreeAllowance, 0));
+  const taxableBase = roundMoney(
+    Math.max(netWorthAfterDebtThreshold - taxFreeAllowance, 0),
+  );
   const method = input.method ?? "actual";
 
   const deemedReturnBankDeposits =
@@ -56,7 +64,7 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
       : 0;
   const deemedReturnDebts =
     method === "forfaitary"
-      ? roundMoney(debtsTotal * (box3.deemedReturns.debts / 100))
+      ? roundMoney(deductibleDebts * (box3.deemedReturns.debts / 100))
       : 0;
 
   const taxableDeemedReturn =
@@ -65,30 +73,38 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
           const grossDeemedReturn = roundMoney(
             deemedReturnBankDeposits + deemedReturnInvestments - deemedReturnDebts,
           );
-          const taxableShare = netWorth > 0 ? taxableBase / netWorth : 0;
+          const taxableShare =
+            netWorthAfterDebtThreshold > 0
+              ? taxableBase / netWorthAfterDebtThreshold
+              : 0;
           return roundMoney(Math.max(grossDeemedReturn * taxableShare, 0));
         })()
       : (() => {
           const actualAnnualReturnRate = sanitizePercent(input.actualAnnualReturnRate);
           const annualReturnOnNetWorth = roundMoney(
-            netWorth * (actualAnnualReturnRate / 100),
+            netWorthAfterDebtThreshold * (actualAnnualReturnRate / 100),
           );
-          const taxableShare = netWorth > 0 ? taxableBase / netWorth : 0;
+          const taxableShare =
+            netWorthAfterDebtThreshold > 0
+              ? taxableBase / netWorthAfterDebtThreshold
+              : 0;
           return roundMoney(Math.max(annualReturnOnNetWorth * taxableShare, 0));
         })();
 
   const box3Tax = roundMoney(taxableDeemedReturn * (box3.taxRate / 100));
   const effectiveTaxRateOnNetWorth =
-    netWorth > 0 ? roundRate((box3Tax / netWorth) * 100) : 0;
+    netWorthAfterDebtThreshold > 0
+      ? roundRate((box3Tax / netWorthAfterDebtThreshold) * 100)
+      : 0;
 
   const warnings =
     method === "forfaitary"
       ? [
-          "Dit is een indicatieve box 3-berekening op basis van forfaitaire rendementen en een vereenvoudigde benadering.",
+          "Dit is een indicatieve box 3-berekening volgens de voorlopige forfaitaire percentages voor 2026.",
           "Werkelijke box 3-systematiek kan wijzigen en persoonlijke fiscale regels kunnen afwijken.",
         ]
       : [
-          "Dit is een indicatieve box 3-berekening op basis van een ingevuld werkelijk rendement.",
+          "De route met een ingevuld rendement is alleen een vereenvoudigde projectie en niet de officiële berekening van werkelijk rendement.",
           "Werkelijke box 3-systematiek kan wijzigen en persoonlijke fiscale regels kunnen afwijken.",
         ];
   if (box3.meta.status === "voorlopig") {
@@ -101,6 +117,9 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
     year,
     assetsTotal,
     debtsTotal,
+    debtThreshold,
+    deductibleDebts,
+    netWorthAfterDebtThreshold,
     taxFreeAllowance,
     taxableBase,
     deemedReturnBankDeposits,

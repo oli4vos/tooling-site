@@ -165,8 +165,8 @@ describe("source dataset registry", () => {
       nextReviewAt: "2025-11-15",
     });
 
-    expect(getDatasetFreshness(reviewDue).status).toBe("review-due");
-    expect(getDatasetFreshness(stale).status).toBe("stale");
+    expect(getDatasetFreshness(reviewDue, "2026-07-19").status).toBe("review-due");
+    expect(getDatasetFreshness(stale, "2026-07-19").status).toBe("stale");
   });
 
   it("fails dataset-specific validation for impossible bounds", () => {
@@ -462,6 +462,26 @@ describe("source dataset registry", () => {
 
     expect(result.ok).toBe(true);
     expect(result.errors).toEqual([]);
+  });
+
+  it("registers the public 2026 box 1 and box 3 source data", () => {
+    const box1 = getActiveDataset("tax-box1-rates", {
+      scenario: "under-aow-age",
+      asOf: "2026-09-18",
+    });
+    const box3 = getActiveDataset("tax-box3-provisional", {
+      scenario: "forfaitary-2026",
+      asOf: "2026-09-18",
+    });
+
+    expect(box1.meta.sourceName).toBe("Belastingdienst");
+    expect(box1.usedBy).toContain("zzp-uurtarief");
+    expect(box3.data).toMatchObject({
+      taxRate: 36,
+      taxFreeAllowanceSingle: 59357,
+      debtThresholdSingle: 3800,
+    });
+    expect(box3.usedBy).toContain("box-3-impact");
   });
 
   it("keeps existing central constants values stable", () => {

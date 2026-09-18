@@ -188,6 +188,36 @@ export const publicToolJourneys = {
       },
     ],
   },
+  "box-3-impact": {
+    title: "Van box 3 naar je langetermijnscenario",
+    description:
+      "Je ziet nu de indicatieve box 3-impact. Vergelijk daarna eventueel pensioeninleg binnen je eigen jaarruimte met vrij beleggen.",
+    primary: {
+      href: "/apps/jaarruimte-vs-vrij-beleggen",
+      label: "Vergelijk jaarruimte en vrij beleggen",
+    },
+    secondary: [{ href: "/apps", label: "Bekijk alle tools" }],
+  },
+  "jaarruimte-vs-vrij-beleggen": {
+    title: "Controleer de box 3-aanname",
+    description:
+      "Je hebt twee scenario's met hetzelfde netto budget vergeleken. Bekijk apart hoe je huidige vermogen indicatief in box 3 uitpakt.",
+    primary: {
+      href: "/apps/box-3-impact",
+      label: "Bereken box 3-impact",
+    },
+    secondary: [{ href: "/apps", label: "Bekijk alle tools" }],
+  },
+  "zzp-uurtarief": {
+    title: "Na je tariefplanning",
+    description:
+      "Je ziet welk tarief past bij je eigen aannames. Bewaar de uitkomst als planningsbedrag en controleer belasting en aftrekposten apart.",
+    primary: {
+      href: "/apps",
+      label: "Bekijk alle tools",
+    },
+    secondary: [],
+  },
 } as const satisfies Record<string, ToolNextStepsConfig>;
 
 export type PublicToolSlug = keyof typeof publicToolJourneys;

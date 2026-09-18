@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 import { ErrorState } from "@/components/ErrorState";
 
-const CHUNK_RECOVERY_KEY = "projectwebsite:chunk-recovery-attempted";
+const CHUNK_RECOVERY_KEY = "tooling-site:chunk-recovery-attempted";
 
 function isLikelyChunkError(error: Error) {
   const message = error.message.toLowerCase();

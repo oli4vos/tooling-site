@@ -41,6 +41,12 @@ const generalReasonsBySlug: Record<string, string> = {
     "Handig als je eigen geld, DUO en woningruimte samen wilt bekijken.",
   "schulden-volgorde":
     "Handig als je meerdere schulden feitelijk naast elkaar wilt zetten.",
+  "box-3-impact":
+    "Handig als je wilt zien hoe je spaargeld, beleggingen en box 3-schulden indicatief uitpakken.",
+  "jaarruimte-vs-vrij-beleggen":
+    "Handig als je een ingevulde jaarruimte wilt vergelijken met vrij beleggen.",
+  "zzp-uurtarief":
+    "Handig als je als zelfstandige een uurtarief wilt plannen met kosten en reserveringen.",
 };
 
 type RecommendationAppMetadata = Pick<AppManifest, "slug" | "reasonHint">;
@@ -220,17 +226,22 @@ export function getRecommendedAppsForProfile(
     hasPositiveNumber(safeProfile.savingInvesting?.expectedAnnualReturn)
   ) {
     recommendations.push({
-      slug: "duo-maandbedrag",
+      slug: "box-3-impact",
       specificReason:
-        "Omdat je buffer of maandruimte hebt ingevuld en je DUO-maandbedrag daar eerst naast wilt zetten.",
+        "Omdat je spaargeld of verwacht rendement hebt ingevuld en je indicatieve box 3-impact wilt bekijken.",
+    });
+    recommendations.push({
+      slug: "jaarruimte-vs-vrij-beleggen",
+      specificReason:
+        "Omdat je vermogen of rendement hebt ingevuld en pensioeninleg met vrij beleggen wilt vergelijken.",
     });
   }
 
   if (safeProfile.income?.employmentType === "selfEmployed") {
     recommendations.push({
-      slug: "duo-maandbedrag",
+      slug: "zzp-uurtarief",
       specificReason:
-        "Omdat wisselend inkomen invloed kan hebben op je DUO-draagkrachtindicatie.",
+        "Omdat je hebt aangegeven zelfstandig te werken en een passend uurtarief wilt plannen.",
     });
   }
 

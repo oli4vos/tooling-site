@@ -84,7 +84,7 @@ export default function V2OverPage() {
                 <p>
                   Iets onjuist of onduidelijk? Meld het via{" "}
                   <a
-                    href="https://github.com/oli4vos/projectwebsite/issues"
+                    href="https://github.com/oli4vos/tooling-site/issues"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="underline"

@@ -148,15 +148,7 @@ describe("calculateBox3ImpactScenario", () => {
         (point) => point.endNetWorthWithoutBox3 >= point.endNetWorthAfterTax,
       ),
     ).toBe(true);
-    expect(result.horizon.endSaleExample.taxDueAtEndSale).toBeGreaterThanOrEqual(0);
-    expect(result.horizon.endSaleExample.endNetWorthAfterEndSaleTax).toBeLessThanOrEqual(
-      result.horizon.endNetWorthWithoutBox3,
-    );
-    expect(result.horizon.endSaleExample.pointsWithoutBox3).toHaveLength(6);
-    expect(result.horizon.endSaleExample.pointsEndSaleTax).toHaveLength(6);
-    expect(
-      result.horizon.endSaleExample.pointsEndSaleTax.at(-1)?.value,
-    ).toBeCloseTo(result.horizon.endSaleExample.endNetWorthAfterEndSaleTax, 2);
+    expect(result.warnings.some((warning) => warning.includes("regels van 2026"))).toBe(true);
   });
 
   it("supports yearly contribution frequency", () => {

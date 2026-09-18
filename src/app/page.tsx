@@ -30,6 +30,15 @@ const routeSteps = [
       { href: "/apps/familiehulp-eerste-woning", label: "Familiehulp eerste woning" },
     ],
   },
+  {
+    title: "Belasting, vermogen of ZZP?",
+    body: "Bereken je voorlopige box 3-impact, vergelijk jaarruimte met vrij beleggen of plan een ZZP-uurtarief.",
+    links: [
+      { href: "/apps/box-3-impact", label: "Box 3-impact" },
+      { href: "/apps/jaarruimte-vs-vrij-beleggen", label: "Jaarruimte vergelijken" },
+      { href: "/apps/zzp-uurtarief", label: "ZZP-uurtarief" },
+    ],
+  },
 ];
 
 export default async function HomePage() {
@@ -48,21 +57,21 @@ export default async function HomePage() {
         <section className="pb-10 pt-2">
           <div className="max-w-3xl">
             <div className="section-label">
-              Voor starters met een studieschuld
+              Rekentools voor je geldzaken
             </div>
             <h1
               className="text-fluid-h1 mt-4 max-w-[13ch] font-serif tracking-[-0.03em] text-[var(--ink)]"
               style={{ textWrap: "balance" }}
             >
-              Eerst grip op je studieschuld.
+              Reken je financiële scenario&apos;s zelf door.
             </h1>
             <p className="text-fluid-lead mt-5 max-w-[58ch] leading-[1.75] text-[var(--ink-2)]">
-              Zie wat je opbouwt, wat je straks betaalt en wat je studieschuld
-              betekent als je later een huis wilt kopen.
+              Van studieschuld tot box 3 en ZZP-uurtarief: werk met je eigen
+              cijfers en zie welke aannames de uitkomst bepalen.
             </p>
             <div className="mt-7">
               <BtnLink href="#route" kind="primary" size="lg">
-                Begin bij stap 1
+                Kies je onderwerp
               </BtnLink>
             </div>
             <p className="mt-4 max-w-[60ch] text-[13px] leading-6 text-[var(--muted)]">
@@ -82,7 +91,7 @@ export default async function HomePage() {
             </p>
           </div>
 
-          <div className="mt-7 grid gap-4 lg:grid-cols-[1.1fr_0.95fr_1.05fr]">
+          <div className="mt-7 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             {availableRouteSteps.map((step, index) => (
               <article
                 key={step.title}

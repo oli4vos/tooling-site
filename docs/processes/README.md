@@ -10,14 +10,17 @@ Een tool valt in deze index wanneer het manifest onder `apps/<slug>/app.json` zo
 
 | Tool | Publieke route | Procesdocument | Laatst gecontroleerd | Procesplaten |
 | --- | --- | --- | --- | --- |
-| Aanvullende beurs berekenen | `/apps/duo-aanvullende-beurs` | [PROCESS.md](../../apps/duo-aanvullende-beurs/PROCESS.md) | 2026-08-11 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
-| Wat doet extra aflossen? | `/apps/duo-extra-aflossen` | [PROCESS.md](../../apps/duo-extra-aflossen/PROCESS.md) | 2026-08-11 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
-| Impact van mijn leenbedrag | `/apps/duo-leenbedrag-impact` | [PROCESS.md](../../apps/duo-leenbedrag-impact/PROCESS.md) | 2026-08-11 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
-| Wat wordt mijn DUO-maandbedrag? | `/apps/duo-maandbedrag` | [PROCESS.md](../../apps/duo-maandbedrag/PROCESS.md) | 2026-08-11 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
-| Wat wordt mijn studieschuld? | `/apps/duo-schuld-bij-starten-lenen` | [PROCESS.md](../../apps/duo-schuld-bij-starten-lenen/PROCESS.md) | 2026-08-11 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
-| Wat kost stoppen met studeren? | `/apps/duo-stoppen-kosten-prestatiebeurs` | [PROCESS.md](../../apps/duo-stoppen-kosten-prestatiebeurs/PROCESS.md) | 2026-08-11 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Wat kost mijn vermogen in box 3? | `/apps/box-3-impact` | [PROCESS.md](../../apps/box-3-impact/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening |
+| Aanvullende beurs berekenen | `/apps/duo-aanvullende-beurs` | [PROCESS.md](../../apps/duo-aanvullende-beurs/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Wat doet extra aflossen? | `/apps/duo-extra-aflossen` | [PROCESS.md](../../apps/duo-extra-aflossen/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Impact van mijn leenbedrag | `/apps/duo-leenbedrag-impact` | [PROCESS.md](../../apps/duo-leenbedrag-impact/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Wat wordt mijn DUO-maandbedrag? | `/apps/duo-maandbedrag` | [PROCESS.md](../../apps/duo-maandbedrag/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Wat wordt mijn studieschuld? | `/apps/duo-schuld-bij-starten-lenen` | [PROCESS.md](../../apps/duo-schuld-bij-starten-lenen/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Wat kost stoppen met studeren? | `/apps/duo-stoppen-kosten-prestatiebeurs` | [PROCESS.md](../../apps/duo-stoppen-kosten-prestatiebeurs/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Jaarruimte versus vrij beleggen | `/apps/jaarruimte-vs-vrij-beleggen` | [PROCESS.md](../../apps/jaarruimte-vs-vrij-beleggen/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening |
+| Welk ZZP-uurtarief heb ik nodig? | `/apps/zzp-uurtarief` | [PROCESS.md](../../apps/zzp-uurtarief/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening |
 
-Aantal actieve publieke tools: **6**. Aantal vereiste procesdocumenten: **6**.
+Aantal actieve publieke tools: **9**. Aantal vereiste procesdocumenten: **9**.
 
 ## Intern gebruik
 

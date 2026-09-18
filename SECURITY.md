@@ -13,7 +13,7 @@ geen persoonsgegevens, financiele invoer, tokens of andere geheimen in een
 melding.
 
 Gebruik bij voorkeur
-[GitHub Private Vulnerability Reporting](https://github.com/oli4vos/projectwebsite/security/advisories/new).
+[GitHub Private Vulnerability Reporting](https://github.com/oli4vos/tooling-site/security/advisories/new).
 Als die route niet beschikbaar is, vraag dan via het
 [GitHub-profiel van de beheerder](https://github.com/oli4vos) om een prive
 contactkanaal zonder de kwetsbaarheid zelf openbaar te beschrijven.

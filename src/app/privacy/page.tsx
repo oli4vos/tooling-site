@@ -78,7 +78,7 @@ export default function PrivacyPage() {
         <p>
           Stel een algemene privacyvraag via de{" "}
           <a
-            href="https://github.com/oli4vos/projectwebsite/issues"
+            href="https://github.com/oli4vos/tooling-site/issues"
             target="_blank"
             rel="noopener noreferrer"
             className="underline text-[var(--ink)]"
@@ -88,7 +88,7 @@ export default function PrivacyPage() {
           . Plaats daar geen financiële of andere gevoelige gegevens. Voor een
           beveiligingsmelding volg je het{" "}
           <a
-            href="https://github.com/oli4vos/projectwebsite/security/policy"
+            href="https://github.com/oli4vos/tooling-site/security/policy"
             target="_blank"
             rel="noopener noreferrer"
             className="underline text-[var(--ink)]"

@@ -3,8 +3,8 @@ tool: duo-extra-aflossen
 title: Wat doet extra aflossen?
 route: /apps/duo-extra-aflossen
 status: active-public
-lastReviewed: 2026-08-11
-sourceHash: sha256:0ae1c5c03098076efb9f28436c293a3b8763ef1838a2d64ea0d0b4e35936155c
+lastReviewed: 2026-09-18
+sourceHash: sha256:f7afaa6fdb0ec729b81d1b6e85a7706d51a93d7373f36c9515b9875f15294d0a
 sources:
   - apps/duo-extra-aflossen/app.json
   - apps/duo-extra-aflossen/Calculator.tsx

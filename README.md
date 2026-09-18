@@ -1,6 +1,6 @@
-# Grip op je studieschuld
+# Financiële tooling-site
 
-Informatieve rekentools en kennisbank voor mensen met een studieschuld: geen advies, wel eigen cijfers en drie fases om te begrijpen wat je opbouwt, wat je straks gaat betalen en wat je schuld betekent voor een eerste huis.
+Informatieve rekentools voor studieschuld, belasting, vermogen en ZZP-planning. Geen persoonlijk advies: wel scenario's met eigen cijfers, zichtbare aannames en primaire bronverwijzingen.
 
 ## Publieke tools
 
@@ -8,15 +8,21 @@ Deze lijst komt overeen met de actuele publieke `app.json`-manifests (`visibilit
 
 | Slug | Titel | Status | Categorie |
 |---|---|---|---|
-| `artifact-hypotheek-wonen-maximale-hypotheek` | Maximale hypotheek | `active` | Hypotheek |
+| `box-3-impact` | Wat kost mijn vermogen in box 3? | `beta` | Belasting |
+| `duo-aanvullende-beurs` | Hoeveel aanvullende beurs kan ik krijgen? | `beta` | Schulden |
 | `duo-extra-aflossen` | Wat doet extra aflossen? | `beta` | Schulden |
 | `duo-leenbedrag-impact` | Impact van mijn leenbedrag | `beta` | Schulden |
 | `duo-maandbedrag` | Wat wordt mijn DUO-maandbedrag? | `beta` | Schulden |
 | `duo-schuld-bij-starten-lenen` | Wat wordt mijn studieschuld? | `beta` | Schulden |
 | `duo-stoppen-kosten-prestatiebeurs` | Wat kost stoppen met studeren? | `beta` | Schulden |
-| `familiehulp-eerste-woning` | Lenen of schenken voor eerste woning | `beta` | Studieschuld & wonen |
-| `hypotheek-impact-studieschuld` | Hypotheek-impact studieschuld | `beta` | Hypotheek |
-| `schulden-volgorde` | Welke schuld eerst? | `beta` | Schulden |
+| `jaarruimte-vs-vrij-beleggen` | Jaarruimte versus vrij beleggen | `beta` | Belasting |
+| `zzp-uurtarief` | Welk ZZP-uurtarief heb ik nodig? | `beta` | Werk |
+
+De Toeslagenscan staat technisch in de codebase, maar blijft uitgeschakeld en is niet publiek bereikbaar.
+
+## Live website
+
+De productie-export wordt via GitHub Actions gepubliceerd op [oli4vos.github.io/tooling-site](https://oli4vos.github.io/tooling-site/). De Pages-workflow start na een geslaagde CI-run op `main`.
 
 ## Lokaal starten
 
@@ -219,7 +225,7 @@ Belangrijke centrale rekenlagen:
 
 ## Positionering
 
-De zichtbare site gaat over studieschuld begrijpen. Publieke copy blijft feitelijk en informatief: geen persoonlijk financieel advies, geen beleggingsadvies en geen aflossen-vs-beleggen-route in de zichtbare site.
+De zichtbare site biedt feitelijke rekentools voor studieschuld, belasting, vermogen en ZZP-planning. Publieke copy geeft geen persoonlijk financieel, fiscaal of beleggingsadvies en scenariovergelijkingen doen geen productaanbeveling.
 
 Verborgen tools blijven in de codebase om later veilig te kunnen heractiveren. `FUNCTIONALITY_STATUS.md` is leidend voor welke tools en flows publiek zichtbaar zijn.
 Inactieve tools worden daarbij standaard uit de publieke registry en navigatie gehouden.
