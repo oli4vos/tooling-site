@@ -74,6 +74,7 @@ export type SourceDatasetFamily =
   | "planning-debt-priority-rules"
   | "tax-box1-rates"
   | "tax-box3-provisional"
+  | "tax-proposal-rules"
   | "mortgage-provider-rate";
 
 export type SourceDataset<TData = unknown> = {

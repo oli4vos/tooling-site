@@ -24,6 +24,7 @@ type UseMobileFieldFlowResult = {
   goNext: () => void;
   goPrev: () => void;
   goToFirst: () => void;
+  goToField: (fieldId: string) => void;
   resetToFirst: () => void;
   attemptAdvance: (options?: AdvanceOptions) => void;
   wasAttempted: (fieldId: string) => boolean;
@@ -181,6 +182,10 @@ export function useMobileFieldFlow(fieldIds: string[]): UseMobileFieldFlowResult
     goNext,
     goPrev,
     goToFirst,
+    goToField: (fieldId: string) => {
+      const index = sanitizedFieldIds.indexOf(fieldId);
+      if (index >= 0) moveTo(index);
+    },
     resetToFirst,
     attemptAdvance,
     wasAttempted,

@@ -83,20 +83,16 @@ export function AppDashboard({ apps }: AppDashboardProps) {
           >
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <h4 className="font-serif text-[clamp(1.2rem,1.05rem+0.7vw,1.5rem)] tracking-[-0.015em] text-[var(--ink)]">
+                <h2 className="font-serif text-[clamp(1.2rem,1.05rem+0.7vw,1.5rem)] tracking-[-0.015em] text-[var(--ink)]">
                   {group.title}
-                </h4>
+                </h2>
                 <p className="mt-2 max-w-[60ch] text-[13.5px] leading-[1.65] text-[var(--muted)]">
                   <GlossaryText text={group.description} />
                 </p>
               </div>
             </div>
             <div
-              className={`mt-5 grid gap-4 md:grid-cols-2 ${
-                group.apps.length >= 3 && group.apps.length % 3 === 0
-                  ? "xl:grid-cols-3"
-                  : ""
-              }`}
+              className="mt-5 grid gap-4 md:grid-cols-2"
             >
               {group.apps.map((app) => (
                 <AppCard key={app.slug} app={app} />

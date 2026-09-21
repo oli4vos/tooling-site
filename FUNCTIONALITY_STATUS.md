@@ -35,11 +35,13 @@ Als een commit functionaliteit wijzigt maar dit bestand niet bijwerkt, is de wij
 
 | Onderdeel | Status | Schakelaar | Default | Opmerking | Heractivatie |
 |---|---|---|---|---|---|
-| Toolbibliotheek + categorie-navigatie | actief | n.v.t. | aan | `/apps` toont alle 9 publieke tools in taakgerichte groepen voor studieschuld, terugbetalen, belasting en ZZP, zonder links naar hidden of uitgeschakelde tools | n.v.t. |
-| Financiële kennisbank (`/kennisbank`) | actief | n.v.t. | aan | Centrale studieschuld-kennislaag met DUO-bronnen, hidden oude horizon-/beleggingskaders | n.v.t. |
+| Belastingtools 2027: youngtimer, reiskosten, pensioenplafond, overdrachtsbelasting, EIA en netto-inkomen | experimenteel | zes nieuwe `app.json`-manifests: `enabled: true`, `visibility: public`, `status: beta` | aan | Publieke voorstel-beta met centrale regels, exact centenrekenen, per-tool procesdocumentatie, bronversie en zichtbare beperkingen. Geen tool claimt fiscale productie-status. Zie `docs/belastingtools-2027-uitvoering.md` | Werk voorstellen na bij parlementaire wijzigingen; productie vereist onafhankelijke fiscale review |
+| Startersplanner 2026–2029 | voorbereid | `src/lib/tax/entrepreneur.ts` | uit | Centrale conceptberekening en grens-/historietests; nog geen toolmanifest of gebruikersflow | Eerst aftrekhistorie en verliesverrekening afronden, daarna adapter en volledige checks |
+| Toolbibliotheek + categorie-navigatie | actief | n.v.t. | aan | `/apps` toont 15 publieke tools, gegroepeerd rond inkomen, vermogen, ondernemen, wonen, vervoer, studie en lenen; hidden en uitgeschakelde tools blijven uitgesloten | n.v.t. |
+| Financiële kennisbank (`/kennisbank`) | actief | n.v.t. | aan | Algemene uitleg over het lezen van financiële berekeningen, met bestaande verdieping over studieschuld | n.v.t. |
 | Versie 1 publieke website | actief | route-oppervlak zonder `/v2` | aan | Enige publieke en actieve ontwerp-, UX-, performance- en optimalisatielijn; gekoppelde formulierkolommen en kaartinhoud blijven op gedeelde horizontale rijen uitgelijnd | n.v.t. |
 | Versie 2 presentatie | uitgeschakeld | private routecode onder `src/app/_v2-paused` | uit | Code behouden als gepauzeerde bron, maar geen publieke routes, navigatie, sitemap, SEO-output, dashboard, journey of livegangoppervlak | alleen heractiveren via expliciet scopebesluit + blueprint-/releasecheck |
-| Publieke calculators (app-registry) | actief | `enabled: true` + `visibility: "public"` | aan | 9 publieke tools in de huidige registry; disabled tools tellen niet mee | n.v.t. |
+| Publieke calculators (app-registry) | actief | `enabled: true` + `visibility: "public"` | aan | 15 publieke tools in de huidige registry; disabled tools tellen niet mee | n.v.t. |
 | Draft tools (concept) | hidden-draft | `enabled: true` + `visibility: "hidden"` | uit | Alle tools en flows die niet meer actief aangeroepen worden blijven hier verborgen totdat er expliciet heractivatie is | zet manifest op `public` + checks draaien |
 | Disabled tools | uitgeschakeld | `enabled: false` | uit | Manifestgestuurde technische uitschakeling; tool komt niet in registry, routes, dashboard, lazy bundle of publieke lijsten | zet `enabled` op `true`, genereer registry opnieuw en draai checks |
 | Studieschuld-vs-beleggen | hidden-draft | `visibility: "hidden"` | uit | Bewust uit zichtbare positionering; code behouden voor mogelijke latere heractivatie | alleen heractiveren met nieuwe productbeslissing + copycheck |
@@ -55,7 +57,7 @@ Als een commit functionaliteit wijzigt maar dit bestand niet bijwerkt, is de wij
 | Jaarruimte versus vrij beleggen | experimenteel | `visibility: "public"` | aan | Neutrale vergelijking met hetzelfde netto budget; gebruiker vult zelf de officiële jaarruimte in en de optionele Box 3-projectie hergebruikt zichtbaar de voorlopige 2026-regels | n.v.t. |
 | ZZP-uurtarief | experimenteel | `visibility: "public"` | aan | Tariefplanner exclusief btw met declarabele uren, kosten en expliciet door de gebruiker gekozen reserveringen; geen belastingaangifteberekening | n.v.t. |
 | Centrale tax/DUO/pension/constants lagen | actief | n.v.t. | aan | Hergebruikt door meerdere tools | n.v.t. |
-| Submit-driven calculatorflow | actief | `useMobileFieldFlow` + `MobileFieldFlowControls` + `CalculationResultActions` | aan | Alle 9 publieke calculators tonen mobiel één relevante vraag per stap met conditionele voortgang, gerichte Enter-afhandeling en resultaatfocus. Optionele verdiepingen tellen niet als lege vraag | n.v.t. |
+| Submit-driven calculatorflow | actief | `useMobileFieldFlow` + `MobileFieldFlowControls` + `CalculationResultActions` | aan | Alle 15 publieke calculators tonen mobiel één relevante vraag per stap met conditionele voortgang, gerichte Enter-afhandeling en resultaatfocus. Optionele verdiepingen tellen niet als lege vraag | n.v.t. |
 | Publieke technische procesgids | uitgeschakeld | procesdocumentatie blijft in `apps/*/PROCESS.md` | uit | Interne processtappen, reason codes en technische overdrachtstermen worden niet meer onder publieke toolpagina’s gerenderd; procesvalidatie en documentatie blijven intern volledig actief | alleen publiek maken na een afzonderlijk contentontwerp in gewone gebruikerstaal |
 | Volgende-stap navigatie tussen publieke tools | actief | `ToolNextSteps` + journey-map | aan | Compacte vervolgstap per publieke tool, afgestemd op de meest waarschijnlijke vervolgvraag | n.v.t. |
 | Maximale hypotheek | uitgeschakeld | `apps/artifact-hypotheek-wonen-maximale-hypotheek/app.json -> enabled: false` | uit | Toolcode, centrale hypotheekengine, PDF, transferflow en configuratie blijven behouden; registry, route, dashboard, homepage, profielaanbevelingen en lazy loading sluiten de tool uit | zet `enabled` op `true`, draai `generate:apps` en `process:update -- --tool artifact-hypotheek-wonen-maximale-hypotheek --reviewed`, en voer de volledige blueprint-/releasechecks uit |
@@ -86,6 +88,8 @@ Als een commit functionaliteit wijzigt maar dit bestand niet bijwerkt, is de wij
 
 | Datum | Commit | Wijziging | Impact |
 |---|---|---|---|
+| 2026-09-21 | `pending` | Zes Belastingplan 2027-tools na architectuur-, bron-, unit-, browser- en responsive checks publiek als voorstel-beta gezet. Homepage, overzicht, kennisbank, over-pagina en footer maken Grip breed financieel in plaats van DUO-gericht. Toeslagenscan blijft uitgeschakeld. | Financiële tools / belasting / navigatie / publicatie / UX |
+| 2026-09-20 | `pending` | Zes verborgen Belastingtools 2027-concepten, centrale voorstelregels en reken-/adaptertests voorbereid; startersrekenlaag zonder gebruikersflow. Publieke tools en Toeslagenscan-status ongewijzigd. Opdracht nog niet afgerond; geen publicatie | Belasting / conceptontwikkeling / bronvalidatie |
 | 2026-09-18 | `pending` | Box 3-impact, Jaarruimte versus vrij beleggen en ZZP-uurtarief gecontroleerd publiek gemaakt; Box 3-schuldendrempel en 2026-bronnen toegevoegd, niet-officiële eindverkoopheffing en adviesscores verwijderd, homepage en toolgroepen verbreed; Toeslagenscan blijft uitgeschakeld | Belasting / vermogen / ZZP / registry / bronnen / hosting |
 | 2026-08-11 | `pending` | Betekenisvolle resultaatgrafieken toegevoegd voor schuldverloop, extra aflossen, schuldopbouw bij stoppen, aanvullende beurs en hypotheekimpact; iedere grafiek gebruikt bestaande centrale resultaatdata en krijgt direct eronder een uitklapbare exacte tabel | Publieke DUO-tools / resultaten / charting / toegankelijkheid / responsive UX |
 | 2026-08-11 | `pending` | Negen UX-auditpunten uitgevoerd: publieke procesgids verwijderd, mobiele actie sticky gemaakt, optionele velden uit de vraagstappen gehaald, resultaten en bijzondere oudersituaties verduidelijkt, taakgerichte PDF-pariteit hersteld en navigatie, kaarten en calculatorbreakpoints responsief aangescherpt; de gevraagde plausibiliteitsgrens voor studiemaanden is bewust niet uitgevoerd | Publieke tools / mobiel / resultaten / PDF / copy / responsive UX / toegankelijkheid |
@@ -145,6 +149,8 @@ Als een commit functionaliteit wijzigt maar dit bestand niet bijwerkt, is de wij
 | 2026-05-27 | `ec9f015` t/m `8857ac8` | Profile sync policy/orchestrator/events/documentatie voorbereid | Profile storage voorbereiding |
 
 ## Open functionele punten
+
+- Zes overige Belastingtools 2027 (wijzigingsscan, startersplanner-flow, auto-TCO, zorgkosten, startupopties en vliegbelasting) blijven buiten de publieke scope totdat brondata en productflow volledig zijn uitgewerkt. De zes gepubliceerde tools zijn voorstel-beta en geen fiscale productieversie.
 
 - Private-lease impacttool inhoudelijk valideren voordat deze publiek wordt.
 - Begrippen-uitleg verder uitrollen naar losse vrije calculatorcopy buiten gedeelde componenten.

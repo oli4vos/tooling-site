@@ -3,8 +3,8 @@ tool: duo-aanvullende-beurs
 title: Aanvullende beurs berekenen
 route: /apps/duo-aanvullende-beurs
 status: active-public
-lastReviewed: 2026-09-18
-sourceHash: sha256:707b6923463d380a4d3a9c30ac216c200d0697d41593d19ce12d7933e03945b1
+lastReviewed: 2026-09-20
+sourceHash: sha256:27e89e282a39fd4864c03b4755d70c202db9ada43e6532eb2e971b60525cc9b3
 sources:
   - apps/duo-aanvullende-beurs/app.json
   - apps/duo-aanvullende-beurs/Calculator.tsx
@@ -100,6 +100,8 @@ flowchart TD
 ```
 
 De engine gebruikt de getraceerde regels in `src/lib/financial-constants/duo-additional-grant-rules-2026.ts`. Maximale studiefinancieringsbedragen per periode zijn centraal vastgelegd in `src/lib/financial-constants/duo-student-finance-amounts-2026.ts`.
+
+Bronregister-review 20 september 2026: de aparte dataset `tax-proposal-rules` is uitsluitend voor verborgen belastingconcepten toegevoegd. De DUO-datasets, selectie, formules en gebruikersflow hierboven veranderen niet; de voorstelversie wordt niet door deze tool geselecteerd.
 
 ## 5. Gegevensstroom en koppelingen
 

@@ -12,9 +12,9 @@ import {
 } from "@/lib/knowledge-sources";
 
 export const metadata: Metadata = {
-  title: "Kennisbank studieschuld | Financiële rekentools",
+  title: "Geldzaken begrijpen",
   description:
-    "Praktische kennisbank over DUO-rente, aanloopfase, draagkracht, extra aflossen en de impact van studieschuld op hypotheekruimte.",
+    "Begrijp financiële berekeningen: bruto en netto, aftrek en korting, voorstellen en geldende regels. Met verdiepende uitleg over studieschuld.",
 };
 
 function getRelatedToolLabel(slug: string) {
@@ -42,18 +42,31 @@ export default function KnowledgeBasePage() {
               Kennisbank
             </div>
             <h1 className="text-fluid-h1 mt-4 font-serif tracking-[-0.03em] text-[var(--ink)]">
-              Studieschuld begrijpen, stap voor stap
+              Geldzaken begrijpen, stap voor stap
             </h1>
             <p className="text-fluid-lead mt-5 max-w-[66ch] leading-[1.7] text-[var(--ink-2)]">
-              Feitelijke uitleg over wat je tijdens je studie opbouwt, wat je
-              na je studie betaalt en wat je studieschuld betekent als je later
-              een huis wilt kopen.
+              Een uitkomst is pas nuttig als je begrijpt wat die betekent.
+              Begin bij de belangrijkste begrippen en verdiep je daarna
+              in het onderwerp dat bij jouw situatie past.
             </p>
             <p className="mt-4 max-w-[66ch] text-[13.5px] leading-[1.65] text-[var(--muted)]">
               Gebruik dit als routehulp. Voor je eigen cijfers en scenario&apos;s
               ga je daarna door naar de rekentools.
             </p>
           </div>
+        </section>
+
+        <section className="mt-8" aria-labelledby="berekeningen-begrijpen">
+          <h2 id="berekeningen-begrijpen" className="font-serif text-2xl tracking-tight">Zo lees je een berekening</h2>
+          <div className="mt-5 grid gap-x-8 gap-y-6 md:grid-cols-2">
+            {[
+              {title:"Bruto is niet wat je overhoudt",text:"Bruto is het bedrag vóór inhoudingen. Netto is wat na de meegenomen inhoudingen overblijft. Controleer altijd of een tool bijvoorbeeld pensioenpremie en zorgbijdragen meerekent: een jaarvergelijking is niet automatisch je loonstrook."},
+              {title:"Aftrek en korting zijn verschillend",text:"Een aftrekpost verlaagt het inkomen of de winst waarover belasting wordt berekend. Een heffingskorting verlaagt de berekende belasting. Een aftrek van € 1.000 betekent dus niet dat je € 1.000 terugkrijgt."},
+              {title:"Een voorstel kan nog veranderen",text:"Tools met het label Belastingplan 2027 gebruiken een voorstelversie. Je verkent wat die plannen in een scenario betekenen; de uitkomst is geen toezegging over je toekomstige aanslag. De bronversie en beperkingen staan bij de uitkomst."},
+              {title:"Een scenario is geen voorspelling",text:"Verwachte salarisgroei, rendement en eigen belastingpercentages zijn aannames. Verander één aanname tegelijk om te zien welk verschil die maakt. Een bandbreedte geeft onzekerheid weer en belooft niet waar je precies uitkomt."},
+            ].map(item => <article key={item.title} className="border-t border-[var(--hair)] pt-4"><h3 className="font-medium text-[var(--ink)]">{item.title}</h3><p className="mt-2 max-w-[65ch] text-sm leading-7 text-[var(--muted)]">{item.text}</p></article>)}
+          </div>
+          <p className="mt-5 text-sm"><Link href="/apps" className="underline">Kies een tool voor je eigen cijfers</Link></p>
         </section>
 
         {visibleHorizonBands.length > 0 ? (
@@ -98,6 +111,7 @@ export default function KnowledgeBasePage() {
         ) : null}
 
         <section className="mt-8 space-y-6">
+          <h2 className="font-serif text-2xl tracking-tight">Verdieping: studie en studieschuld</h2>
           {visibleTopics.map((topic) => {
             const relatedTools = topic.relatedTools.filter(
               (slug) => appRegistryBySlug[slug],

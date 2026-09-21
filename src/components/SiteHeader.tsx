@@ -6,7 +6,7 @@ import { Logo } from "@/components/ui";
 import { ENABLE_PROFILE } from "@/lib/feature-flags";
 
 const navItems = [
-  { href: "/#route", label: "Stappenplan", mobileLabel: "Stappen" },
+  { href: "/#route", label: "Onderwerpen", mobileLabel: "Onderwerpen" },
   { href: "/apps", label: "Alle tools", mobileLabel: "Tools" },
   { href: "/kennisbank", label: "Kennisbank", mobileLabel: "Kennis" },
   { href: "/variabelen", label: "Aannames", mobileLabel: "Aannames" },

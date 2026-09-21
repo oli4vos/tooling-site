@@ -1,0 +1,28 @@
+{
+  "slug": "youngtimer-check",
+  "enabled": true,
+  "title": "Youngtimer Check 2026–2028",
+  "description": "Bekijk de bijtelling van een oudere zakelijke auto in 2026–2028, met de voorgestelde wijzigingen en overgangsregels.",
+  "type": "frontend",
+  "category": "Belasting",
+  "tags": [
+    "belastingplan",
+    "2027",
+    "voorstel"
+  ],
+  "status": "beta",
+  "visibility": "public",
+  "requiredProfileFields": [],
+  "assumptionsUsed": [
+    "tax"
+  ],
+  "calculationDomains": [
+    "tax"
+  ],
+  "riskLevel": "high",
+  "disclaimerType": "taxIndicative",
+  "outputType": "singleResult",
+  "version": "0.2.0",
+  "entry": "Calculator.tsx",
+  "reasonHint": "Vergelijk de bruto bijtelling; een netto-indicatie gebruikt je eigen tarief."
+}

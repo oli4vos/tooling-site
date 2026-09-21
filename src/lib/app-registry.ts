@@ -232,6 +232,34 @@ export const appRegistry = [
     "entry": "Calculator.tsx"
   },
   {
+    "slug": "eia-investeringsvoordeel",
+    "title": "EIA Investeringsvoordeel",
+    "description": "Vergelijk energie-investeringsaftrek van 40% met het voorstel van 45,5%, bij dezelfde referentievoorwaarden.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Belasting",
+    "tags": [
+      "belastingplan",
+      "2027",
+      "voorstel"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [],
+    "reasonHint": "Een winstaftrek is geen factuurkorting; bekijk het verschil bij je eigen tarief.",
+    "assumptionsUsed": [
+      "tax"
+    ],
+    "calculationDomains": [
+      "tax"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "taxIndicative",
+    "outputType": "singleResult",
+    "version": "0.2.0",
+    "entry": "Calculator.tsx"
+  },
+  {
     "slug": "jaarruimte-vs-vrij-beleggen",
     "title": "Jaarruimte versus vrij beleggen",
     "description": "Vergelijk twee scenario's met hetzelfde netto budget: pensioeninleg binnen je ingevulde jaarruimte en vrij beleggen.",
@@ -272,6 +300,146 @@ export const appRegistry = [
     "disclaimerType": "taxIndicative",
     "outputType": "scenarioComparison",
     "version": "1.1.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "netto-inkomen-vergelijking",
+    "title": "Netto-inkomen 2026 versus 2027",
+    "description": "Vergelijk inkomen na box 1-belasting in 2026 en het voorstel voor 2027; onbekende regels geven een bandbreedte.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Belasting",
+    "tags": [
+      "belastingplan",
+      "2027",
+      "voorstel"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [],
+    "reasonHint": "Geen loonstrook: controleer welke inkomsten, kortingen en inhoudingen meetellen.",
+    "assumptionsUsed": [
+      "tax"
+    ],
+    "calculationDomains": [
+      "tax"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "taxIndicative",
+    "outputType": "singleResult",
+    "version": "0.2.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "overdrachtsbelasting-check",
+    "title": "Overdrachtsbelasting-check",
+    "description": "Bekijk de overdrachtsbelasting per koper in 2026 of een voorgesteld 2027-scenario.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Belasting",
+    "tags": [
+      "belastingplan",
+      "2027",
+      "voorstel"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [],
+    "reasonHint": "Leeftijd, eigendomsaandeel en gebruik van de woning bepalen het scenario.",
+    "assumptionsUsed": [
+      "tax"
+    ],
+    "calculationDomains": [
+      "tax"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "taxIndicative",
+    "outputType": "singleResult",
+    "version": "0.2.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "pensioenplafond-check",
+    "title": "Pensioenplafond-check 2027–2032",
+    "description": "Zie welk salarisdeel boven het voorgestelde pensioenplafond valt en vergelijk een eigen groeiscenario.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Belasting",
+    "tags": [
+      "belastingplan",
+      "2027",
+      "voorstel"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [],
+    "reasonHint": "Geen pensioenvoorspelling: inzicht in salaris, grens en premieverschil.",
+    "assumptionsUsed": [
+      "tax"
+    ],
+    "calculationDomains": [
+      "tax"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "taxIndicative",
+    "outputType": "singleResult",
+    "version": "0.2.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "reiskostenvergoeding-check",
+    "title": "Reiskostenvergoeding-check",
+    "description": "Vergelijk de fiscale ruimte bij 23 en 25 cent per kilometer. Je werkelijke vergoeding kan anders zijn.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Belasting",
+    "tags": [
+      "belastingplan",
+      "2027",
+      "voorstel"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [],
+    "reasonHint": "Bereken de ruimte voor de ritten in jouw gekozen periode.",
+    "assumptionsUsed": [
+      "tax"
+    ],
+    "calculationDomains": [
+      "tax"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "taxIndicative",
+    "outputType": "singleResult",
+    "version": "0.2.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "youngtimer-check",
+    "title": "Youngtimer Check 2026–2028",
+    "description": "Bekijk de bijtelling van een oudere zakelijke auto in 2026–2028, met de voorgestelde wijzigingen en overgangsregels.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Belasting",
+    "tags": [
+      "belastingplan",
+      "2027",
+      "voorstel"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [],
+    "reasonHint": "Vergelijk de bruto bijtelling; een netto-indicatie gebruikt je eigen tarief.",
+    "assumptionsUsed": [
+      "tax"
+    ],
+    "calculationDomains": [
+      "tax"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "taxIndicative",
+    "outputType": "singleResult",
+    "version": "0.2.0",
     "entry": "Calculator.tsx"
   },
   {

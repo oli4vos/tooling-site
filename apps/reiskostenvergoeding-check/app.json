@@ -1,0 +1,28 @@
+{
+  "slug": "reiskostenvergoeding-check",
+  "enabled": true,
+  "title": "Reiskostenvergoeding-check",
+  "description": "Vergelijk de fiscale ruimte bij 23 en 25 cent per kilometer. Je werkelijke vergoeding kan anders zijn.",
+  "type": "frontend",
+  "category": "Belasting",
+  "tags": [
+    "belastingplan",
+    "2027",
+    "voorstel"
+  ],
+  "status": "beta",
+  "visibility": "public",
+  "requiredProfileFields": [],
+  "assumptionsUsed": [
+    "tax"
+  ],
+  "calculationDomains": [
+    "tax"
+  ],
+  "riskLevel": "high",
+  "disclaimerType": "taxIndicative",
+  "outputType": "singleResult",
+  "version": "0.2.0",
+  "entry": "Calculator.tsx",
+  "reasonHint": "Bereken de ruimte voor de ritten in jouw gekozen periode."
+}

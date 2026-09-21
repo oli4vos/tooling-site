@@ -17,6 +17,7 @@ import type {
   SourceReference,
 } from "@/lib/financial-constants/types";
 import { FINANCIAL_CONSTANTS_BY_YEAR } from "@/lib/financial-constants/years";
+import { TAX_PROPOSALS, TAX_PROPOSAL_SOURCE, validateTaxParameter } from "@/lib/financial-constants/tax-proposals";
 
 export const SOURCE_DATA_REFERENCE_DATE = "2026-07-19";
 
@@ -881,6 +882,15 @@ export function validateDatasetRegistry(
 
     issues.push(...validateSourceDatasetMeta(dataset.meta, asOf));
 
+    if (dataset.family === "tax-proposal-rules") {
+      const proposal = dataset.data as typeof TAX_PROPOSALS;
+      for (const [name, parameter] of Object.entries(proposal.parameters)) {
+        for (const field of validateTaxParameter(parameter)) {
+          issues.push(createValidationIssue("error", dataset.meta.id, `Parameter ${name}: ongeldig veld ${field}.`));
+        }
+      }
+    }
+
     if (dataset.meta.supersedes && !supersedesIds.has(dataset.meta.supersedes)) {
       issues.push(createValidationIssue("error", dataset.meta.id, "supersedes verwijst naar een onbekende dataset."));
     }
@@ -921,6 +931,21 @@ export function validateDatasetRegistry(
 const constants2026 = FINANCIAL_CONSTANTS_BY_YEAR[2026];
 
 export const SOURCE_DATASET_REGISTRY: readonly SourceDataset[] = [
+  {
+    family: "tax-proposal-rules",
+    scenario: "proposal-preview-2027",
+    meta: {
+      recordType: "dataset", id: "tax-proposals-2027-september", title: "Belastingplan 2027 — voorstelversie september",
+      year: 2027, version: "1.0.0-proposed", effectiveFrom: "2026-09-15", effectiveTo: "2032-12-31",
+      publishedAt: "2026-09-15", retrievedAt: "2026-09-18", lastVerifiedAt: TAX_PROPOSALS.verifiedAt,
+      nextReviewAt: TAX_PROPOSALS.nextReviewAt, sourceName: "Rijksoverheid", sourceUrl: TAX_PROPOSAL_SOURCE,
+      sourceType: "law", methodologyType: "official-norm", status: "future",
+      methodology: "Afzonderlijk voorstel-scenario; nooit geselecteerd als geldende wet. Iedere parameter heeft eigen juridische status, ingangsdatum en bronlocatie. Fiscale review staat open.",
+      notes: "Datasetperiode betreft beschikbaarheid van de voorstelversie, niet inwerkingtreding van wetgeving. Definitieve jaarregels worden niet overschreven.",
+    },
+    data: TAX_PROPOSALS,
+    usedBy: ["youngtimer-check", "reiskostenvergoeding-check", "pensioenplafond-check", "overdrachtsbelasting-check", "eia-investeringsvoordeel", "netto-inkomen-vergelijking"],
+  },
   {
     family: "mortgage-financing-load",
     scenario: "before-and-from-aow",

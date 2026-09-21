@@ -1,0 +1,28 @@
+{
+  "slug": "overdrachtsbelasting-check",
+  "enabled": true,
+  "title": "Overdrachtsbelasting-check",
+  "description": "Bekijk de overdrachtsbelasting per koper in 2026 of een voorgesteld 2027-scenario.",
+  "type": "frontend",
+  "category": "Belasting",
+  "tags": [
+    "belastingplan",
+    "2027",
+    "voorstel"
+  ],
+  "status": "beta",
+  "visibility": "public",
+  "requiredProfileFields": [],
+  "assumptionsUsed": [
+    "tax"
+  ],
+  "calculationDomains": [
+    "tax"
+  ],
+  "riskLevel": "high",
+  "disclaimerType": "taxIndicative",
+  "outputType": "singleResult",
+  "version": "0.2.0",
+  "entry": "Calculator.tsx",
+  "reasonHint": "Leeftijd, eigendomsaandeel en gebruik van de woning bepalen het scenario."
+}

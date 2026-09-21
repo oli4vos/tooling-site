@@ -3,8 +3,8 @@ tool: zzp-uurtarief
 title: Welk ZZP-uurtarief heb ik nodig?
 route: /apps/zzp-uurtarief
 status: active-public
-lastReviewed: 2026-09-18
-sourceHash: sha256:8d3ddacef1082e043b20d60e6eee5d569ae046f87bc2350b6c8fd49a76b18afc
+lastReviewed: 2026-09-21
+sourceHash: sha256:7cc94424d7dcda130acc325213c633b218bd0e7253351850d7db74895d29075a
 sources:
   - apps/zzp-uurtarief/app.json
   - apps/zzp-uurtarief/Calculator.tsx

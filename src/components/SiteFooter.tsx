@@ -12,7 +12,7 @@ export function SiteFooter() {
         <div className="max-w-[72ch]">
           <div className="flex items-center gap-4">
             <Logo size={16} />
-            <span>Rekentools voor studieschuld, belasting, vermogen en ZZP.</span>
+            <span>Begrijpelijk inzicht in je geldzaken.</span>
           </div>
           <p className="mt-2 leading-5">
             {GRIP_INDEPENDENCE_SHORT}{" "}

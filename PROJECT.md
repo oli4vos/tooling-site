@@ -19,7 +19,7 @@ De inhoudelijke focus ligt op domeinen waar veel mensen onzekerheid ervaren en w
 - belasting;
 - persoonlijke financiële planning.
 
-De actuele publieke positionering is een brede financiële tooling-site. Naast de bestaande DUO-tools zijn Box 3-impact, een neutrale vergelijking van jaarruimte met vrij beleggen en ZZP-uurtariefplanning publiek. De Toeslagenscan blijft bewust geparkeerd totdat een afzonderlijk publicatiebesluit en actuele bron- en releasecontrole zijn afgerond.
+De actuele publieke positionering is een brede financiële tooling-site. De onderwerpen zijn inkomen, werk, vermogen, pensioen, ondernemen, wonen, vervoer, studie en lenen. Naast de bestaande DUO-tools zijn Box 3-impact, jaarruimte, ZZP-uurtarief en zes duidelijk gelabelde Belastingplan 2027-voorstelbèta's publiek. De Toeslagenscan blijft bewust geparkeerd totdat een afzonderlijk publicatiebesluit en actuele bron- en releasecontrole zijn afgerond.
 
 De toon is feitelijk, terughoudend en uitlegbaar. De site helpt gebruikers grip krijgen, maar doet geen rechtstoekenning, productadvies of automatische aanvraag namens de gebruiker.
 

@@ -25,7 +25,7 @@ describe("generated app registry", () => {
   });
 
   it("contains expected public tools", () => {
-    expect(appRegistry).toHaveLength(9);
+    expect(appRegistry).toHaveLength(15);
     expect(appRegistryBySlug["artifact-hypotheek-wonen-maximale-hypotheek"]).toBeUndefined();
     expect(appComponents["artifact-hypotheek-wonen-maximale-hypotheek"]).toBeUndefined();
     expect(appRegistryBySlug["duo-doorlenen-of-stoppen"]).toBeUndefined();
@@ -66,10 +66,15 @@ describe("generated app registry", () => {
     );
     const hiddenManifests = manifests.filter((manifest) => manifest.visibility === "hidden");
 
-    expect(manifests).toHaveLength(167);
+    expect(manifests).toHaveLength(173);
     expect(manifests.every((manifest) => typeof manifest.enabled === "boolean")).toBe(true);
-    expect(appRegistry).toHaveLength(9);
+    expect(appRegistry).toHaveLength(15);
     expect(hiddenManifests).toHaveLength(153);
+    for (const slug of ["youngtimer-check", "reiskostenvergoeding-check", "pensioenplafond-check", "overdrachtsbelasting-check", "eia-investeringsvoordeel", "netto-inkomen-vergelijking"]) {
+      expect(manifests.find(manifest => manifest.slug === slug)).toMatchObject({visibility: "public", status: "beta"});
+      expect(appRegistryBySlug[slug]).toBeDefined();
+      expect(appComponents[slug]).toBeDefined();
+    }
     expect(familyHelp).toMatchObject({
       enabled: false,
       visibility: "public",

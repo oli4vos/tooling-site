@@ -1,0 +1,28 @@
+{
+  "slug": "pensioenplafond-check",
+  "enabled": true,
+  "title": "Pensioenplafond-check 2027–2032",
+  "description": "Zie welk salarisdeel boven het voorgestelde pensioenplafond valt en vergelijk een eigen groeiscenario.",
+  "type": "frontend",
+  "category": "Belasting",
+  "tags": [
+    "belastingplan",
+    "2027",
+    "voorstel"
+  ],
+  "status": "beta",
+  "visibility": "public",
+  "requiredProfileFields": [],
+  "assumptionsUsed": [
+    "tax"
+  ],
+  "calculationDomains": [
+    "tax"
+  ],
+  "riskLevel": "high",
+  "disclaimerType": "taxIndicative",
+  "outputType": "singleResult",
+  "version": "0.2.0",
+  "entry": "Calculator.tsx",
+  "reasonHint": "Geen pensioenvoorspelling: inzicht in salaris, grens en premieverschil."
+}

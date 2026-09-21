@@ -337,7 +337,7 @@ test("publieke oppervlakken blijven binnen dezelfde horizontale randen", async (
   ] as const;
 
   for (const route of routes) {
-    const response = await page.goto(route, { waitUntil: "networkidle" });
+    const response = await page.goto(route, { waitUntil: "domcontentloaded" });
     expect(response?.status(), route).toBe(200);
 
     for (const size of sizes) {
@@ -1481,6 +1481,8 @@ test("DUO-maandbedragen bieden centrale maxima direct in het veld aan", async ({
   });
   await page.evaluate(() => document.fonts.ready.then(() => undefined));
   await page.getByRole("button", { name: "Voorbeeld invullen" }).click();
+  // Pin this regression scenario to augustus; the default month intentionally follows today.
+  await page.locator("#calculationMonthSlider").fill("7");
   await expect(page.locator("#calculationMonthSlider")).toHaveAttribute(
     "aria-valuetext",
     "augustus 2026",

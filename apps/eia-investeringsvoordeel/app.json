@@ -1,0 +1,28 @@
+{
+  "slug": "eia-investeringsvoordeel",
+  "enabled": true,
+  "title": "EIA Investeringsvoordeel",
+  "description": "Vergelijk energie-investeringsaftrek van 40% met het voorstel van 45,5%, bij dezelfde referentievoorwaarden.",
+  "type": "frontend",
+  "category": "Belasting",
+  "tags": [
+    "belastingplan",
+    "2027",
+    "voorstel"
+  ],
+  "status": "beta",
+  "visibility": "public",
+  "requiredProfileFields": [],
+  "assumptionsUsed": [
+    "tax"
+  ],
+  "calculationDomains": [
+    "tax"
+  ],
+  "riskLevel": "high",
+  "disclaimerType": "taxIndicative",
+  "outputType": "singleResult",
+  "version": "0.2.0",
+  "entry": "Calculator.tsx",
+  "reasonHint": "Een winstaftrek is geen factuurkorting; bekijk het verschil bij je eigen tarief."
+}

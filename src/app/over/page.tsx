@@ -7,7 +7,7 @@ import { GRIP_INDEPENDENCE_FULL } from "@/lib/trust-copy";
 export const metadata: Metadata = {
   title: "Over Grip",
   description:
-    "Onafhankelijke, transparante rekentools voor studieschuld en hypotheekruimte. Geen advies, geen advertenties, alles lokaal in je browser.",
+    "Financiële tools die ingewikkelde geldzaken begrijpelijk maken. Transparante berekeningen, zonder advertenties of persoonlijk advies.",
 };
 
 export default function OverPage() {
@@ -25,9 +25,11 @@ export default function OverPage() {
 
           <div className="mt-6 max-w-[70ch] space-y-6 text-[14px] leading-[1.7] text-[var(--ink-2)]">
             <p>
-              Grip is een onafhankelijk project met heldere rekentools voor
-              mensen met een DUO-studieschuld en voor starters die hun maximale
-              hypotheek willen inschatten. Er zijn geen advertenties of
+              Grip maakt ingewikkelde geldzaken begrijpelijk. Of je nu werkt,
+              onderneemt, een woning koopt, voor later opbouwt of studeert:
+              de tools helpen je zien wat bedragen en regels voor jouw
+              scenario betekenen. Je hoeft geen financieel expert te zijn.
+              Er zijn geen advertenties of
               doorverwijzingen naar aanbieders. Je ziet informatieve scenario&apos;s
               met je eigen cijfers; geen persoonlijk advies.
             </p>

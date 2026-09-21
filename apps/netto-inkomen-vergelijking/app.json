@@ -1,0 +1,28 @@
+{
+  "slug": "netto-inkomen-vergelijking",
+  "enabled": true,
+  "title": "Netto-inkomen 2026 versus 2027",
+  "description": "Vergelijk inkomen na box 1-belasting in 2026 en het voorstel voor 2027; onbekende regels geven een bandbreedte.",
+  "type": "frontend",
+  "category": "Belasting",
+  "tags": [
+    "belastingplan",
+    "2027",
+    "voorstel"
+  ],
+  "status": "beta",
+  "visibility": "public",
+  "requiredProfileFields": [],
+  "assumptionsUsed": [
+    "tax"
+  ],
+  "calculationDomains": [
+    "tax"
+  ],
+  "riskLevel": "high",
+  "disclaimerType": "taxIndicative",
+  "outputType": "singleResult",
+  "version": "0.2.0",
+  "entry": "Calculator.tsx",
+  "reasonHint": "Geen loonstrook: controleer welke inkomsten, kortingen en inhoudingen meetellen."
+}

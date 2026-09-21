@@ -322,9 +322,9 @@ function CalculatorContent({
         <div className="text-[11px] uppercase tracking-[0.14em] text-[var(--muted)]">
           ZZP-planning
         </div>
-        <h2 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
+        <h1 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
           ZZP-uurtarief inclusief buffer, pensioen en AOV
-        </h2>
+        </h1>
         <p className="mt-3 text-[14px] leading-[1.7] text-[var(--ink-2)]">
           ZZP-omzet is geen salaris. Deze tool rekent terug welk uurtarief past
           bij je gewenste inkomen, reserveringen en niet-declarabele tijd.

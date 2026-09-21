@@ -10,17 +10,23 @@ Een tool valt in deze index wanneer het manifest onder `apps/<slug>/app.json` zo
 
 | Tool | Publieke route | Procesdocument | Laatst gecontroleerd | Procesplaten |
 | --- | --- | --- | --- | --- |
-| Wat kost mijn vermogen in box 3? | `/apps/box-3-impact` | [PROCESS.md](../../apps/box-3-impact/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening |
-| Aanvullende beurs berekenen | `/apps/duo-aanvullende-beurs` | [PROCESS.md](../../apps/duo-aanvullende-beurs/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Wat kost mijn vermogen in box 3? | `/apps/box-3-impact` | [PROCESS.md](../../apps/box-3-impact/PROCESS.md) | 2026-09-21 | Gebruiker, Beslissingen, Berekening |
+| Aanvullende beurs berekenen | `/apps/duo-aanvullende-beurs` | [PROCESS.md](../../apps/duo-aanvullende-beurs/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Wat doet extra aflossen? | `/apps/duo-extra-aflossen` | [PROCESS.md](../../apps/duo-extra-aflossen/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Impact van mijn leenbedrag | `/apps/duo-leenbedrag-impact` | [PROCESS.md](../../apps/duo-leenbedrag-impact/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Wat wordt mijn DUO-maandbedrag? | `/apps/duo-maandbedrag` | [PROCESS.md](../../apps/duo-maandbedrag/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Wat wordt mijn studieschuld? | `/apps/duo-schuld-bij-starten-lenen` | [PROCESS.md](../../apps/duo-schuld-bij-starten-lenen/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Wat kost stoppen met studeren? | `/apps/duo-stoppen-kosten-prestatiebeurs` | [PROCESS.md](../../apps/duo-stoppen-kosten-prestatiebeurs/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
-| Jaarruimte versus vrij beleggen | `/apps/jaarruimte-vs-vrij-beleggen` | [PROCESS.md](../../apps/jaarruimte-vs-vrij-beleggen/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening |
-| Welk ZZP-uurtarief heb ik nodig? | `/apps/zzp-uurtarief` | [PROCESS.md](../../apps/zzp-uurtarief/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening |
+| EIA Investeringsvoordeel | `/apps/eia-investeringsvoordeel` | [PROCESS.md](../../apps/eia-investeringsvoordeel/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
+| Jaarruimte versus vrij beleggen | `/apps/jaarruimte-vs-vrij-beleggen` | [PROCESS.md](../../apps/jaarruimte-vs-vrij-beleggen/PROCESS.md) | 2026-09-21 | Gebruiker, Beslissingen, Berekening |
+| Netto-inkomen 2026 versus 2027 | `/apps/netto-inkomen-vergelijking` | [PROCESS.md](../../apps/netto-inkomen-vergelijking/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
+| Overdrachtsbelasting-check | `/apps/overdrachtsbelasting-check` | [PROCESS.md](../../apps/overdrachtsbelasting-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
+| Pensioenplafond-check 2027–2032 | `/apps/pensioenplafond-check` | [PROCESS.md](../../apps/pensioenplafond-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
+| Reiskostenvergoeding-check | `/apps/reiskostenvergoeding-check` | [PROCESS.md](../../apps/reiskostenvergoeding-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
+| Youngtimer Check 2026–2028 | `/apps/youngtimer-check` | [PROCESS.md](../../apps/youngtimer-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
+| Welk ZZP-uurtarief heb ik nodig? | `/apps/zzp-uurtarief` | [PROCESS.md](../../apps/zzp-uurtarief/PROCESS.md) | 2026-09-21 | Gebruiker, Beslissingen, Berekening |
 
-Aantal actieve publieke tools: **9**. Aantal vereiste procesdocumenten: **9**.
+Aantal actieve publieke tools: **15**. Aantal vereiste procesdocumenten: **15**.
 
 ## Intern gebruik
 

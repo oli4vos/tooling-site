@@ -9,8 +9,28 @@ export type ToolGroup = {
 
 export const toolGroups: ToolGroup[] = [
   {
-    title: "Studieschuld",
-    description: "Begin hier: schuldopbouw, stoppen, leenbedrag, maandbedrag en wat DUO voor je keuzes betekent.",
+    title: "Inkomen & werk",
+    description: "Wat houd je over van je inkomen? Vergelijk jaarbedragen en bekijk de ruimte voor een reiskostenvergoeding.",
+    slugs: ["netto-inkomen-vergelijking", "reiskostenvergoeding-check"],
+  },
+  {
+    title: "Vermogen & pensioen",
+    description: "Maak belasting over vermogen en de gevolgen van pensioenkeuzes inzichtelijk met je eigen cijfers.",
+    slugs: ["box-3-impact", "jaarruimte-vs-vrij-beleggen", "pensioenplafond-check"],
+  },
+  {
+    title: "Ondernemen",
+    description: "Plan je uurtarief en vergelijk wat een zakelijke energie-investering fiscaal kan betekenen.",
+    slugs: ["zzp-uurtarief", "eia-investeringsvoordeel"],
+  },
+  {
+    title: "Wonen & vervoer",
+    description: "Bekijk overdrachtsbelasting bij een aankoop en de bijtelling van een oudere zakelijke auto.",
+    slugs: ["overdrachtsbelasting-check", "youngtimer-check"],
+  },
+  {
+    title: "Studie & lenen",
+    description: "Wat kost lenen tijdens je studie? Bekijk schuldopbouw, aanvullende beurs en de gevolgen van stoppen.",
     slugs: [
       "duo-schuld-bij-starten-lenen",
       "duo-stoppen-kosten-prestatiebeurs",
@@ -19,31 +39,21 @@ export const toolGroups: ToolGroup[] = [
     ],
   },
   {
-    title: "Terugbetalen",
-    description: "Bereken je maandbedrag, het effect van extra aflossen en een logische schuldvolgorde.",
+    title: "Studieschuld terugbetalen",
+    description: "Bereken je DUO-maandbedrag en vergelijk het effect van extra aflossen op rente en looptijd.",
     slugs: ["duo-extra-aflossen", "duo-maandbedrag", "schulden-volgorde"],
-  },
-  {
-    title: "Belasting & vermogen",
-    description: "Bekijk de voorlopige box 3-impact en vergelijk pensioeninleg binnen je eigen jaarruimte met vrij beleggen.",
-    slugs: ["box-3-impact", "jaarruimte-vs-vrij-beleggen"],
-  },
-  {
-    title: "Werk & ZZP",
-    description: "Plan welk uurtarief past bij je gewenste inkomen, declarabele uren, kosten en eigen reserveringen.",
-    slugs: ["zzp-uurtarief"],
   },
 ];
 
 const categoryToGroupTitle: Record<string, string> = {
-  Schulden: "Studieschuld",
-  Hypotheek: "Wonen",
-  Beleggen: "Terugbetalen",
-  Belasting: "Belasting",
-  Werk: "Werk & ZZP",
+  Schulden: "Studie & lenen",
+  Hypotheek: "Wonen & vervoer",
+  Beleggen: "Vermogen & pensioen",
+  Belasting: "Vermogen & pensioen",
+  Werk: "Inkomen & werk",
   "Regelingen en maandruimte": "Regelingen en maandruimte",
-  "Persoonlijke financiën": "Terugbetalen",
-  "Studieschuld & wonen": "Wonen",
+  "Persoonlijke financiën": "Inkomen & werk",
+  "Studieschuld & wonen": "Wonen & vervoer",
 };
 
 const preferredSlugsByCategory: Record<string, string[]> = {
@@ -77,12 +87,12 @@ const preferredSlugsByCategory: Record<string, string[]> = {
 };
 
 export function getGroupAnchorForCategory(category: string) {
-  const groupTitle = categoryToGroupTitle[category] ?? "Extra geld";
+  const groupTitle = categoryToGroupTitle[category] ?? "Inkomen & werk";
   return toAnchorId(groupTitle, "groep");
 }
 
 export function getCategoryFallbackToolHref(category: string, apps: AppManifest[]) {
-  const preferred = preferredSlugsByCategory[category] ?? ["duo-schuld-bij-starten-lenen"];
+  const preferred = preferredSlugsByCategory[category] ?? [];
   const match = preferred.find((slug) => apps.some((app) => app.slug === slug));
-  return `/apps/${match ?? "duo-schuld-bij-starten-lenen"}`;
+  return match ? `/apps/${match}` : "/apps";
 }
