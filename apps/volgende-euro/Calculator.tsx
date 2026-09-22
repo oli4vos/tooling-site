@@ -510,7 +510,7 @@ function CalculatorContent({ initialValues, hasRelevantProfileValues, profilePat
   const intro = (
     <>
       <div className="text-[11px] uppercase tracking-[0.14em] text-[var(--muted)]">Beslis-tool</div>
-      <h2 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">Wat doe ik met mijn volgende euro?</h2>
+      <h1 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">Wat doe ik met mijn volgende euro?</h1>
       <p className="mt-3 text-[14px] leading-[1.7] text-[var(--ink-2)]">Vul in wat je weet en klik op Bereken. De tool gebruikt alleen de gegevens die je invult.</p>
     </>
   );
