@@ -16,7 +16,7 @@ export const toolGroups: ToolGroup[] = [
   {
     title: "Vermogen & pensioen",
     description: "Maak belasting over vermogen en de gevolgen van pensioenkeuzes inzichtelijk met je eigen cijfers.",
-    slugs: ["box-3-impact", "jaarruimte-vs-vrij-beleggen", "prive-beleggen-eindvermogen", "pensioenplafond-check"],
+    slugs: ["box-3-impact", "jaarruimte-vs-vrij-beleggen", "prive-beleggen-eindvermogen", "fire-na-belasting", "pensioenplafond-check"],
   },
   {
     title: "Ondernemen",

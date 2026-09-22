@@ -292,6 +292,50 @@ export const appRegistry = [
     "entry": "Calculator.tsx"
   },
   {
+    "slug": "fire-na-belasting",
+    "title": "Wanneer kan ik stoppen of minder werken?",
+    "description": "Bereken je pad naar financiële vrijheid met inleg, rendement, uitgaven en box 3-effect.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Beleggen",
+    "tags": [
+      "FIRE",
+      "beleggen",
+      "box 3",
+      "financiële vrijheid",
+      "vermogen"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "savingInvesting.currentSavings",
+      "savingInvesting.monthlyFreeCashflow",
+      "savingInvesting.expectedAnnualReturn",
+      "savingInvesting.investmentHorizonYears",
+      "savingInvesting.riskProfile",
+      "tax.preferredTaxYear",
+      "tax.hasFiscalPartner"
+    ],
+    "reasonHint": "Handig als je wilt zien wanneer je vermogen je uitgaven kan dragen, met rendement en box 3 erbij.",
+    "assumptionsUsed": [
+      "box3",
+      "tax",
+      "investment",
+      "inflation"
+    ],
+    "calculationDomains": [
+      "investing",
+      "saving",
+      "tax",
+      "cashflow"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "financialEducation",
+    "outputType": "timeline",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
     "slug": "jaarruimte-vs-vrij-beleggen",
     "title": "Jaarruimte versus vrij beleggen",
     "description": "Vergelijk twee scenario's met hetzelfde netto budget: pensioeninleg binnen je ingevulde jaarruimte en vrij beleggen.",

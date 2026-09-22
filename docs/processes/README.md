@@ -19,6 +19,7 @@ Een tool valt in deze index wanneer het manifest onder `apps/<slug>/app.json` zo
 | Wat wordt mijn studieschuld? | `/apps/duo-schuld-bij-starten-lenen` | [PROCESS.md](../../apps/duo-schuld-bij-starten-lenen/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Wat kost stoppen met studeren? | `/apps/duo-stoppen-kosten-prestatiebeurs` | [PROCESS.md](../../apps/duo-stoppen-kosten-prestatiebeurs/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | EIA Investeringsvoordeel | `/apps/eia-investeringsvoordeel` | [PROCESS.md](../../apps/eia-investeringsvoordeel/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
+| Wanneer kan ik stoppen of minder werken? | `/apps/fire-na-belasting` | [PROCESS.md](../../apps/fire-na-belasting/PROCESS.md) | 2026-09-22 | Gebruiker, Beslissingen, Berekening |
 | Jaarruimte versus vrij beleggen | `/apps/jaarruimte-vs-vrij-beleggen` | [PROCESS.md](../../apps/jaarruimte-vs-vrij-beleggen/PROCESS.md) | 2026-09-21 | Gebruiker, Beslissingen, Berekening |
 | Netto-inkomen 2026 versus 2027 | `/apps/netto-inkomen-vergelijking` | [PROCESS.md](../../apps/netto-inkomen-vergelijking/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
 | Overdrachtsbelasting-check | `/apps/overdrachtsbelasting-check` | [PROCESS.md](../../apps/overdrachtsbelasting-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
@@ -28,7 +29,7 @@ Een tool valt in deze index wanneer het manifest onder `apps/<slug>/app.json` zo
 | Youngtimer Check 2026–2028 | `/apps/youngtimer-check` | [PROCESS.md](../../apps/youngtimer-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
 | Welk ZZP-uurtarief heb ik nodig? | `/apps/zzp-uurtarief` | [PROCESS.md](../../apps/zzp-uurtarief/PROCESS.md) | 2026-09-21 | Gebruiker, Beslissingen, Berekening |
 
-Aantal actieve publieke tools: **17**. Aantal vereiste procesdocumenten: **17**.
+Aantal actieve publieke tools: **18**. Aantal vereiste procesdocumenten: **18**.
 
 ## Intern gebruik
 

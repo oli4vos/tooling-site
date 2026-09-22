@@ -326,9 +326,9 @@ function CalculatorContent({
           <div className="text-[11px] uppercase tracking-[0.14em] text-[var(--muted)]">
             Financiële vrijheid
           </div>
-          <h2 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
+          <h1 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
             Wanneer kan ik stoppen of minder werken?
-          </h2>
+          </h1>
           <p className="mt-3 text-[14px] leading-[1.7] text-[var(--ink-2)]">
             Wil je weten wanneer werken optioneel wordt? Deze tool rekent uit
             wanneer je vermogen groot genoeg kan zijn om je uitgaven te dragen,
