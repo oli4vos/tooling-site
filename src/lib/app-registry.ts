@@ -459,6 +459,42 @@ export const appRegistry = [
     "entry": "Calculator.tsx"
   },
   {
+    "slug": "hypotheekrenteaftrek-afschaffen",
+    "title": "Wat als hypotheekrenteaftrek stopt?",
+    "description": "Zie wat afschaffing van hypotheekrenteaftrek indicatief doet met je netto rentelasten.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Hypotheek",
+    "tags": [
+      "hypotheek",
+      "renteaftrek",
+      "belasting",
+      "wonen"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "income.grossAnnualIncome",
+      "housing.mortgageRate",
+      "tax.preferredTaxYear"
+    ],
+    "reasonHint": "Handig als je wilt zien hoe je netto hypotheeklast verandert zonder renteaftrek.",
+    "assumptionsUsed": [
+      "tax",
+      "mortgage"
+    ],
+    "calculationDomains": [
+      "mortgage",
+      "tax",
+      "cashflow"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "mortgageIndicative",
+    "outputType": "scenarioComparison",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
     "slug": "jaarruimte-vs-vrij-beleggen",
     "title": "Jaarruimte versus vrij beleggen",
     "description": "Vergelijk twee scenario's met hetzelfde netto budget: pensioeninleg binnen je ingevulde jaarruimte en vrij beleggen.",

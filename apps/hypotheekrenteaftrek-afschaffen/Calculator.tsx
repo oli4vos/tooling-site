@@ -214,9 +214,9 @@ export default function Calculator() {
       intro={
         <>
           <div className="text-[11px] uppercase tracking-[0.14em] text-[var(--muted)]">Scenario</div>
-          <h2 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
+          <h1 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
             Wat als hypotheekrenteaftrek stopt?
-          </h2>
+          </h1>
           <p className="mt-3 text-[14px] leading-[1.7] text-[var(--ink-2)]">
             Deze tool laat indicatief zien wat je netto rentelast wordt met en zonder hypotheekrenteaftrek.
           </p>
