@@ -257,9 +257,9 @@ function CalculatorContent({
           <div className="text-[11px] uppercase tracking-[0.14em] text-[var(--muted)]">
             Privé beleggen
           </div>
-          <h2 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
+          <h1 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
             Wat wordt mijn eindvermogen met beleggen?
-          </h2>
+          </h1>
           <p className="mt-3 text-[14px] leading-[1.7] text-[var(--ink-2)]">
             Deze tool rekent je verwachte eindvermogen door bij maandelijks beleggen.
             Box 3 wordt automatisch per jaar meegerekend zodra je boven de vrijstelling uitkomt.

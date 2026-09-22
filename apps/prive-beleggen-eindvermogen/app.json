@@ -13,7 +13,7 @@
     "privé"
   ],
   "status": "beta",
-  "visibility": "hidden",
+  "visibility": "public",
   "requiredProfileFields": [
     "savingInvesting.currentSavings",
     "savingInvesting.monthlyFreeCashflow",

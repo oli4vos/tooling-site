@@ -23,11 +23,12 @@ Een tool valt in deze index wanneer het manifest onder `apps/<slug>/app.json` zo
 | Netto-inkomen 2026 versus 2027 | `/apps/netto-inkomen-vergelijking` | [PROCESS.md](../../apps/netto-inkomen-vergelijking/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
 | Overdrachtsbelasting-check | `/apps/overdrachtsbelasting-check` | [PROCESS.md](../../apps/overdrachtsbelasting-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
 | Pensioenplafond-check 2027–2032 | `/apps/pensioenplafond-check` | [PROCESS.md](../../apps/pensioenplafond-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
+| Wat wordt mijn eindvermogen met beleggen? | `/apps/prive-beleggen-eindvermogen` | [PROCESS.md](../../apps/prive-beleggen-eindvermogen/PROCESS.md) | 2026-09-22 | Gebruiker, Beslissingen, Berekening |
 | Reiskostenvergoeding-check | `/apps/reiskostenvergoeding-check` | [PROCESS.md](../../apps/reiskostenvergoeding-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
 | Youngtimer Check 2026–2028 | `/apps/youngtimer-check` | [PROCESS.md](../../apps/youngtimer-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
 | Welk ZZP-uurtarief heb ik nodig? | `/apps/zzp-uurtarief` | [PROCESS.md](../../apps/zzp-uurtarief/PROCESS.md) | 2026-09-21 | Gebruiker, Beslissingen, Berekening |
 
-Aantal actieve publieke tools: **16**. Aantal vereiste procesdocumenten: **16**.
+Aantal actieve publieke tools: **17**. Aantal vereiste procesdocumenten: **17**.
 
 ## Intern gebruik
 

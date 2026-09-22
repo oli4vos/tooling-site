@@ -25,7 +25,7 @@ describe("generated app registry", () => {
   });
 
   it("contains expected public tools", () => {
-    expect(appRegistry).toHaveLength(16);
+    expect(appRegistry).toHaveLength(17);
     expect(appRegistryBySlug["artifact-hypotheek-wonen-maximale-hypotheek"]).toBeDefined();
     expect(appComponents["artifact-hypotheek-wonen-maximale-hypotheek"]).toBeDefined();
     expect(appRegistryBySlug["duo-doorlenen-of-stoppen"]).toBeUndefined();
@@ -42,6 +42,7 @@ describe("generated app registry", () => {
     expect(appComponents["schulden-volgorde"]).toBeUndefined();
     expect(appRegistryBySlug["studieschuld-vs-beleggen"]).toBeUndefined();
     expect(appRegistryBySlug["volgende-euro"]).toBeUndefined();
+    expect(appRegistryBySlug["prive-beleggen-eindvermogen"]).toBeDefined();
     expect(appRegistryBySlug["jaarruimte-vs-vrij-beleggen"]).toBeDefined();
     expect(appRegistryBySlug["box-3-impact"]).toBeDefined();
     expect(appRegistryBySlug["hypotheek-aflossen-vs-beleggen"]).toBeUndefined();
@@ -68,8 +69,13 @@ describe("generated app registry", () => {
 
     expect(manifests).toHaveLength(173);
     expect(manifests.every((manifest) => typeof manifest.enabled === "boolean")).toBe(true);
-    expect(appRegistry).toHaveLength(16);
-    expect(hiddenManifests).toHaveLength(153);
+    expect(appRegistry).toHaveLength(17);
+    expect(hiddenManifests).toHaveLength(152);
+    expect(manifests.find((manifest) => manifest.slug === "prive-beleggen-eindvermogen")).toMatchObject({
+      enabled: true,
+      visibility: "public",
+      status: "beta",
+    });
     for (const slug of ["youngtimer-check", "reiskostenvergoeding-check", "pensioenplafond-check", "overdrachtsbelasting-check", "eia-investeringsvoordeel", "netto-inkomen-vergelijking"]) {
       expect(manifests.find(manifest => manifest.slug === slug)).toMatchObject({visibility: "public", status: "beta"});
       expect(appRegistryBySlug[slug]).toBeDefined();
