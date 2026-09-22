@@ -24,13 +24,13 @@ function collectPublicCopyFiles(directory: string): string[] {
   });
 }
 
-describe("Grip trust positioning", () => {
+describe("IPC Ole trust positioning", () => {
   it("states the independent private position without implying government affiliation", () => {
-    expect(GRIP_INDEPENDENCE_SHORT).toContain("onafhankelijk privé-initiatief");
-    expect(GRIP_INDEPENDENCE_FULL).toContain("privaat ontwikkeld initiatief");
+    expect(GRIP_INDEPENDENCE_SHORT).toContain("IPC Ole");
+    expect(GRIP_INDEPENDENCE_FULL).toContain("IPC Ole");
     expect(GRIP_INDEPENDENCE_FULL).toContain("niet verbonden aan of onderdeel van DUO");
     expect(GRIP_INDEPENDENCE_FULL).toContain("geen samenwerking");
-    expect(GRIP_DUO_CONTEXT).toContain("Grip berekent dit zelf");
+    expect(GRIP_DUO_CONTEXT).toContain("IPC Ole berekent dit zelf");
     expect(GRIP_DUO_CONTEXT).toContain("geen koppeling met Mijn DUO");
   });
 

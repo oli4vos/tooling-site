@@ -15,14 +15,14 @@ export function ToolIndependenceNotice() {
         </div>
         <div>
           <dt className="font-semibold text-[var(--ink)]">Berekening</dt>
-          <dd className="mt-0.5 text-[var(--muted)]">Grip</dd>
+          <dd className="mt-0.5 text-[var(--muted)]">IPC Ole</dd>
         </div>
       </dl>
       <Link
         href="/over#onafhankelijk"
         className="mt-3 inline-flex min-h-11 items-center text-[12px] font-medium text-[var(--ink)] underline underline-offset-4 hover:text-[var(--ink-2)]"
       >
-        Lees hoe Grip bronnen gebruikt
+        Lees hoe IPC Ole bronnen gebruikt
       </Link>
     </aside>
   );

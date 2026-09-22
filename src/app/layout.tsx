@@ -14,23 +14,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  applicationName: "Grip",
+  applicationName: "IPC Ole",
   title: {
-    default: "Grip | Financiële rekentools",
-    template: "%s | Grip",
+    default: "IPC Ole | Financiële rekentools",
+    template: "%s | IPC Ole",
   },
   description:
     "Onafhankelijke, privaat ontwikkelde rekentools op basis van openbare brongegevens.",
   openGraph: {
-    siteName: "Grip",
-    title: "Grip | Financiële rekentools",
+    siteName: "IPC Ole",
+    title: "IPC Ole | Financiële rekentools",
     description:
       "Onafhankelijke, privaat ontwikkelde rekentools op basis van openbare brongegevens.",
     type: "website",
   },
   twitter: {
     card: "summary",
-    title: "Grip | Financiële rekentools",
+    title: "IPC Ole | Financiële rekentools",
     description:
       "Onafhankelijke, privaat ontwikkelde rekentools op basis van openbare brongegevens.",
   },

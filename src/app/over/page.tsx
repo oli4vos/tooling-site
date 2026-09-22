@@ -5,7 +5,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { GRIP_INDEPENDENCE_FULL } from "@/lib/trust-copy";
 
 export const metadata: Metadata = {
-  title: "Over Grip",
+  title: "Over IPC Ole",
   description:
     "Financiële tools die ingewikkelde geldzaken begrijpelijk maken. Transparante berekeningen, zonder advertenties of persoonlijk advies.",
 };
@@ -20,12 +20,12 @@ export default function OverPage() {
       >
         <section className="rounded-[1.5rem] border hair bg-white/80 p-6 shadow-paper">
           <h1 className="text-fluid-h2 max-w-4xl font-serif tracking-[-0.03em] text-[var(--ink)]">
-            Over Grip
+            Over IPC Ole
           </h1>
 
           <div className="mt-6 max-w-[70ch] space-y-6 text-[14px] leading-[1.7] text-[var(--ink-2)]">
             <p>
-              Grip maakt ingewikkelde geldzaken begrijpelijk. Of je nu werkt,
+              IPC Ole maakt ingewikkelde geldzaken begrijpelijk. Of je nu werkt,
               onderneemt, een woning koopt, voor later opbouwt of studeert:
               de tools helpen je zien wat bedragen en regels voor jouw
               scenario betekenen. Je hoeft geen financieel expert te zijn.
@@ -40,7 +40,7 @@ export default function OverPage() {
               </h2>
               <p>{GRIP_INDEPENDENCE_FULL}</p>
               <p className="mt-3">
-                Grip heeft geen toegang tot Mijn DUO, systemen van de
+                IPC Ole heeft geen toegang tot Mijn DUO, systemen van de
                 Belastingdienst of andere interne overheidssystemen. Persoonlijke
                 gegevens die je daar ziet, zoek je zelf op en vul je zelf in.
               </p>
@@ -52,16 +52,16 @@ export default function OverPage() {
               </h2>
               <ol
                 className="grid gap-2 text-[13px] sm:grid-cols-4"
-                aria-label="Werkwijze van Grip"
+                aria-label="Werkwijze van IPC Ole"
               >
                 <li className="rounded-lg border hair bg-[var(--paper-soft)] p-3">
                   Openbare primaire bron
                 </li>
                 <li className="rounded-lg border hair bg-[var(--paper-soft)] p-3">
-                  Centrale Grip-brondata
+                  Centrale IPC Ole-brondata
                 </li>
                 <li className="rounded-lg border hair bg-[var(--paper-soft)] p-3">
-                  Grip-rekenlaag
+                  IPC Ole-rekenlaag
                 </li>
                 <li className="rounded-lg border hair bg-[var(--paper-soft)] p-3">
                   Resultaat voor jou

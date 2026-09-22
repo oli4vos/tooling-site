@@ -16,7 +16,7 @@ export default function HomePage() {
           <p className="text-fluid-lead mt-5 max-w-[55ch] leading-[1.75] text-[var(--ink-2)]">Van je inkomen en een woning tot ondernemen en pensioen. Vul je eigen cijfers in, vergelijk mogelijkheden en begrijp wat een regel voor jouw situatie betekent.</p>
           <div className="mt-7 flex flex-wrap gap-3"><BtnLink href="#route" kind="primary" size="lg">Vind jouw onderwerp</BtnLink><BtnLink href="/apps" kind="outline" size="lg">Bekijk alle tools</BtnLink></div>
         </div>
-        <aside className="border-l-2 border-[var(--accent)] pl-5 text-[14px] leading-7 text-[var(--ink-2)]" aria-label="Wat je van Grip kunt verwachten">
+        <aside className="border-l-2 border-[var(--accent)] pl-5 text-[14px] leading-7 text-[var(--ink-2)]" aria-label="Wat je van IPC Ole kunt verwachten">
           <h2 className="font-medium text-[var(--ink)]">Je hoeft geen expert te zijn.</h2>
           <p className="mt-2">Je krijgt een begrijpelijke uitkomst, met de aannames en uitleg erbij. De berekening gebeurt in je browser.</p>
           <p className="mt-3 text-[13px] text-[var(--muted)]">Een hulpmiddel om te begrijpen en te vergelijken. Geen persoonlijk financieel of belastingadvies.</p>

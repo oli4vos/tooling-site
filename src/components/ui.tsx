@@ -4,7 +4,7 @@ import type { Category } from "@/lib/categories";
 export function Logo({
   size = 22,
   tone = "ink",
-  name = "Grip",
+  name = "IPC Ole",
 }: {
   size?: number;
   tone?: "ink" | "paper";

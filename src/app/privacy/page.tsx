@@ -59,7 +59,7 @@ export default function PrivacyPage() {
         <p>
           Links naar DUO, overheidsinstanties en andere bronnen openen een
           externe website. Vanaf dat moment geldt het privacybeleid van die
-          partij. Grip voegt geen persoonlijke financiële invoer aan
+          partij. IPC Ole voegt geen persoonlijke financiële invoer aan
           zulke links toe.
         </p>
       </LegalSection>
