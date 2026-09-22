@@ -12,6 +12,7 @@ Een tool valt in deze index wanneer het manifest onder `apps/<slug>/app.json` zo
 | --- | --- | --- | --- | --- |
 | Maximale hypotheek | `/apps/artifact-hypotheek-wonen-maximale-hypotheek` | [PROCESS.md](../../apps/artifact-hypotheek-wonen-maximale-hypotheek/PROCESS.md) | 2026-09-21 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Wat kost mijn vermogen in box 3? | `/apps/box-3-impact` | [PROCESS.md](../../apps/box-3-impact/PROCESS.md) | 2026-09-21 | Gebruiker, Beslissingen, Berekening |
+| Box 3 indicatie | `/apps/box3-indicatie` | [PROCESS.md](../../apps/box3-indicatie/PROCESS.md) | 2026-09-22 | Gebruiker, Beslissingen, Berekening |
 | Aanvullende beurs berekenen | `/apps/duo-aanvullende-beurs` | [PROCESS.md](../../apps/duo-aanvullende-beurs/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Wat doet extra aflossen? | `/apps/duo-extra-aflossen` | [PROCESS.md](../../apps/duo-extra-aflossen/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Impact van mijn leenbedrag | `/apps/duo-leenbedrag-impact` | [PROCESS.md](../../apps/duo-leenbedrag-impact/PROCESS.md) | 2026-09-18 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
@@ -28,10 +29,11 @@ Een tool valt in deze index wanneer het manifest onder `apps/<slug>/app.json` zo
 | Wat wordt mijn eindvermogen met beleggen? | `/apps/prive-beleggen-eindvermogen` | [PROCESS.md](../../apps/prive-beleggen-eindvermogen/PROCESS.md) | 2026-09-22 | Gebruiker, Beslissingen, Berekening |
 | Reiskostenvergoeding-check | `/apps/reiskostenvergoeding-check` | [PROCESS.md](../../apps/reiskostenvergoeding-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
 | Studieschuld extra aflossen of beleggen? | `/apps/studieschuld-vs-beleggen` | [PROCESS.md](../../apps/studieschuld-vs-beleggen/PROCESS.md) | 2026-09-22 | Gebruiker, Beslissingen, Berekening |
+| Wat doe ik met mijn volgende euro? | `/apps/volgende-euro` | [PROCESS.md](../../apps/volgende-euro/PROCESS.md) | 2026-09-22 | Gebruiker, Beslissingen, Berekening |
 | Youngtimer Check 2026–2028 | `/apps/youngtimer-check` | [PROCESS.md](../../apps/youngtimer-check/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |
 | Welk ZZP-uurtarief heb ik nodig? | `/apps/zzp-uurtarief` | [PROCESS.md](../../apps/zzp-uurtarief/PROCESS.md) | 2026-09-21 | Gebruiker, Beslissingen, Berekening |
 
-Aantal actieve publieke tools: **20**. Aantal vereiste procesdocumenten: **20**.
+Aantal actieve publieke tools: **22**. Aantal vereiste procesdocumenten: **22**.
 
 ## Intern gebruik
 

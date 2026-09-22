@@ -21,6 +21,13 @@ export const appComponents: Record<string, AppCalculatorComponent> = {
       </div>
     ),
   }),
+  "box3-indicatie": dynamic(() => import("../../apps/box3-indicatie/Calculator"), {
+    loading: () => (
+      <div className="rounded-[2rem] border border-line bg-white/80 p-6 text-sm text-muted">
+        Rekentool laden...
+      </div>
+    ),
+  }),
   "duo-aanvullende-beurs": dynamic(() => import("../../apps/duo-aanvullende-beurs/Calculator"), {
     loading: () => (
       <div className="rounded-[2rem] border border-line bg-white/80 p-6 text-sm text-muted">
@@ -127,6 +134,13 @@ export const appComponents: Record<string, AppCalculatorComponent> = {
     ),
   }),
   "studieschuld-vs-beleggen": dynamic(() => import("../../apps/studieschuld-vs-beleggen/Calculator"), {
+    loading: () => (
+      <div className="rounded-[2rem] border border-line bg-white/80 p-6 text-sm text-muted">
+        Rekentool laden...
+      </div>
+    ),
+  }),
+  "volgende-euro": dynamic(() => import("../../apps/volgende-euro/Calculator"), {
     loading: () => (
       <div className="rounded-[2rem] border border-line bg-white/80 p-6 text-sm text-muted">
         Rekentool laden...

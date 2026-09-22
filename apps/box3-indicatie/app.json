@@ -12,8 +12,9 @@
     "beleggen",
     "spaargeld"
   ],
-  "status": "draft",
-  "visibility": "hidden",
+  "reasonHint": "Handig als je snel wilt zien hoe spaargeld, beleggingen en schulden kunnen doorwerken in een indicatieve box 3-berekening.",
+  "status": "beta",
+  "visibility": "public",
   "requiredProfileFields": [
     "savingInvesting.currentSavings",
     "tax.hasFiscalPartner",

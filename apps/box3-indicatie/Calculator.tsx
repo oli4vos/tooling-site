@@ -220,9 +220,9 @@ function CalculatorContent({
         <div className="text-[11px] uppercase tracking-[0.14em] text-[var(--muted)]">
           Box 3
         </div>
-        <h2 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
+        <h1 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
           Box 3 indicatie
-        </h2>
+        </h1>
         <p className="mt-3 text-[14px] leading-[1.7] text-[var(--ink-2)]">
           Bereken indicatief hoeveel box 3-heffing past bij jouw spaargeld,
           beleggingen en schulden. Kies tussen werkelijk rendement (default) en

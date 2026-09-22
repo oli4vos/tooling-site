@@ -74,6 +74,44 @@ export const appRegistry = [
     "entry": "Calculator.tsx"
   },
   {
+    "slug": "box3-indicatie",
+    "title": "Box 3 indicatie",
+    "description": "Bereken indicatief je box 3-heffing op spaargeld, beleggingen en schulden met werkelijk of forfaitair rendement.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Belasting",
+    "tags": [
+      "box 3",
+      "belasting",
+      "vermogen",
+      "beleggen",
+      "spaargeld"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "savingInvesting.currentSavings",
+      "tax.hasFiscalPartner",
+      "tax.preferredTaxYear",
+      "tax.preferredBox3Method"
+    ],
+    "reasonHint": "Handig als je snel wilt zien hoe spaargeld, beleggingen en schulden kunnen doorwerken in een indicatieve box 3-berekening.",
+    "assumptionsUsed": [
+      "tax",
+      "box3"
+    ],
+    "calculationDomains": [
+      "tax",
+      "saving",
+      "investing"
+    ],
+    "riskLevel": "medium",
+    "disclaimerType": "taxIndicative",
+    "outputType": "singleResult",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
     "slug": "duo-aanvullende-beurs",
     "title": "Aanvullende beurs berekenen",
     "description": "Schat je aanvullende beurs voor 2026 met het ouderinkomen uit het peiljaar.",
@@ -620,6 +658,58 @@ export const appRegistry = [
       "tax"
     ],
     "riskLevel": "medium",
+    "disclaimerType": "financialEducation",
+    "outputType": "scenarioComparison",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
+    "slug": "volgende-euro",
+    "title": "Wat doe ik met mijn volgende euro?",
+    "description": "Ontdek of extra geld logischer naar buffer, aflossen, pensioen, woning of beleggen kan.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Persoonlijke financiën",
+    "tags": [
+      "buffer",
+      "beleggen",
+      "aflossen",
+      "pensioen",
+      "FIRE"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "savingInvesting.currentSavings",
+      "savingInvesting.targetEmergencyFund",
+      "savingInvesting.monthlyFreeCashflow",
+      "savingInvesting.expectedAnnualReturn",
+      "savingInvesting.investmentHorizonYears",
+      "savingInvesting.riskProfile",
+      "studentDebt.remainingDebt",
+      "studentDebt.duoInterestRate",
+      "housing.mortgageRate",
+      "housing.targetHomePrice",
+      "housing.ownFunds"
+    ],
+    "reasonHint": "Handig als je niet zeker weet of extra geld beter naar buffer, aflossen, pensioen of beleggen kan.",
+    "assumptionsUsed": [
+      "duo",
+      "tax",
+      "box3",
+      "mortgage",
+      "investment"
+    ],
+    "calculationDomains": [
+      "saving",
+      "investing",
+      "studentDebt",
+      "mortgage",
+      "tax",
+      "cashflow",
+      "pension"
+    ],
+    "riskLevel": "high",
     "disclaimerType": "financialEducation",
     "outputType": "scenarioComparison",
     "version": "1.0.0",

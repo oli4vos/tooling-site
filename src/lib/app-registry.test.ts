@@ -25,7 +25,7 @@ describe("generated app registry", () => {
   });
 
   it("contains expected public tools", () => {
-    expect(appRegistry).toHaveLength(21);
+    expect(appRegistry).toHaveLength(22);
     expect(appRegistryBySlug["artifact-hypotheek-wonen-maximale-hypotheek"]).toBeDefined();
     expect(appComponents["artifact-hypotheek-wonen-maximale-hypotheek"]).toBeDefined();
     expect(appRegistryBySlug["duo-doorlenen-of-stoppen"]).toBeUndefined();
@@ -69,8 +69,8 @@ describe("generated app registry", () => {
 
     expect(manifests).toHaveLength(173);
     expect(manifests.every((manifest) => typeof manifest.enabled === "boolean")).toBe(true);
-    expect(appRegistry).toHaveLength(21);
-    expect(hiddenManifests).toHaveLength(148);
+    expect(appRegistry).toHaveLength(22);
+    expect(hiddenManifests).toHaveLength(147);
     expect(manifests.find((manifest) => manifest.slug === "prive-beleggen-eindvermogen")).toMatchObject({
       enabled: true,
       visibility: "public",
