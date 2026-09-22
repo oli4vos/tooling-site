@@ -12,7 +12,7 @@
     "maandlasten"
   ],
   "status": "active",
-  "visibility": "hidden",
+  "visibility": "public",
   "requiredProfileFields": [
     "income.grossAnnualIncome",
     "income.partnerGrossAnnualIncome",

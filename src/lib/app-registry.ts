@@ -5,6 +5,44 @@ import type { AppManifest } from "@/lib/app-types";
 
 export const appRegistry = [
   {
+    "slug": "annuitair-lineair",
+    "title": "Annuïtair of lineair",
+    "description": "Vergelijk hoe je maandlasten en schuld dalen bij een annuïtaire of lineaire hypotheek.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Hypotheek",
+    "tags": [
+      "hypotheek",
+      "annuiteit",
+      "lineair",
+      "maandlasten"
+    ],
+    "status": "active",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "income.grossAnnualIncome",
+      "income.partnerGrossAnnualIncome",
+      "housing.mortgageRate",
+      "housing.mortgageTermYears"
+    ],
+    "reasonHint": "Handig als je annuïtaire en lineaire hypotheeklasten naast elkaar wilt zetten.",
+    "assumptionsUsed": [
+      "mortgage",
+      "tax",
+      "investment"
+    ],
+    "calculationDomains": [
+      "mortgage",
+      "housing",
+      "investing"
+    ],
+    "riskLevel": "medium",
+    "disclaimerType": "mortgageIndicative",
+    "outputType": "scenarioComparison",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
     "slug": "artifact-hypotheek-wonen-maximale-hypotheek",
     "title": "Maximale hypotheek",
     "description": "Schat je maximale hypotheek met je inkomen, woningwaarde, studieschuld en NHG.",
