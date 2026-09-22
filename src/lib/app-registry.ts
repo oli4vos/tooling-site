@@ -580,6 +580,52 @@ export const appRegistry = [
     "entry": "Calculator.tsx"
   },
   {
+    "slug": "studieschuld-vs-beleggen",
+    "title": "Studieschuld extra aflossen of beleggen?",
+    "description": "Vergelijk wat extra aflossen op je studieschuld doet ten opzichte van sparen of beleggen.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Schulden",
+    "tags": [
+      "studieschuld",
+      "beleggen",
+      "rente"
+    ],
+    "status": "active",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "studentDebt.remainingDebt",
+      "studentDebt.duoInterestRate",
+      "studentDebt.remainingTermYears",
+      "income.grossAnnualIncome",
+      "income.partnerGrossAnnualIncome",
+      "savingInvesting.monthlyFreeCashflow",
+      "savingInvesting.expectedAnnualReturn",
+      "savingInvesting.investmentHorizonYears",
+      "savingInvesting.currentSavings",
+      "tax.preferredTaxYear",
+      "tax.hasFiscalPartner",
+      "tax.preferredBox3Method"
+    ],
+    "reasonHint": "Handig als je wilt vergelijken wat extra aflossen op je studieschuld doet ten opzichte van beleggen.",
+    "assumptionsUsed": [
+      "duo",
+      "box3",
+      "investment"
+    ],
+    "calculationDomains": [
+      "studentDebt",
+      "investing",
+      "saving",
+      "tax"
+    ],
+    "riskLevel": "medium",
+    "disclaimerType": "financialEducation",
+    "outputType": "scenarioComparison",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
     "slug": "youngtimer-check",
     "title": "Youngtimer Check 2026–2028",
     "description": "Bekijk de bijtelling van een oudere zakelijke auto in 2026–2028, met de voorgestelde wijzigingen en overgangsregels.",

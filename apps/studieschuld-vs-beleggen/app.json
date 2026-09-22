@@ -11,7 +11,7 @@
     "rente"
   ],
   "status": "active",
-  "visibility": "hidden",
+  "visibility": "public",
   "requiredProfileFields": [
     "studentDebt.remainingDebt",
     "studentDebt.duoInterestRate",

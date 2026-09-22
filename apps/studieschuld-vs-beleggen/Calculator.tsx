@@ -470,9 +470,9 @@ function CalculatorContent({
         <div className="text-[11px] uppercase tracking-[0.14em] text-[var(--muted)]">
           Scenario
         </div>
-        <h2 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
+        <h1 className="mt-2 font-serif text-[28px] tracking-[-0.02em] text-[var(--ink)]">
           Studieschuld extra aflossen of beleggen?
-        </h2>
+        </h1>
         <p className="mt-3 text-[14px] leading-[1.7] text-[var(--ink-2)]">
           Je verplichte DUO-bedrag moet je sowieso betalen. De keuze gaat vooral
           over extra aflossen: doe je dat, of gebruik je dat geld liever om te
