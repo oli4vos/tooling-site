@@ -336,6 +336,53 @@ export const appRegistry = [
     "entry": "Calculator.tsx"
   },
   {
+    "slug": "hypotheek-aflossen-vs-beleggen",
+    "title": "Hypotheek aflossen of beleggen?",
+    "description": "Vergelijk extra aflossen op je hypotheek met vrij beleggen, inclusief renteaftrek en box 3-effect.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Hypotheek",
+    "tags": [
+      "hypotheek",
+      "aflossen",
+      "beleggen",
+      "box 3",
+      "renteaftrek"
+    ],
+    "status": "beta",
+    "visibility": "public",
+    "requiredProfileFields": [
+      "income.grossAnnualIncome",
+      "housing.mortgageRate",
+      "housing.mortgageTermYears",
+      "savingInvesting.currentSavings",
+      "savingInvesting.expectedAnnualReturn",
+      "savingInvesting.investmentHorizonYears",
+      "tax.hasFiscalPartner",
+      "tax.preferredTaxYear",
+      "savingInvesting.targetEmergencyFund",
+      "savingInvesting.monthlyFreeCashflow"
+    ],
+    "reasonHint": "Handig als je extra geld wilt vergelijken tussen hypotheek aflossen en vrij beleggen.",
+    "assumptionsUsed": [
+      "tax",
+      "box3",
+      "mortgage",
+      "investment"
+    ],
+    "calculationDomains": [
+      "mortgage",
+      "investing",
+      "tax",
+      "saving"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "mortgageIndicative",
+    "outputType": "scenarioComparison",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
     "slug": "jaarruimte-vs-vrij-beleggen",
     "title": "Jaarruimte versus vrij beleggen",
     "description": "Vergelijk twee scenario's met hetzelfde netto budget: pensioeninleg binnen je ingevulde jaarruimte en vrij beleggen.",

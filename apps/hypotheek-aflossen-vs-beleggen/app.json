@@ -13,7 +13,7 @@
     "renteaftrek"
   ],
   "status": "beta",
-  "visibility": "hidden",
+  "visibility": "public",
   "requiredProfileFields": [
     "income.grossAnnualIncome",
     "housing.mortgageRate",
