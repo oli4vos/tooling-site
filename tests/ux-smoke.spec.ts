@@ -769,29 +769,6 @@ test("maximale hypotheek toont rentelink en salarisverhogingsanalyse", async ({
   await rateInput.fill("4,2");
   await expect(rateInput).toHaveValue("4,2");
 
-  await page.goto("/apps/hypotheek-impact-studieschuld", {
-    waitUntil: "networkidle",
-  });
-  const impactRateLink = page.getByRole("link", {
-    name: /Bekijk actuele hypotheekrentes ter inspiratie/,
-  });
-  await expect(impactRateLink).toBeVisible();
-  await expect(impactRateLink).toHaveAttribute(
-    "href",
-    "https://www.geld.nl/hypotheek/hypotheekrente",
-  );
-  await expect(impactRateLink).toHaveAttribute("target", "_blank");
-  await expect(impactRateLink).toHaveAttribute("rel", "noopener noreferrer");
-  const impactRateInput = page.getByRole("textbox", {
-    name: /Hypotheekrentepercentage/,
-  });
-  await impactRateInput.fill("4,3");
-  await expect(impactRateInput).toHaveValue("4,3");
-
-  await page.goto("/apps/artifact-hypotheek-wonen-maximale-hypotheek", {
-    waitUntil: "networkidle",
-  });
-
   await page.getByRole("button", { name: "Voorbeeld invullen" }).click();
   await page.getByRole("button", { name: "Bereken", exact: true }).click();
   await expect(
@@ -1146,7 +1123,6 @@ test("homepage verwijst één keer naar het volledige tooloverzicht", async ({ p
   expect(uniqueToolRoutes).toHaveLength(getPublicToolRoutes().length);
   expect(uniqueToolRoutes).not.toContain("/apps/familiehulp-eerste-woning");
   expect(uniqueToolRoutes).not.toContain(allowanceScanRoute);
-  expect(uniqueToolRoutes).not.toContain(maximumMortgageRoute);
   expect(uniqueToolRoutes).not.toContain(debtComparisonRoute);
   expect(uniqueToolRoutes.every((route) => !route.startsWith("/v2"))).toBe(true);
   await expect(page.locator('a[href^="/v2"]')).toHaveCount(0);
@@ -1174,18 +1150,16 @@ test("toeslagenscan is uitgeschakeld en nergens publiek gelinkt", async ({
   expect(response?.status()).toBe(404);
 });
 
-test("maximale hypotheek is uitgeschakeld en nergens publiek gelinkt", async ({
+test("maximale hypotheek is publiek bereikbaar via de toolbibliotheek", async ({
   page,
 }, testInfo) => {
   test.skip(!testInfo.project.name.startsWith("desktop"), "Desktop routecontrole");
 
-  for (const route of ["/", "/apps"]) {
-    await page.goto(route, { waitUntil: "networkidle" });
-    await expect(page.locator(`a[href="${maximumMortgageRoute}"]`)).toHaveCount(0);
-  }
+  await page.goto("/apps", { waitUntil: "networkidle" });
+  await expect(page.locator(`a[href="${maximumMortgageRoute}"]`)).toHaveCount(1);
 
   const response = await page.goto(maximumMortgageRoute, { waitUntil: "networkidle" });
-  expect(response?.status()).toBe(404);
+  expect(response?.status()).toBe(200);
 });
 
 test("schuldenvergelijker is uitgeschakeld en nergens publiek gelinkt", async ({

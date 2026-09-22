@@ -45,8 +45,8 @@ describe("Grip trust positioning", () => {
     expect(publicCopy).not.toMatch(/(?:we|grip) halen .{0,60} uit mijn duo/);
   });
 
-  it("keeps specifically excluded public tools disabled", () => {
-    for (const slug of ["artifact-hypotheek-wonen-maximale-hypotheek", "toeslagen-scan"]) {
+  it("keeps the toeslagenscan disabled", () => {
+    for (const slug of ["toeslagen-scan"]) {
       const manifest = readAppManifest(slug);
       expect(manifest.enabled, slug).toBe(false);
     }

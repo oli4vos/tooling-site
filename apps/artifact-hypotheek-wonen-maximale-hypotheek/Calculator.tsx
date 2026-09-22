@@ -11,6 +11,7 @@ import {
   ExampleValuesNotice,
   ResultContextNotice,
 } from "@/components/tool/CalculationContextNotice";
+import { CalculationResultActions } from "@/components/tool/CalculationResultActions";
 import { ToolActionButton } from "@/components/tool/ToolActionButton";
 import { ToolHandoffNotice } from "@/components/tool/ToolHandoffNotice";
 import { ToolNextSteps } from "@/components/tool/ToolNextSteps";
@@ -361,6 +362,7 @@ function CalculatorContent({
       }
       inputs={
         <form
+          id="mortgage-form"
           className="grid gap-6"
           onSubmit={(event) => {
             event.preventDefault();
@@ -671,6 +673,17 @@ function CalculatorContent({
             <MortgageCalculationBreakdown
               input={submittedValidation.parsed}
               result={result}
+            />
+          ) : null}
+          {result ? (
+            <CalculationResultActions
+              onEdit={() =>
+                document
+                  .getElementById("mortgage-form")
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" })
+              }
+              onRestart={() => replaceValues(defaultValues, "Invoer gewist.")}
+              restartDescription="Je hypotheekinvoer en deze indicatieve uitkomst worden gewist."
             />
           ) : null}
           {result ? <ToolNextSteps {...nextSteps} /> : null}

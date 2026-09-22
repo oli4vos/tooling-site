@@ -81,7 +81,7 @@ describe("duo mortgage transfer", () => {
     expect(loaded.data.returnPath).toBe("/apps/hypotheek-impact-studieschuld");
   });
 
-  it("rejects the disabled maximum mortgage tool as a source and return target", () => {
+  it("accepts the public maximum mortgage tool as a source and return target", () => {
     const windowMock = installWindowMock();
     windowMock.location.pathname = "/apps/artifact-hypotheek-wonen-maximale-hypotheek";
 
@@ -93,9 +93,9 @@ describe("duo mortgage transfer", () => {
       draft: { hasStudentLoan: true, statutoryMonthlyPayment: "" },
     });
 
-    expect(created.ok).toBe(false);
-    if (created.ok) throw new Error("expected disabled transfer rejection");
-    expect(created.error).toBe("invalid-transfer");
+    expect(created.ok).toBe(true);
+    if (!created.ok) throw new Error("expected transfer");
+    expect(created.data.returnPath).toBe("/apps/artifact-hypotheek-wonen-maximale-hypotheek");
   });
 
   it("rejects corrupt JSON and missing storage", () => {

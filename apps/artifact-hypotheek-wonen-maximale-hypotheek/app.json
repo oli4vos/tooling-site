@@ -1,6 +1,6 @@
 {
   "slug": "artifact-hypotheek-wonen-maximale-hypotheek",
-  "enabled": false,
+  "enabled": true,
   "title": "Maximale hypotheek",
   "description": "Schat je maximale hypotheek met je inkomen, woningwaarde, studieschuld en NHG.",
   "type": "frontend",

@@ -5,6 +5,38 @@ import type { AppManifest } from "@/lib/app-types";
 
 export const appRegistry = [
   {
+    "slug": "artifact-hypotheek-wonen-maximale-hypotheek",
+    "title": "Maximale hypotheek",
+    "description": "Schat je maximale hypotheek met je inkomen, woningwaarde, studieschuld en NHG.",
+    "enabled": true,
+    "type": "frontend",
+    "category": "Hypotheek",
+    "tags": [
+      "hypotheek",
+      "woningwaarde",
+      "inkomen",
+      "NHG",
+      "studieschuld"
+    ],
+    "status": "active",
+    "visibility": "public",
+    "reasonHint": "Indicatieve tool voor starters zonder bestaande hypotheek die hun maximale hypotheek willen inschatten.",
+    "assumptionsUsed": [
+      "mortgage"
+    ],
+    "calculationDomains": [
+      "mortgage",
+      "housing",
+      "studentDebt",
+      "cashflow"
+    ],
+    "riskLevel": "high",
+    "disclaimerType": "mortgageIndicative",
+    "outputType": "mixed",
+    "version": "1.0.0",
+    "entry": "Calculator.tsx"
+  },
+  {
     "slug": "box-3-impact",
     "title": "Wat kost mijn vermogen in box 3?",
     "description": "Zie hoeveel belasting je indicatief betaalt over spaargeld, beleggingen en schulden.",

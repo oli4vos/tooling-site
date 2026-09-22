@@ -172,7 +172,7 @@ Binnen scope voor actieve-toolrefactors staan de publieke registry-tools:
 
 | Tool | Manifeststatus | Scopecriterium |
 |---|---|---|
-| `artifact-hypotheek-wonen-maximale-hypotheek` | `active`, `public`, `enabled: false` | Tijdelijk uitgeschakeld; broncode behouden, zonder registry-, dashboard- of publieke routevermelding |
+| `artifact-hypotheek-wonen-maximale-hypotheek` | `active`, `public`, `enabled: true` | Publieke uitgebreide maximale-hypotheektool met centrale hypotheekengine, actuele brondata, PDF en DUO-overdracht |
 | `duo-extra-aflossen` | `beta`, `public` | Publieke registry en dashboardroute |
 | `duo-leenbedrag-impact` | `beta`, `public` | Publieke registry en dashboardroute |
 | `duo-maandbedrag` | `beta`, `public` | Publieke registry en dashboardroute |

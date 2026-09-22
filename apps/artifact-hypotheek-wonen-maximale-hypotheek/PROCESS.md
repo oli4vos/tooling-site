@@ -2,9 +2,9 @@
 tool: artifact-hypotheek-wonen-maximale-hypotheek
 title: Maximale hypotheek
 route: /apps/artifact-hypotheek-wonen-maximale-hypotheek
-status: disabled
-lastReviewed: 2026-08-11
-sourceHash: sha256:079355bb4be2b6d32da61a5e2cf9de7739eb6976def204087c620c9f17ffc202
+status: active-public
+lastReviewed: 2026-09-21
+sourceHash: sha256:226842a164ebca07a5c67f0780ee36d6f905b50828afea2781aa8f70d09faf1a
 sources:
   - apps/artifact-hypotheek-wonen-maximale-hypotheek/app.json
   - apps/artifact-hypotheek-wonen-maximale-hypotheek/Calculator.tsx
@@ -32,12 +32,12 @@ sources:
 ## 1. Identificatie
 
 - **Tool-ID:** `artifact-hypotheek-wonen-maximale-hypotheek`
-- **Route bij heractivatie:** `/apps/artifact-hypotheek-wonen-maximale-hypotheek` (momenteel uitgeschakeld en publiek niet bereikbaar).
+- **Publieke route:** `/apps/artifact-hypotheek-wonen-maximale-hypotheek`.
 - **Doel:** een indicatieve maximale hypotheek bepalen vanuit inkomen, rente, woning, eigen geld, overige schulden, studieschuld, NHG en energiegegevens.
 - **Gecontroleerd op:** 2026-08-11.
 - **Functionele basis:** formulier en orkestratie in `apps/artifact-hypotheek-wonen-maximale-hypotheek/Calculator.tsx`, mapping in `apps/artifact-hypotheek-wonen-maximale-hypotheek/logic.ts` en centrale berekening in `src/lib/mortgage/max-mortgage.ts`.
 
-De procesplaten hieronder beschrijven de bewaarde implementatie. Het manifest heeft `enabled: false`; daardoor ontbreken de tool en route uit de publieke registry, navigatie en buildroutes. Heractivatie vereist alleen de manifestwijziging, regeneratie en de genoemde inhoudelijke publicatiecontroles.
+De procesplaten hieronder beschrijven de actieve implementatie. Het manifest heeft `enabled: true`; de tool en route worden via de publieke registry, navigatie en buildroutes gepubliceerd. Wijzigingen vereisen regeneratie en de genoemde inhoudelijke publicatiecontroles.
 
 ## 2. Gebruikersproces
 

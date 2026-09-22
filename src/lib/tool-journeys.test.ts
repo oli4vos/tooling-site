@@ -32,12 +32,7 @@ describe("tool journeys", () => {
       impact.primary.href,
       ...(impact.secondary ?? []).map((link) => link.href),
     ]).not.toContain("/apps/hypotheek-impact-studieschuld");
-    expect([
-      duo.primary.href,
-      ...(duo.secondary ?? []).map((link) => link.href),
-      impact.primary.href,
-      ...(impact.secondary ?? []).map((link) => link.href),
-    ]).not.toContain("/apps/artifact-hypotheek-wonen-maximale-hypotheek");
+    expect(impact.primary.href).toBe("/apps/artifact-hypotheek-wonen-maximale-hypotheek");
   });
 
   it("does not expose disabled family help copy in active tool journeys", () => {

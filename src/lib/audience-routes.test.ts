@@ -116,7 +116,6 @@ describe("audience routes", () => {
       const resolvedSlugs = getAudienceRouteApps(route.id, Object.values(appRegistryBySlug)).map((app) => app.slug);
       expect(resolvedSlugs).not.toContain("familiehulp-eerste-woning");
       expect(resolvedSlugs).not.toContain("toeslagen-scan");
-      expect(resolvedSlugs).not.toContain("artifact-hypotheek-wonen-maximale-hypotheek");
       expect(resolvedSlugs).not.toContain("schulden-volgorde");
     }
   });
@@ -130,7 +129,6 @@ describe("audience routes", () => {
       const resolvedSlugs = topic.relatedTools.filter((slug) => appRegistryBySlug[slug]);
       expect(resolvedSlugs).not.toContain("familiehulp-eerste-woning");
       expect(resolvedSlugs).not.toContain("toeslagen-scan");
-      expect(resolvedSlugs).not.toContain("artifact-hypotheek-wonen-maximale-hypotheek");
       expect(resolvedSlugs).not.toContain("schulden-volgorde");
     }
   });
@@ -141,7 +139,6 @@ describe("audience routes", () => {
       expect(resolvedSlugs.length, group.title).toBeGreaterThan(0);
       expect(resolvedSlugs).not.toContain("familiehulp-eerste-woning");
       expect(resolvedSlugs).not.toContain("toeslagen-scan");
-      expect(resolvedSlugs).not.toContain("artifact-hypotheek-wonen-maximale-hypotheek");
       expect(resolvedSlugs).not.toContain("schulden-volgorde");
     }
   });

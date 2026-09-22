@@ -25,8 +25,8 @@ export const toolGroups: ToolGroup[] = [
   },
   {
     title: "Wonen & vervoer",
-    description: "Bekijk overdrachtsbelasting bij een aankoop en de bijtelling van een oudere zakelijke auto.",
-    slugs: ["overdrachtsbelasting-check", "youngtimer-check"],
+    description: "Maak je maximale hypotheek, overdrachtsbelasting en de bijtelling van een oudere zakelijke auto inzichtelijk.",
+    slugs: ["artifact-hypotheek-wonen-maximale-hypotheek", "overdrachtsbelasting-check", "youngtimer-check"],
   },
   {
     title: "Studie & lenen",

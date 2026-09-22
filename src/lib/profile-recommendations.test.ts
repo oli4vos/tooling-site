@@ -134,7 +134,7 @@ describe("profile recommendations", () => {
     };
     const slugs = getRecommendedAppSlugsForProfile(profile, { availableSlugs });
     expect(slugs).toContain("duo-maandbedrag");
-    expect(slugs).not.toContain("artifact-hypotheek-wonen-maximale-hypotheek");
+    expect(slugs).toContain("artifact-hypotheek-wonen-maximale-hypotheek");
   });
 
   it("adds housing specific reason text", () => {
