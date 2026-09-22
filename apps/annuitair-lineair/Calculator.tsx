@@ -225,6 +225,15 @@ export default function Calculator() {
         ),
       )
     : [];
+  const potChartSeries = result?.investmentScenario
+    ? [{
+        color: "oklch(58% 0.12 72)",
+        points: result.investmentScenario.yearly.map((entry) => entry.potAfterBox3),
+      }]
+    : null;
+  const potChartYTicks = result?.investmentScenario
+    ? getAdaptiveEuroTicks(Math.max(...result.investmentScenario.yearly.map((entry) => entry.potAfterBox3), 0))
+    : [];
   const lastYear = result?.investmentScenario?.yearly.at(-1)?.year ?? 0;
   const adaptiveYears = getAdaptiveYearTicks(lastYear);
   const chartYearTicks = adaptiveYears
@@ -501,6 +510,15 @@ export default function Calculator() {
 
           {result ? (
             <div className="mt-5">
+              <div className="mb-5 rounded-2xl border-2 border-[var(--accent)] bg-[var(--paper-soft)] p-4">
+                <div className="text-[11px] uppercase tracking-[0.1em] text-[var(--muted)]">Duidelijk voordeel</div>
+                <div className="mt-1 font-serif text-[25px] tracking-[-0.02em] text-[var(--ink)]">
+                  {result.totals.interestBenefitLinear >= 0 ? "Lineair bespaart op rente" : "Annuïtair is voordeliger in dit scenario"}
+                </div>
+                <p className="mt-1 text-[13px] leading-[1.6] text-[var(--muted)]">
+                  {formatCurrency(Math.abs(result.totals.interestBenefitLinear))} verschil over de looptijd. De beleggingspot laat zien wat het netto maandlastverschil kan opvangen.
+                </p>
+              </div>
               <ResultRow
                 label="Annuïtair bruto maand 1"
                 value={formatCurrency(result.firstMonth.annuityBruto)}
@@ -598,6 +616,35 @@ export default function Calculator() {
           </DisclosureSection>
         ) : null}
 
+        {result?.investmentScenario && potChartSeries ? (
+          <DisclosureSection
+            title="Grafiek: waarde van de beleggingspot"
+            subtitle="De pot groeit met het netto maandlastverschil en wordt later aangesproken als lineair netto goedkoper wordt."
+          >
+            <ChartContainer
+              yearTicks={chartYearTicks}
+              xValues={result.investmentScenario.yearly.map((entry) => entry.year)}
+              chart={
+                <div className="grid gap-3 sm:grid-cols-[72px_minmax(0,1fr)]">
+                  <div className="hidden flex-col justify-between text-right text-[11px] text-[var(--soft)] sm:flex">
+                    {potChartYTicks.slice().reverse().map((tick) => <span key={tick}>{formatCompactEuro(tick)}</span>)}
+                  </div>
+                  <div className="min-w-0">
+                    <AreaChart
+                      width={620}
+                      height={220}
+                      series={potChartSeries}
+                      yTicks={potChartYTicks}
+                      xValues={result.investmentScenario.yearly.map((entry) => entry.year)}
+                      seriesLabels={["Beleggingspot na Box 3"]}
+                    />
+                  </div>
+                </div>
+              }
+            />
+          </DisclosureSection>
+        ) : null}
+
         {result?.investmentScenario ? (
           <div className="rounded-[1.5rem] border hair bg-white p-6 shadow-paper">
             <h3 className="font-serif text-[22px] tracking-[-0.02em] text-[var(--ink)]">
@@ -612,6 +659,14 @@ export default function Calculator() {
                 <ResultRow label="Cumulatief extra box 3-effect" value={formatCurrency(result.investmentScenario.totalBox3TaxExtra)} />
               ) : null}
             </div>
+            <DisclosureSection title="Jaaroverzicht uitklappen" subtitle="Bekijk per jaar lastenverschil, rendement, onttrekking en potwaarde.">
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full min-w-[620px] text-left text-[12px]">
+                  <thead><tr className="border-b hair text-[var(--muted)]"><th className="py-2 pr-3">Jaar</th><th className="py-2 pr-3">Netto verschil</th><th className="py-2 pr-3">Rendement</th><th className="py-2">Pot einde jaar</th></tr></thead>
+                  <tbody>{result.investmentScenario.yearly.map((entry) => <tr key={entry.year} className="border-b hair"><td className="py-2 pr-3">{entry.year}</td><td className="py-2 pr-3">{formatCurrency(entry.monthlyDifferenceTotal)}</td><td className="py-2 pr-3">{formatCurrency(entry.grossReturn)}</td><td className="py-2">{formatCurrency(entry.potAfterBox3)}</td></tr>)}</tbody>
+                </table>
+              </div>
+            </DisclosureSection>
           </div>
         ) : null}
 
