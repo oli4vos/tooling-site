@@ -10,9 +10,10 @@ type TopicLandingProps = {
   promise: string;
   steps: string[];
   apps: AppManifest[];
+  journey?: Array<{ title: string; description: string; href: string }>;
 };
 
-export function TopicLanding({ eyebrow, title, intro, promise, steps, apps }: TopicLandingProps) {
+export function TopicLanding({ eyebrow, title, intro, promise, steps, apps, journey }: TopicLandingProps) {
   return (
     <>
       <SiteHeader />
@@ -48,6 +49,19 @@ export function TopicLanding({ eyebrow, title, intro, promise, steps, apps }: To
             {steps.map((step, index) => <li key={step} className="rounded-xl border border-[var(--hair)] bg-white p-4 text-[14px] leading-6 text-[var(--ink-2)]"><span className="font-mono text-[11px] text-[var(--accent)]">0{index + 1}</span><p className="mt-3">{step}</p></li>)}
           </ol>
         </section>
+
+        {journey ? <section className="border-b border-[var(--hair)] py-10">
+          <div className="section-label">Een samenhangende route</div>
+          <h2 className="mt-3 font-serif text-fluid-h2 tracking-[-0.03em] text-[var(--ink)]">Van eerste idee naar een keuze.</h2>
+          <div className="mt-6 grid gap-3 md:grid-cols-4">
+            {journey.map((step, index) => <article key={step.href} className="flex flex-col border-t-2 border-[var(--accent)] pt-4">
+              <span className="font-mono text-[11px] text-[var(--accent)]">0{index + 1}</span>
+              <h3 className="mt-3 font-serif text-[21px] tracking-[-0.02em] text-[var(--ink)]">{step.title}</h3>
+              <p className="mt-2 text-[13px] leading-6 text-[var(--muted)]">{step.description}</p>
+              <div className="mt-4"><BtnLink href={step.href} kind={index === 0 ? "primary" : "outline"} size="sm">{index === 0 ? "Start je plan" : "Ga verder"}</BtnLink></div>
+            </article>)}
+          </div>
+        </section> : null}
 
         <section id="tools" className="scroll-mt-28 py-10">
           <div className="section-label">Kies je situatie</div>
