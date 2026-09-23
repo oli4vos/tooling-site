@@ -33,6 +33,12 @@ export function TopicLanding({ eyebrow, title, intro, promise, steps, apps }: To
           </aside>
         </section>
 
+        <section className="grid gap-3 border-b border-[var(--hair)] py-5 text-[13px] text-[var(--muted)] sm:grid-cols-3" aria-label="Vaste uitgangspunten">
+          <div><span className="font-medium text-[var(--ink)]">Lokaal berekend.</span> Je invoer blijft in je browser.</div>
+          <div><span className="font-medium text-[var(--ink)]">Transparant.</span> Aannames, bronjaar en methode staan bij de uitkomst.</div>
+          <div><span className="font-medium text-[var(--ink)]">Indicatief.</span> Een scenario is geen persoonlijk advies.</div>
+        </section>
+
         <section className="grid gap-8 border-b border-[var(--hair)] py-10 lg:grid-cols-[0.8fr_1.2fr]">
           <div>
             <div className="section-label">Zo werkt het</div>

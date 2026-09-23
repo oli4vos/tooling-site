@@ -11,10 +11,10 @@ export default function HomePage() {
     <main id="main-content" className="page-shell min-h-[100dvh] pb-10 pt-8 lg:pb-14">
       <section className="grid gap-8 pb-10 pt-2 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,0.8fr)] lg:items-end">
         <div>
-          <div className="section-label">Financiële tools voor jouw situatie</div>
+          <div className="section-label">Begrijp je geldkeuze voordat je haar maakt</div>
           <h1 className="text-fluid-h1 mt-4 max-w-[17ch] font-serif tracking-[-0.03em] text-[var(--ink)]">Geldzaken ingewikkeld?<br />Maak ze inzichtelijk.</h1>
-          <p className="text-fluid-lead mt-5 max-w-[55ch] leading-[1.75] text-[var(--ink-2)]">Van je inkomen en een woning tot ondernemen en pensioen. Vul je eigen cijfers in, vergelijk mogelijkheden en begrijp wat een regel voor jouw situatie betekent.</p>
-          <div className="mt-7 flex flex-wrap gap-3"><BtnLink href="#route" kind="primary" size="lg">Vind jouw onderwerp</BtnLink><BtnLink href="/apps" kind="outline" size="lg">Bekijk alle tools</BtnLink></div>
+          <p className="text-fluid-lead mt-5 max-w-[55ch] leading-[1.75] text-[var(--ink-2)]">IPC Ole vertaalt regels, rente en rendement naar een scenario met jouw cijfers. Vergelijk mogelijkheden en begrijp wat een keuze voor jouw situatie betekent.</p>
+          <div className="mt-7 flex flex-wrap gap-3"><BtnLink href="#route" kind="primary" size="lg">Vind jouw vraag</BtnLink><BtnLink href="/start" kind="outline" size="lg">Zo werkt het</BtnLink></div>
         </div>
         <aside className="border-l-2 border-[var(--accent)] pl-5 text-[14px] leading-7 text-[var(--ink-2)]" aria-label="Wat je van IPC Ole kunt verwachten">
           <h2 className="font-medium text-[var(--ink)]">Je hoeft geen expert te zijn.</h2>
