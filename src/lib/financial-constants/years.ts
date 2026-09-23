@@ -332,6 +332,22 @@ export const FINANCIAL_CONSTANTS_BY_YEAR: Record<number, AnnualFinancialConstant
           investmentsAndOtherAssets: 6.0,
           debts: 2.7,
         },
+        actualReturn: {
+          meta: {
+            sourceLabel: "Belastingdienst werkelijk rendement box 3",
+            lastChecked: "2026-09-23",
+            status: "definitief",
+            sourceUrl: "https://www.belastingdienst.nl/wps/wcm/connect/nl/box-3/content/wat-is-mijn-werkelijk-rendement",
+            sourceTier: "overheidsuitleg",
+            validFrom: "2026-01-01",
+            validUntil: "2026-12-31",
+            appliesTo: "Werkelijke inkomsten en waardeveranderingen over het totale vermogen; geen heffingsvrij vermogen.",
+            ruleType: "uitvoeringsbeleid",
+            uncertainties: "De volledige aangifte vraagt per vermogenscategorie aanvullende begin-/eindwaarden en uitzonderingen.",
+          },
+          includesTaxFreeAllowance: false,
+          components: ["income", "value-change", "debt-interest"],
+        },
       },
       charts: {
         meta: {

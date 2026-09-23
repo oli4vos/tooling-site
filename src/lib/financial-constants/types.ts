@@ -76,6 +76,7 @@ export type SourceDatasetFamily =
   | "tax-box1-credits"
   | "tax-zvw-rates"
   | "tax-box3-provisional"
+  | "tax-box3-actual-return-guidance"
   | "tax-proposal-rules"
   | "mortgage-provider-rate";
 
@@ -266,6 +267,12 @@ export type ZvwRules = {
   maxContributionIncome: number;
 };
 
+export type Box3ActualReturnRules = {
+  meta: AssumptionMeta;
+  includesTaxFreeAllowance: boolean;
+  components: readonly ["income", "value-change", "debt-interest"];
+};
+
 export type AnnualFinancialConstants = {
   year: number;
   duo: {
@@ -315,6 +322,7 @@ export type AnnualFinancialConstants = {
       investmentsAndOtherAssets: number;
       debts: number;
     };
+    actualReturn: Box3ActualReturnRules;
   };
   charts: {
     meta: AssumptionMeta;

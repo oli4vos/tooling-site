@@ -615,6 +615,13 @@ function validateDatasetSpecificBounds(dataset: SourceDataset) {
       }
       break;
     }
+    case "tax-box3-actual-return-guidance": {
+      const data = dataset.data as AnnualFinancialConstants["box3"]["actualReturn"];
+      if (data.includesTaxFreeAllowance || data.components.length !== 3) {
+        issues.push("Werkelijk rendement box 3 moet zonder heffingsvrij vermogen en met drie centrale componenten zijn vastgelegd.");
+      }
+      break;
+    }
     case "duo-rate-year": {
       const rates = dataset.data as Record<string, number>;
       for (const rate of Object.values(rates)) {
@@ -1393,6 +1400,31 @@ export const SOURCE_DATASET_REGISTRY: readonly SourceDataset[] = [
     },
     data: FINANCIAL_CONSTANTS_BY_YEAR[2026].box3,
     usedBy: ["box-3-impact", "jaarruimte-vs-vrij-beleggen"],
+  },
+  {
+    family: "tax-box3-actual-return-guidance",
+    scenario: "actual-return-2026",
+    meta: {
+      recordType: "dataset",
+      id: "tax-box3-actual-return-guidance-2026",
+      title: "Werkelijk rendement box 3 2026 — toepassingsregels",
+      year: 2026,
+      version: "1.0.0",
+      effectiveFrom: "2026-01-01",
+      effectiveTo: "2026-12-31",
+      retrievedAt: "2026-09-23",
+      lastVerifiedAt: "2026-09-23",
+      nextReviewAt: "2027-02-15",
+      sourceName: "Belastingdienst",
+      sourceUrl: "https://www.belastingdienst.nl/wps/wcm/connect/nl/box-3/content/wat-is-mijn-werkelijk-rendement",
+      sourceType: "official-execution",
+      methodology: "Officiële uitleg dat werkelijk rendement inkomsten en waardeveranderingen over het totale vermogen omvat en dat het heffingsvrij vermogen daarbij niet wordt toegepast.",
+      methodologyType: "official-norm",
+      notes: "De publieke tools gebruiken een transparante componentenprojectie; dit is geen volledige aangifteberekening per vermogenscategorie.",
+      status: "active",
+    },
+    data: constants2026.box3.actualReturn,
+    usedBy: ["box3-indicatie", "box-3-impact", "annuitair-lineair", "prive-beleggen-eindvermogen"],
   },
   {
     family: "allowance-signal-rules",

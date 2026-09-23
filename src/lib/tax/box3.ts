@@ -117,7 +117,7 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
           "Werkelijke box 3-systematiek kan wijzigen en persoonlijke fiscale regels kunnen afwijken.",
         ]
       : [
-          actualReturnComponentsProvided
+          actualReturnComponentsProvided && !box3.actualReturn.includesTaxFreeAllowance
             ? "Werkelijk rendement gebruikt inkomsten + waardeverandering − betaalde rente op schulden. Bij deze route geldt geen heffingsvrij vermogen."
             : "Een ingevoerd rendementpercentage is alleen een vereenvoudigde projectie van werkelijk rendement; vul inkomsten, waardeverandering en betaalde rente op schulden in voor een inhoudelijker scenario.",
           "Bij werkelijk rendement wordt het rendement over het totale vermogen beoordeeld; de forfaitaire schuldendrempel en vrijstelling zijn daarom niet toegepast.",

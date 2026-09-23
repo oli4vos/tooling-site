@@ -130,6 +130,18 @@ describe("source dataset registry", () => {
     });
   });
 
+  it("registers the actual-return box 3 guidance separately from provisional forfaits", () => {
+    const dataset = getActiveDataset("tax-box3-actual-return-guidance", {
+      scenario: "actual-return-2026",
+      asOf: "2026-09-23",
+    });
+    const data = dataset.data as { includesTaxFreeAllowance: boolean; components: readonly string[] };
+
+    expect(dataset.meta.sourceName).toBe("Belastingdienst");
+    expect(data.includesTaxFreeAllowance).toBe(false);
+    expect(data.components).toEqual(["income", "value-change", "debt-interest"]);
+  });
+
   it("selects by peildatum and rejects missing active periods", () => {
     expect(
       getDatasetForDate("mortgage-afm-test-rate", "2026-07-18", {
