@@ -1,6 +1,7 @@
 import { getDefaultFinancialYear, getFinancialConstants } from "@/lib/financial-constants";
 import { calculateBox3Tax } from "@/lib/tax";
 import type { Box3Method } from "@/lib/tax";
+import { projectWealthPlan, type WealthProjectionPoint } from "@/lib/planning/wealth-planning";
 
 export type Box3ToolInput = {
   year?: number;
@@ -13,6 +14,11 @@ export type Box3ToolInput = {
   actualIncome?: number;
   actualValueChange?: number;
   actualDebtInterest?: number;
+  monthlyBankDepositsContribution?: number;
+  monthlyInvestmentsContribution?: number;
+  expectedBankDepositsReturn?: number;
+  expectedInvestmentsReturn?: number;
+  horizonYears?: number;
 };
 
 export type Box3ToolResult = {
@@ -40,6 +46,17 @@ export type Box3ToolResult = {
     status: string;
   };
   warnings: string[];
+  planning: {
+    horizonYears: number;
+    monthlyContributionByCategory: { bankDeposits: number; investmentsAndOtherAssets: number };
+    totalMonthlyContribution: number;
+    totalContributions: number;
+    endingBankDeposits: number;
+    endingInvestmentsAndOtherAssets: number;
+    endingTotalAssets: number;
+    endingBox3Tax: number;
+    points: WealthProjectionPoint[];
+  };
 };
 
 function sanitizeMoney(value: number | undefined) {
@@ -75,6 +92,15 @@ export function calculateBox3Indicatie(input: Box3ToolInput): Box3ToolResult {
   const bankDeposits = sanitizeMoney(input.bankDeposits);
   const investmentsAndOtherAssets = sanitizeMoney(input.investmentsAndOtherAssets);
   const debts = sanitizeMoney(input.debts);
+  const planning = projectWealthPlan({
+    startBankDeposits: bankDeposits,
+    startInvestmentsAndOtherAssets: investmentsAndOtherAssets,
+    monthlyBankDepositsContribution: input.monthlyBankDepositsContribution,
+    monthlyInvestmentsContribution: input.monthlyInvestmentsContribution,
+    expectedBankDepositsReturn: input.expectedBankDepositsReturn,
+    expectedInvestmentsReturn: input.expectedInvestmentsReturn,
+    horizonYears: input.horizonYears ?? 10,
+  });
 
   const base = calculateBox3Tax({
     year,
@@ -88,6 +114,15 @@ export function calculateBox3Indicatie(input: Box3ToolInput): Box3ToolResult {
     actualIncome: input.method === "actual" ? input.actualIncome : undefined,
     actualValueChange: input.method === "actual" ? input.actualValueChange : undefined,
     actualDebtInterest: input.method === "actual" ? input.actualDebtInterest : undefined,
+  });
+  const planningTax = calculateBox3Tax({
+    year: year + planning.points.length - 1,
+    method: input.method,
+    hasFiscalPartner: input.hasFiscalPartner,
+    bankDeposits: planning.endingBankDeposits,
+    investmentsAndOtherAssets: planning.endingInvestmentsAndOtherAssets,
+    debts,
+    actualAnnualReturnRate: input.method === "actual" ? sanitizePercent(input.actualAnnualReturnRate) : undefined,
   });
 
   return {
@@ -115,5 +150,16 @@ export function calculateBox3Indicatie(input: Box3ToolInput): Box3ToolResult {
       status: constants.box3.meta.status,
     },
     warnings: base.warnings,
+    planning: {
+      horizonYears: planning.points.length,
+      monthlyContributionByCategory: planning.monthlyContributionByCategory,
+      totalMonthlyContribution: planning.totalMonthlyContribution,
+      totalContributions: planning.totalContributions,
+      endingBankDeposits: planning.endingBankDeposits,
+      endingInvestmentsAndOtherAssets: planning.endingInvestmentsAndOtherAssets,
+      endingTotalAssets: planning.endingTotalAssets,
+      endingBox3Tax: planningTax.box3Tax,
+      points: planning.points,
+    },
   };
 }

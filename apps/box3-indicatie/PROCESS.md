@@ -4,7 +4,7 @@ title: Box 3 indicatie
 route: /apps/box3-indicatie
 status: active-public
 lastReviewed: 2026-09-23
-sourceHash: sha256:edab9bd37f34a2bb221ee4c169937543787714c7d55c7ead1562b2c5edaf2848
+sourceHash: sha256:ab4222ba9748ff45179de4fc44be88685f062769f4a473624f4526111bb16bab
 sources:
   - apps/box3-indicatie/app.json
   - apps/box3-indicatie/Calculator.tsx
@@ -12,6 +12,7 @@ sources:
   - apps/box3-indicatie/logic.test.ts
   - src/lib/tax/box3.ts
   - src/lib/tax/types.ts
+  - src/lib/planning/wealth-planning.ts
 ---
 
 # Procesplaat Box 3-indicatie
@@ -20,7 +21,7 @@ sources:
 Indicatieve fiscale tool voor spaargeld, beleggingen en schulden. Geen aangifte of persoonlijk belastingadvies.
 
 ## 2. Gebruikersproces
-Vul vermogen, schulden, fiscale partner en jaar in en kies werkelijk of forfaitair rendement.
+Vul vermogen, schulden, fiscale partner en jaar in, kies werkelijk of forfaitair rendement en geef per vermogenscategorie de maandelijkse inleg en het verwachte rendement op.
 ```mermaid
 flowchart TD
  A[Lees waarschuwing] --> B[Vul vermogen en schulden in]
@@ -39,7 +40,7 @@ flowchart TD
 ```
 
 ## 4. Rekenproces
-De centrale box-3-laag past vrijstelling, schuldendrempel, rendement en tarief toe voor het gekozen jaar.
+De centrale box-3-laag past vrijstelling, schuldendrempel, rendement en tarief toe voor het gekozen jaar. De gedeelde vermogensplanningslaag projecteert sparen en beleggen afzonderlijk met maandelijkse inleg; de fiscale laag wordt daarna op de eindpositie toegepast.
 ```mermaid
 flowchart TD
  A[Normaliseer bedragen] --> B[Lees versiegebonden box3-regels]
@@ -51,7 +52,7 @@ flowchart TD
 De calculator geeft invoer door aan `calculateBox3Tax`. Er is geen backend of profielopslag; scherm en download delen hetzelfde resultaatmodel.
 
 ## 6. Resultaten en uitzonderingen
-De tool toont methode, grondslag, indicatieve heffing en waarschuwingen. Werkelijk rendement is hier een vereenvoudigde projectie en geen officiële vaststelling.
+De tool toont methode, grondslag, indicatieve heffing, de eindpositie per categorie, een uitklapbaar jaaroverzicht en waarschuwingen. Werkelijk rendement is hier een transparante componentenprojectie en geen officiële vaststelling.
 
 ## 7. Functionele bronverwijzingen
 - `apps/box3-indicatie/app.json`
@@ -60,3 +61,4 @@ De tool toont methode, grondslag, indicatieve heffing en waarschuwingen. Werkeli
 - `apps/box3-indicatie/logic.test.ts`
 - `src/lib/tax/box3.ts`
 - `src/lib/tax/types.ts`
+- `src/lib/planning/wealth-planning.ts`

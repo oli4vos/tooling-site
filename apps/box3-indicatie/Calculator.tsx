@@ -33,6 +33,11 @@ type FormState = {
   actualIncome: string;
   actualValueChange: string;
   actualDebtInterest: string;
+  monthlyBankDepositsContribution: string;
+  monthlyInvestmentsContribution: string;
+  expectedBankDepositsReturn: string;
+  expectedInvestmentsReturn: string;
+  horizonYears: string;
 };
 
 type ValidationErrors = Partial<Record<keyof FormState, string>>;
@@ -48,6 +53,11 @@ const exampleValues: FormState = {
   actualIncome: "",
   actualValueChange: "",
   actualDebtInterest: "",
+  monthlyBankDepositsContribution: "250",
+  monthlyInvestmentsContribution: "500",
+  expectedBankDepositsReturn: "2",
+  expectedInvestmentsReturn: "6",
+  horizonYears: "10",
 };
 
 const defaultValues: FormState = {
@@ -61,6 +71,11 @@ const defaultValues: FormState = {
   actualIncome: "",
   actualValueChange: "",
   actualDebtInterest: "",
+  monthlyBankDepositsContribution: "",
+  monthlyInvestmentsContribution: "",
+  expectedBankDepositsReturn: "",
+  expectedInvestmentsReturn: "",
+  horizonYears: "",
 };
 
 type CalculatorContentProps = {
@@ -99,6 +114,11 @@ function validateForm(values: FormState) {
   const actualIncome = parseOptionalNumber(values.actualIncome);
   const actualValueChange = parseOptionalNumber(values.actualValueChange);
   const actualDebtInterest = parseOptionalNumber(values.actualDebtInterest);
+  const monthlyBankDepositsContribution = parseOptionalNumber(values.monthlyBankDepositsContribution);
+  const monthlyInvestmentsContribution = parseOptionalNumber(values.monthlyInvestmentsContribution);
+  const expectedBankDepositsReturn = parseOptionalNumber(values.expectedBankDepositsReturn);
+  const expectedInvestmentsReturn = parseOptionalNumber(values.expectedInvestmentsReturn);
+  const horizonYears = parseOptionalNumber(values.horizonYears);
   const hasActualComponents = [actualIncome, actualValueChange, actualDebtInterest].some(
     (value) => value !== undefined,
   );
@@ -137,6 +157,26 @@ function validateForm(values: FormState) {
     errors.actualAnnualReturnRate = "Gebruik een rendement tussen 0 en 100.";
   }
 
+  for (const [field, value] of [
+    ["monthlyBankDepositsContribution", monthlyBankDepositsContribution],
+    ["monthlyInvestmentsContribution", monthlyInvestmentsContribution],
+  ] as const) {
+    if (value === undefined || !Number.isFinite(value) || value < 0) {
+      errors[field] = "Gebruik 0 of een hoger bedrag.";
+    }
+  }
+  for (const [field, value] of [
+    ["expectedBankDepositsReturn", expectedBankDepositsReturn],
+    ["expectedInvestmentsReturn", expectedInvestmentsReturn],
+  ] as const) {
+    if (value === undefined || !Number.isFinite(value) || value < 0 || value > 100) {
+      errors[field] = "Gebruik een rendement tussen 0 en 100.";
+    }
+  }
+  if (horizonYears === undefined || !Number.isFinite(horizonYears) || horizonYears < 1 || horizonYears > 60) {
+    errors.horizonYears = "Gebruik een horizon van 1 tot 60 jaar.";
+  }
+
   const parsedValues: Box3ToolInput | null =
     Object.keys(errors).length === 0
       ? {
@@ -151,6 +191,11 @@ function validateForm(values: FormState) {
           actualIncome: values.method === "actual" ? actualIncome : undefined,
           actualValueChange: values.method === "actual" ? actualValueChange : undefined,
           actualDebtInterest: values.method === "actual" ? actualDebtInterest : undefined,
+          monthlyBankDepositsContribution: monthlyBankDepositsContribution ?? 0,
+          monthlyInvestmentsContribution: monthlyInvestmentsContribution ?? 0,
+          expectedBankDepositsReturn: expectedBankDepositsReturn ?? 0,
+          expectedInvestmentsReturn: expectedInvestmentsReturn ?? 0,
+          horizonYears: horizonYears ?? 10,
         }
       : null;
 
@@ -202,6 +247,11 @@ function CalculatorContent({
     "hasFiscalPartner",
     ...(formValues.method === "actual" ? ["actualAnnualReturnRate"] : []),
     ...(formValues.method === "actual" ? ["actualIncome", "actualValueChange", "actualDebtInterest"] : []),
+    "monthlyBankDepositsContribution",
+    "monthlyInvestmentsContribution",
+    "expectedBankDepositsReturn",
+    "expectedInvestmentsReturn",
+    "horizonYears",
   ]);
 
   const isCurrentFieldBlocked = Boolean(
@@ -214,6 +264,11 @@ function CalculatorContent({
       actualIncome: undefined,
       actualValueChange: undefined,
       actualDebtInterest: undefined,
+      monthlyBankDepositsContribution: errors.monthlyBankDepositsContribution,
+      monthlyInvestmentsContribution: errors.monthlyInvestmentsContribution,
+      expectedBankDepositsReturn: errors.expectedBankDepositsReturn,
+      expectedInvestmentsReturn: errors.expectedInvestmentsReturn,
+      horizonYears: errors.horizonYears,
     }[mobileFlow.activeFieldId],
   );
 
@@ -415,6 +470,37 @@ function CalculatorContent({
             </div>
           ) : null}
 
+          <div className="grid gap-4 rounded-xl border border-[var(--hair)] bg-[var(--paper-soft)] p-4">
+            <p className="text-[13px] leading-[1.6] text-[var(--muted)]">
+              Vermogensplanning: geef de maandelijkse inleg per categorie op. De tool projecteert de groei per maand en rekent de eindpositie door naar Box 3.
+            </p>
+            <label className={mobileFlow.getFieldClassName("monthlyBankDepositsContribution")}>
+              <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Maandelijkse inleg bank/spaartegoeden (€)</span>
+              <input inputMode="decimal" value={formValues.monthlyBankDepositsContribution} onChange={(event) => updateField("monthlyBankDepositsContribution", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+              <FieldError message={errors.monthlyBankDepositsContribution} />
+            </label>
+            <label className={mobileFlow.getFieldClassName("monthlyInvestmentsContribution")}>
+              <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Maandelijkse inleg beleggingen/overige bezittingen (€)</span>
+              <input inputMode="decimal" value={formValues.monthlyInvestmentsContribution} onChange={(event) => updateField("monthlyInvestmentsContribution", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+              <FieldError message={errors.monthlyInvestmentsContribution} />
+            </label>
+            <label className={mobileFlow.getFieldClassName("expectedBankDepositsReturn")}>
+              <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Verwacht jaarlijks rendement sparen (%)</span>
+              <input inputMode="decimal" value={formValues.expectedBankDepositsReturn} onChange={(event) => updateField("expectedBankDepositsReturn", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+              <FieldError message={errors.expectedBankDepositsReturn} />
+            </label>
+            <label className={mobileFlow.getFieldClassName("expectedInvestmentsReturn")}>
+              <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Verwacht jaarlijks rendement beleggen (%)</span>
+              <input inputMode="decimal" value={formValues.expectedInvestmentsReturn} onChange={(event) => updateField("expectedInvestmentsReturn", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+              <FieldError message={errors.expectedInvestmentsReturn} />
+            </label>
+            <label className={mobileFlow.getFieldClassName("horizonYears")}>
+              <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Planningshorizon (jaar)</span>
+              <input inputMode="numeric" value={formValues.horizonYears} onChange={(event) => updateField("horizonYears", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+              <FieldError message={errors.horizonYears} />
+            </label>
+          </div>
+
           <MobileFieldFlowControls
             current={mobileFlow.activeIndex + 1}
             total={mobileFlow.total}
@@ -487,6 +573,32 @@ function CalculatorContent({
                 value={`${formatPercent(result.effectiveTaxRateOnNetWorth)}%`}
               />
             </div>
+          </div>
+        ) : null}
+
+        {result ? (
+          <div className="rounded-[1.5rem] border hair bg-white p-6 shadow-paper">
+            <h3 className="font-serif text-[24px] tracking-[-0.02em] text-[var(--ink)]">Vermogensplanning</h3>
+            <p className="mt-2 text-[13px] leading-[1.65] text-[var(--muted)]">
+              Maandelijkse inleg wordt aan het einde van elke maand toegevoegd. Dit is een scenario, geen gegarandeerde opbrengst.
+            </p>
+            <div className="mt-5">
+              <ResultRow label="Totale maandelijkse inleg" value={formatCurrency(result.planning.totalMonthlyContribution)} />
+              <ResultRow label="Totale inleg over horizon" value={formatCurrency(result.planning.totalContributions)} />
+              <ResultRow label="Eindwaarde sparen" value={formatCurrency(result.planning.endingBankDeposits)} />
+              <ResultRow label="Eindwaarde beleggen" value={formatCurrency(result.planning.endingInvestmentsAndOtherAssets)} />
+              <ResultRow label={`Eindvermogen na ${result.planning.horizonYears} jaar`} value={formatCurrency(result.planning.endingTotalAssets)} accent />
+              <ResultRow label="Indicatieve Box 3-heffing op eindpositie" value={formatCurrency(result.planning.endingBox3Tax)} />
+            </div>
+            <details className="mt-5 rounded-lg border border-[var(--hair)] p-4">
+              <summary className="cursor-pointer text-[13px] font-medium text-[var(--ink)]">Jaaroverzicht uitklappen</summary>
+              <div className="mt-3 overflow-x-auto">
+                <table className="w-full min-w-[560px] text-left text-[12px] text-[var(--muted)]">
+                  <thead><tr><th className="py-2 pr-3">Jaar</th><th className="py-2 pr-3">Sparen</th><th className="py-2 pr-3">Beleggen</th><th className="py-2 pr-3">Totaal</th><th className="py-2">Groei</th></tr></thead>
+                  <tbody>{result.planning.points.map((point) => <tr key={point.yearIndex} className="border-t border-[var(--hair)]"><td className="py-2 pr-3">{point.yearIndex}</td><td className="py-2 pr-3">{formatCurrency(point.bankDeposits)}</td><td className="py-2 pr-3">{formatCurrency(point.investmentsAndOtherAssets)}</td><td className="py-2 pr-3">{formatCurrency(point.totalAssets)}</td><td className="py-2">{formatCurrency(point.growthThisYear)}</td></tr>)}</tbody>
+                </table>
+              </div>
+            </details>
           </div>
         ) : null}
 
