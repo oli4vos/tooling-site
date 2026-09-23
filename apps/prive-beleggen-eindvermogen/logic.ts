@@ -1,5 +1,6 @@
 import { getDefaultFinancialYear } from "@/lib/financial-constants";
 import { calculateBox3Tax, type Box3Method } from "@/lib/tax";
+import { projectWealthPlan } from "@/lib/planning/wealth-planning";
 
 export type PriveBeleggenInput = {
   taxYear?: number;
@@ -7,7 +8,11 @@ export type PriveBeleggenInput = {
   box3Method?: Box3Method;
   startVermogen?: number;
   maandelijkseInleg?: number;
+  maandelijkseSpaarinleg?: number;
+  maandelijkseBeleggingsinleg?: number;
   verwachtRendementPct?: number;
+  verwachtSpaarRendementPct?: number;
+  verwachtBeleggingsRendementPct?: number;
   horizonJaren?: number;
 };
 
@@ -30,6 +35,8 @@ export type PriveBeleggenResult = {
   startVermogen: number;
   maandelijkseInleg: number;
   jaarlijkseInleg: number;
+  spaarinlegPerMaand: number;
+  beleggingsinlegPerMaand: number;
   verwachtRendementPct: number;
   hasFiscalPartner: boolean;
   box3Method: Box3Method;
@@ -76,42 +83,64 @@ export function calculatePriveBeleggenEindvermogen(
   const box3Method = input.box3Method ?? "forfaitary";
   const startVermogen = roundMoney(sanitizeMoney(input.startVermogen));
   const maandelijkseInleg = roundMoney(sanitizeMoney(input.maandelijkseInleg));
-  const jaarlijkseInleg = roundMoney(maandelijkseInleg * 12);
+  const categoryInputsProvided = input.maandelijkseSpaarinleg !== undefined || input.maandelijkseBeleggingsinleg !== undefined;
+  const spaarinlegPerMaand = roundMoney(categoryInputsProvided ? sanitizeMoney(input.maandelijkseSpaarinleg) : 0);
+  const beleggingsinlegPerMaand = roundMoney(categoryInputsProvided ? sanitizeMoney(input.maandelijkseBeleggingsinleg) : maandelijkseInleg);
+  const jaarlijkseInleg = roundMoney((spaarinlegPerMaand + beleggingsinlegPerMaand) * 12);
   const verwachtRendementPct = sanitizePercent(input.verwachtRendementPct);
+  const verwachtSpaarRendementPct = sanitizePercent(input.verwachtSpaarRendementPct ?? 0);
+  const verwachtBeleggingsRendementPct = sanitizePercent(input.verwachtBeleggingsRendementPct ?? verwachtRendementPct);
   const horizonJaren = sanitizeHorizon(input.horizonJaren);
 
-  const monthlyRate = verwachtRendementPct / 100 / 12;
   const timeline: PriveBeleggenPoint[] = [];
 
-  let vermogenMetBox3 = startVermogen;
-  let vermogenZonderBox3 = startVermogen;
+  let spaarvermogenMetBox3 = 0;
+  let beleggingsvermogenMetBox3 = startVermogen;
+  let spaarvermogenZonderBox3 = 0;
+  let beleggingsvermogenZonderBox3 = startVermogen;
   let cumulatieveBox3Belasting = 0;
 
   for (let jaar = 1; jaar <= horizonJaren; jaar += 1) {
-    const startMetBox3 = roundMoney(vermogenMetBox3);
-    for (let maand = 0; maand < 12; maand += 1) {
-      vermogenMetBox3 += maandelijkseInleg;
-      vermogenMetBox3 *= 1 + monthlyRate;
-      vermogenZonderBox3 += maandelijkseInleg;
-      vermogenZonderBox3 *= 1 + monthlyRate;
-    }
-
-    const eindVermogenVoorBox3 = roundMoney(vermogenMetBox3);
+    const startMetBox3 = roundMoney(spaarvermogenMetBox3 + beleggingsvermogenMetBox3);
+    const yearProjection = projectWealthPlan({
+      startBankDeposits: spaarvermogenMetBox3,
+      startInvestmentsAndOtherAssets: beleggingsvermogenMetBox3,
+      monthlyBankDepositsContribution: spaarinlegPerMaand,
+      monthlyInvestmentsContribution: beleggingsinlegPerMaand,
+      expectedBankDepositsReturn: verwachtSpaarRendementPct,
+      expectedInvestmentsReturn: verwachtBeleggingsRendementPct,
+      horizonYears: 1,
+    });
+    const eindSpaarvermogenVoorBox3 = yearProjection.endingBankDeposits;
+    const eindBeleggingsvermogenVoorBox3 = yearProjection.endingInvestmentsAndOtherAssets;
+    const eindVermogenVoorBox3 = roundMoney(eindSpaarvermogenVoorBox3 + eindBeleggingsvermogenVoorBox3);
     const brutoGroei = roundMoney(eindVermogenVoorBox3 - startMetBox3 - jaarlijkseInleg);
     const box3Result = calculateBox3Tax({
       year: taxYear + jaar - 1,
       method: box3Method,
       hasFiscalPartner,
-      bankDeposits: 0,
-      investmentsAndOtherAssets: eindVermogenVoorBox3,
+      bankDeposits: eindSpaarvermogenVoorBox3,
+      investmentsAndOtherAssets: eindBeleggingsvermogenVoorBox3,
       debts: 0,
-      actualAnnualReturnRate: box3Method === "actual" ? verwachtRendementPct : undefined,
+      actualAnnualReturnRate: box3Method === "actual" ? verwachtBeleggingsRendementPct : undefined,
     });
 
     const box3Belasting = roundMoney(box3Result.box3Tax);
     cumulatieveBox3Belasting = roundMoney(cumulatieveBox3Belasting + box3Belasting);
-    vermogenMetBox3 = roundMoney(Math.max(eindVermogenVoorBox3 - box3Belasting, 0));
-    vermogenZonderBox3 = roundMoney(vermogenZonderBox3);
+    const taxAllocation = eindVermogenVoorBox3 > 0 ? box3Belasting / eindVermogenVoorBox3 : 0;
+    spaarvermogenMetBox3 = roundMoney(Math.max(eindSpaarvermogenVoorBox3 * (1 - taxAllocation), 0));
+    beleggingsvermogenMetBox3 = roundMoney(Math.max(eindBeleggingsvermogenVoorBox3 * (1 - taxAllocation), 0));
+    const noTaxProjection = projectWealthPlan({
+      startBankDeposits: spaarvermogenZonderBox3,
+      startInvestmentsAndOtherAssets: beleggingsvermogenZonderBox3,
+      monthlyBankDepositsContribution: spaarinlegPerMaand,
+      monthlyInvestmentsContribution: beleggingsinlegPerMaand,
+      expectedBankDepositsReturn: verwachtSpaarRendementPct,
+      expectedInvestmentsReturn: verwachtBeleggingsRendementPct,
+      horizonYears: 1,
+    });
+    spaarvermogenZonderBox3 = noTaxProjection.endingBankDeposits;
+    beleggingsvermogenZonderBox3 = noTaxProjection.endingInvestmentsAndOtherAssets;
 
     timeline.push({
       jaar,
@@ -121,9 +150,9 @@ export function calculatePriveBeleggenEindvermogen(
       brutoGroei,
       eindVermogenVoorBox3,
       box3Belasting,
-      eindVermogenNaBox3: vermogenMetBox3,
+      eindVermogenNaBox3: roundMoney(spaarvermogenMetBox3 + beleggingsvermogenMetBox3),
       cumulatieveBox3Belasting,
-      eindVermogenZonderBox3: vermogenZonderBox3,
+      eindVermogenZonderBox3: roundMoney(spaarvermogenZonderBox3 + beleggingsvermogenZonderBox3),
     });
   }
 
@@ -142,6 +171,8 @@ export function calculatePriveBeleggenEindvermogen(
     startVermogen,
     maandelijkseInleg,
     jaarlijkseInleg,
+    spaarinlegPerMaand,
+    beleggingsinlegPerMaand,
     verwachtRendementPct,
     hasFiscalPartner,
     box3Method,

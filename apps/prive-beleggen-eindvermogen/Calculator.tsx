@@ -33,7 +33,11 @@ type FormState = {
   box3Method: Box3Method;
   startVermogen: string;
   maandelijkseInleg: string;
+  maandelijkseSpaarinleg: string;
+  maandelijkseBeleggingsinleg: string;
   verwachtRendementPct: string;
+  verwachtSpaarRendementPct: string;
+  verwachtBeleggingsRendementPct: string;
   horizonJaren: string;
 };
 
@@ -45,7 +49,11 @@ const defaultValues: FormState = {
   box3Method: "forfaitary",
   startVermogen: "",
   maandelijkseInleg: "",
+  maandelijkseSpaarinleg: "",
+  maandelijkseBeleggingsinleg: "",
   verwachtRendementPct: "",
+  verwachtSpaarRendementPct: "",
+  verwachtBeleggingsRendementPct: "",
   horizonJaren: "",
 };
 
@@ -55,7 +63,11 @@ const exampleValues: FormState = {
   box3Method: "forfaitary",
   startVermogen: "50000",
   maandelijkseInleg: "500",
+  maandelijkseSpaarinleg: "100",
+  maandelijkseBeleggingsinleg: "400",
   verwachtRendementPct: "6",
+  verwachtSpaarRendementPct: "2",
+  verwachtBeleggingsRendementPct: "6",
   horizonJaren: "20",
 };
 
@@ -91,8 +103,10 @@ function validateForm(values: FormState) {
   const errors: ValidationErrors = {};
   const taxYear = parseOptionalNumber(values.taxYear);
   const startVermogen = parseOptionalNumber(values.startVermogen);
-  const maandelijkseInleg = parseOptionalNumber(values.maandelijkseInleg);
-  const verwachtRendementPct = parseOptionalNumber(values.verwachtRendementPct);
+  const maandelijkseSpaarinleg = parseOptionalNumber(values.maandelijkseSpaarinleg);
+  const maandelijkseBeleggingsinleg = parseOptionalNumber(values.maandelijkseBeleggingsinleg);
+  const verwachtSpaarRendementPct = parseOptionalNumber(values.verwachtSpaarRendementPct);
+  const verwachtBeleggingsRendementPct = parseOptionalNumber(values.verwachtBeleggingsRendementPct);
   const horizonJaren = parseOptionalNumber(values.horizonJaren);
 
   if (taxYear === undefined || !Number.isFinite(taxYear) || taxYear < 2000 || taxYear > 2200) {
@@ -101,20 +115,11 @@ function validateForm(values: FormState) {
   if (startVermogen === undefined || !Number.isFinite(startVermogen) || startVermogen < 0) {
     errors.startVermogen = "Gebruik 0 of een hoger bedrag.";
   }
-  if (
-    maandelijkseInleg === undefined ||
-    !Number.isFinite(maandelijkseInleg) ||
-    maandelijkseInleg < 0
-  ) {
-    errors.maandelijkseInleg = "Gebruik 0 of een hoger bedrag.";
+  for (const [field, value] of [["maandelijkseSpaarinleg", maandelijkseSpaarinleg], ["maandelijkseBeleggingsinleg", maandelijkseBeleggingsinleg]] as const) {
+    if (value === undefined || !Number.isFinite(value) || value < 0) errors[field] = "Gebruik 0 of een hoger bedrag.";
   }
-  if (
-    verwachtRendementPct === undefined ||
-    !Number.isFinite(verwachtRendementPct) ||
-    verwachtRendementPct < 0 ||
-    verwachtRendementPct > 100
-  ) {
-    errors.verwachtRendementPct = "Gebruik een verwacht rendement tussen 0 en 100.";
+  for (const [field, value] of [["verwachtSpaarRendementPct", verwachtSpaarRendementPct], ["verwachtBeleggingsRendementPct", verwachtBeleggingsRendementPct]] as const) {
+    if (value === undefined || !Number.isFinite(value) || value < 0 || value > 100) errors[field] = "Gebruik een verwacht rendement tussen 0 en 100.";
   }
   if (
     horizonJaren === undefined ||
@@ -132,8 +137,12 @@ function validateForm(values: FormState) {
           hasFiscalPartner: values.hasFiscalPartner,
           box3Method: values.box3Method,
           startVermogen: startVermogen ?? 0,
-          maandelijkseInleg: maandelijkseInleg ?? 0,
-          verwachtRendementPct: verwachtRendementPct ?? 0,
+          maandelijkseInleg: (maandelijkseSpaarinleg ?? 0) + (maandelijkseBeleggingsinleg ?? 0),
+          maandelijkseSpaarinleg: maandelijkseSpaarinleg ?? 0,
+          maandelijkseBeleggingsinleg: maandelijkseBeleggingsinleg ?? 0,
+          verwachtRendementPct: verwachtBeleggingsRendementPct ?? 0,
+          verwachtSpaarRendementPct: verwachtSpaarRendementPct ?? 0,
+          verwachtBeleggingsRendementPct: verwachtBeleggingsRendementPct ?? 0,
           horizonJaren: Math.round(horizonJaren ?? 10),
         }
       : null;
@@ -313,8 +322,10 @@ function CalculatorContent({
 
           {[
             ["startVermogen", "Startvermogen nu"],
-            ["maandelijkseInleg", "Maandelijkse inleg"],
-            ["verwachtRendementPct", "Verwacht rendement per jaar (%)"],
+            ["maandelijkseSpaarinleg", "Maandelijkse inleg sparen"],
+            ["maandelijkseBeleggingsinleg", "Maandelijkse inleg beleggen"],
+            ["verwachtSpaarRendementPct", "Verwacht rendement sparen per jaar (%)"],
+            ["verwachtBeleggingsRendementPct", "Verwacht rendement beleggen per jaar (%)"],
             ["horizonJaren", "Horizon (jaren)"],
           ].map(([field, label]) => (
             <label key={field} className={mobileFlow.getFieldClassName(field)}>
@@ -413,7 +424,9 @@ function CalculatorContent({
                 <ResultRow label="Eindvermogen zonder box 3" value={formatCurrency(result.eindVermogenZonderBox3)} />
                 <ResultRow label="Verschil door box 3" value={formatCurrency(result.verschilDoorBox3)} />
                 <ResultRow label="Totale box 3 over horizon" value={formatCurrency(result.totaleBox3Belasting)} />
-                <ResultRow label="Jaarlijkse inleg" value={formatCurrency(result.jaarlijkseInleg)} />
+                <ResultRow label="Maandelijkse inleg sparen" value={formatCurrency(result.spaarinlegPerMaand)} />
+                <ResultRow label="Maandelijkse inleg beleggen" value={formatCurrency(result.beleggingsinlegPerMaand)} />
+                <ResultRow label="Totale jaarlijkse inleg" value={formatCurrency(result.jaarlijkseInleg)} />
               </div>
             ) : (
               <p className="mt-3 text-[14px] text-[var(--muted)]">
