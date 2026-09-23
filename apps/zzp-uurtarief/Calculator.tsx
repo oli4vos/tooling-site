@@ -552,8 +552,11 @@ function CalculatorContent({
           {result ? (
             <div className="space-y-2 text-[13px] leading-[1.65] text-[var(--muted)]">
               <p>Belastingjaar: {result.taxYear}.</p>
-              <p>Ruwe box 1-referentie over de benodigde omzet: {formatCurrency(result.box1Reference.indicativeTaxOnRequiredRevenue)}.</p>
-              <p>Indicatieve effectieve druk (box 1 referentie): {formatPercent(result.box1Reference.effectiveRate)}%.</p>
+              <p>Indicatieve fiscale winst na zakelijke kosten: {formatCurrency(result.box1Reference.taxableProfit)}.</p>
+              <p>Box 1 na centrale kortingen (indicatie): {formatCurrency(result.box1Reference.indicativeTaxOnRequiredRevenue)}.</p>
+              <p>Heffingskortingen in deze referentie: {formatCurrency(result.box1Reference.heffingskortingen)}.</p>
+              <p>Inkomensafhankelijke bijdrage Zvw voor winst: {formatCurrency(result.box1Reference.zvwContribution)}.</p>
+              <p>Indicatieve effectieve druk na kortingen (box 1 referentie): {formatPercent(result.box1Reference.effectiveRate)}%.</p>
               <p>Indicatief marginaal tarief (box 1 referentie): {formatPercent(result.box1Reference.marginalRate)}%.</p>
             </div>
           ) : null}

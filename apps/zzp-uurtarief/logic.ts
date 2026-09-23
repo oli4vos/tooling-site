@@ -1,5 +1,7 @@
 import { getDefaultFinancialYear } from "@/lib/financial-constants";
 import { calculateBox1Tax } from "@/lib/tax";
+import { calculateIncomeYear } from "@/lib/tax/income-comparison";
+import { cents } from "@/lib/tax/money";
 
 export type ZzpUurtariefInput = {
   taxYear?: number;
@@ -36,9 +38,12 @@ export type ZzpUurtariefResult = {
     requiredRevenueAsPercentOfSalary: number;
   };
   box1Reference: {
+    taxableProfit: number;
     indicativeTaxOnRequiredRevenue: number;
     effectiveRate: number;
     marginalRate: number;
+    heffingskortingen: number;
+    zvwContribution: number;
   };
   warnings: string[];
 };
@@ -142,10 +147,33 @@ export function calculateZzpUurtarief(
       ? roundMoney(requiredAnnualRevenue / billableHoursPerYear)
       : 0;
 
+  const taxableProfit = roundMoney(Math.max(requiredAnnualRevenue - annualBusinessCosts, 0));
   const box1Reference = calculateBox1Tax({
-    taxableIncome: requiredAnnualRevenue,
+    taxableIncome: taxableProfit,
     year: taxYear,
   });
+  let indicativeTax = box1Reference.totalTax;
+  let heffingskortingen = 0;
+  let zvwContribution = 0;
+  if (taxYear === 2026 || taxYear === 2027) {
+    const income = calculateIncomeYear(
+      {
+        salaryCents: cents(taxableProfit),
+        pensionCents: 0,
+        otherCents: 0,
+        pensionContributionCents: 0,
+        aow: "none",
+        singleElderly: false,
+        iack: false,
+        disabled: false,
+        zvwLines: [{ incomeCents: cents(taxableProfit), mode: "self-employed", label: "Winst uit onderneming" }],
+      },
+      taxYear,
+    );
+    indicativeTax = income.taxMaxCents / 100;
+    heffingskortingen = (income.generalCents + income.workMaxCents + income.iackCents + income.disabledCents) / 100;
+    zvwContribution = income.zvwSelfEmployedCents / 100;
+  }
 
   const salaryComparison =
     grossAnnualSalaryComparison > 0
@@ -161,7 +189,7 @@ export function calculateZzpUurtarief(
   const warnings = [
     "Dit is een indicatieve rekentool en geen volledige ZZP- of inkomstenbelastingaangifte.",
     "Het uurtarief is exclusief btw. De belastingreservering is jouw eigen planningspercentage van de benodigde omzet, niet een berekende belastingaanslag.",
-    "De box 1-referentie rekent alsof de benodigde omzet belastbaar inkomen is en houdt geen rekening met zakelijke kosten, heffingskortingen, ondernemersaftrek, MKB-winstvrijstelling, investeringsaftrek of persoonlijke aftrekposten.",
+    "De fiscale referentie trekt ingevoerde zakelijke kosten af en gebruikt voor 2026/2027 de centrale heffingskortingen en Zvw voor winst uit onderneming. Ondernemersaftrek, MKB-winstvrijstelling, investeringsaftrek, startersaftrek en persoonlijke aftrekposten zijn nog niet geactiveerd omdat daarvoor aanvullende invoer nodig is.",
     "Gebruik de uitkomst als planningsbedrag en controleer je belastingreservering met je boekhouder of adviseur.",
   ];
 
@@ -199,9 +227,12 @@ export function calculateZzpUurtarief(
     pensionReserveSource,
     grossSalaryComparison: salaryComparison,
     box1Reference: {
-      indicativeTaxOnRequiredRevenue: roundMoney(box1Reference.totalTax),
-      effectiveRate: roundMoney(box1Reference.effectiveRate),
+      taxableProfit,
+      indicativeTaxOnRequiredRevenue: roundMoney(indicativeTax),
+      effectiveRate: taxableProfit > 0 ? roundMoney((indicativeTax / taxableProfit) * 100) : 0,
       marginalRate: roundMoney(box1Reference.marginalRate),
+      heffingskortingen: roundMoney(heffingskortingen),
+      zvwContribution: roundMoney(zvwContribution),
     },
     warnings,
   };

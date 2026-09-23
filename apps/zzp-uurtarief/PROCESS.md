@@ -3,14 +3,16 @@ tool: zzp-uurtarief
 title: Welk ZZP-uurtarief heb ik nodig?
 route: /apps/zzp-uurtarief
 status: active-public
-lastReviewed: 2026-09-21
-sourceHash: sha256:7cc94424d7dcda130acc325213c633b218bd0e7253351850d7db74895d29075a
+lastReviewed: 2026-09-23
+sourceHash: sha256:bace956a76d76f4bc5e4b81b1c7bab768decb1d0811ea4f6a4d1a809fda5a3be
 sources:
   - apps/zzp-uurtarief/app.json
   - apps/zzp-uurtarief/Calculator.tsx
   - apps/zzp-uurtarief/logic.ts
   - apps/zzp-uurtarief/logic.test.ts
   - src/lib/tax/box1.ts
+  - src/lib/tax/income-comparison.ts
+  - src/lib/tax/zvw.ts
   - src/lib/financial-constants/years.ts
 ---
 
@@ -64,11 +66,11 @@ flowchart TD
 
 ## 5. Gegevensstroom en koppelingen
 
-`apps/zzp-uurtarief/Calculator.tsx` houdt alle invoer lokaal en geeft alleen gevalideerde waarden door aan `apps/zzp-uurtarief/logic.ts`. De scenariofaçade berekent omzet en tarief en gebruikt `src/lib/tax/box1.ts` uitsluitend voor een grove tariefreferentie. De ingevoerde belastingreserve blijft een gebruikersaanname en is geen berekende aanslag.
+`apps/zzp-uurtarief/Calculator.tsx` houdt alle invoer lokaal en geeft alleen gevalideerde waarden door aan `apps/zzp-uurtarief/logic.ts`. De scenariofaçade berekent omzet en tarief. Voor 2026 en de voorstelvergelijking 2027 gebruikt de fiscale referentie de centrale box 1-schijven, heffingskortingen en de Zvw-route voor winst uit onderneming; zakelijke kosten worden eerst van de benodigde omzet afgetrokken. De ingevoerde belastingreserve blijft een gebruikersaanname en is geen berekende aanslag.
 
 ## 6. Resultaten en uitzonderingen
 
-De tool toont benodigde omzet, belastingreserve, declarabele uren en uurtarief exclusief btw. Nul declarabele uren levert bewust geen bruikbaar uurtarief op. De Box 1-referentie houdt geen rekening met zakelijke kosten, heffingskortingen of ondernemersregelingen en wordt daarom niet als belastingaanslag gepresenteerd.
+De tool toont benodigde omzet, belastingreserve, declarabele uren en uurtarief exclusief btw. Nul declarabele uren levert bewust geen bruikbaar uurtarief op. De fiscale referentie trekt zakelijke kosten af en toont heffingskortingen en Zvw apart, maar activeert nog geen ondernemersaftrek, MKB-winstvrijstelling, startersaftrek, investeringsaftrek of persoonlijke aftrekposten. Daarom wordt de uitkomst niet als belastingaanslag gepresenteerd.
 
 ## 7. Functionele bronverwijzingen
 
@@ -76,4 +78,6 @@ De tool toont benodigde omzet, belastingreserve, declarabele uren en uurtarief e
 - `apps/zzp-uurtarief/Calculator.tsx`: formulier en resultaatpresentatie.
 - `apps/zzp-uurtarief/logic.ts`: planningsformule en waarschuwingen.
 - `src/lib/tax/box1.ts`: centrale Box 1-tariefreferentie.
+- `src/lib/tax/income-comparison.ts`: centrale 2026/2027-heffingskortingen.
+- `src/lib/tax/zvw.ts`: centrale Zvw-bijdrage voor winst uit onderneming.
 - `src/lib/financial-constants/years.ts`: centrale 2026-schijven en bronmetadata.
