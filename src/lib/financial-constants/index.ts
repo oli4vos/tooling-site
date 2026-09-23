@@ -207,6 +207,14 @@ export function getBox1Brackets(year?: number) {
   return getFinancialConstants(year).box1.brackets;
 }
 
+export function getBox1CreditRules(year?: number) {
+  return getFinancialConstants(year).box1.credits;
+}
+
+export function getZvwRules(year?: number) {
+  return getFinancialConstants(year).zvw;
+}
+
 export function getBox3Constants(year?: number) {
   return getFinancialConstants(year).box3;
 }

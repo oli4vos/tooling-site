@@ -592,6 +592,29 @@ function validateDatasetSpecificBounds(dataset: SourceDataset) {
       }
       break;
     }
+    case "tax-box1-credits": {
+      const data = dataset.data as AnnualFinancialConstants["box1"]["credits"];
+      if (data.general.max < 0 || data.general.start < 0 || data.general.reductionRate < 0) {
+        issues.push("Algemene heffingskorting bevat negatieve parameters.");
+      }
+      if (data.labour.limits.length !== 3 || data.labour.rates.length !== 4 || data.labour.bases.length !== 4) {
+        issues.push("Arbeidskorting 2026 mist een volledige grens-, tarief- of basisreeks.");
+      }
+      if (data.labour.limits.some((value, index) => index > 0 && value <= data.labour.limits[index - 1])) {
+        issues.push("Arbeidskortingsgrenzen moeten oplopen.");
+      }
+      break;
+    }
+    case "tax-zvw-rates": {
+      const data = dataset.data as AnnualFinancialConstants["zvw"];
+      if ([data.employerRate, data.employeeRate, data.selfEmployedRate].some((value) => value < 0 || value > 100)) {
+        issues.push("Zvw-percentages vallen buiten de verwachte bandbreedte.");
+      }
+      if (data.maxContributionIncome <= 0) {
+        issues.push("Zvw-maximumbijdrage-inkomen moet positief zijn.");
+      }
+      break;
+    }
     case "duo-rate-year": {
       const rates = dataset.data as Record<string, number>;
       for (const rate of Object.values(rates)) {
@@ -1293,6 +1316,56 @@ export const SOURCE_DATASET_REGISTRY: readonly SourceDataset[] = [
     },
     data: FINANCIAL_CONSTANTS_BY_YEAR[2026].box1,
     usedBy: ["zzp-uurtarief", "jaarruimte-vs-vrij-beleggen"],
+  },
+  {
+    family: "tax-box1-credits",
+    scenario: "national-credits-2026",
+    meta: {
+      recordType: "dataset",
+      id: "tax-box1-credits-2026",
+      title: "Heffingskortingen box 1 2026",
+      year: 2026,
+      version: "1.0.0",
+      effectiveFrom: "2026-01-01",
+      effectiveTo: "2026-12-31",
+      retrievedAt: "2026-09-23",
+      lastVerifiedAt: "2026-09-23",
+      nextReviewAt: "2027-02-15",
+      sourceName: "Belastingdienst",
+      sourceUrl: "https://www.belastingdienst.nl/wps/wcm/connect/nl/voorlopige-aanslag/content/voorlopige-aanslag-tarieven-en-heffingskortingen",
+      sourceType: "official-execution",
+      methodology: "Centrale 2026-parameters voor algemene-, arbeids-, ouderen-, IACK- en jonggehandicaptenkorting. Persoonlijke recht- en partnercondities blijven invoer en worden niet uit een bedrag afgeleid.",
+      methodologyType: "official-norm",
+      notes: "De bron bevat de tabellen; de calculator gebruikt alleen de vastgelegde bedragen en fasen die binnen de toolscope vallen.",
+      status: "active",
+    },
+    data: constants2026.box1.credits,
+    usedBy: ["netto-inkomen-vergelijking", "zzp-uurtarief"],
+  },
+  {
+    family: "tax-zvw-rates",
+    scenario: "employment-types-2026",
+    meta: {
+      recordType: "dataset",
+      id: "tax-zvw-rates-2026",
+      title: "Zvw-percentages en maximumbijdrage-inkomen 2026",
+      year: 2026,
+      version: "1.0.0",
+      effectiveFrom: "2026-01-01",
+      effectiveTo: "2026-12-31",
+      retrievedAt: "2026-09-23",
+      lastVerifiedAt: "2026-09-23",
+      nextReviewAt: "2027-02-15",
+      sourceName: "Belastingdienst",
+      sourceUrl: "https://www.belastingdienst.nl/wps/wcm/connect/bldcontentnl/belastingdienst/prive/werk_en_inkomen/zorgverzekeringswet/veranderingen-bijdrage-zvw/",
+      sourceType: "official-execution",
+      methodology: "De officiële werkgeversheffing en bijdrage Zvw worden gekoppeld aan loon, pensioen/uitkering en winst/overig werk. Het maximumbijdrage-inkomen wordt per combinatie van inkomensregels slechts eenmaal benut.",
+      methodologyType: "official-norm",
+      notes: "Werkgeversheffing is een werkgeverslast en wordt niet van het werknemersnetto afgetrokken; bijdrage Zvw via loon of aanslag wel.",
+      status: "active",
+    },
+    data: constants2026.zvw,
+    usedBy: ["netto-inkomen-vergelijking", "zzp-uurtarief"],
   },
   {
     family: "tax-box3-provisional",

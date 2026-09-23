@@ -1,7 +1,9 @@
 import { INCOME_RULES } from "@/lib/financial-constants/income-comparison-rules";
 import { calculateProgressiveTaxCents } from "./progressive-tax";
 import { requireCents, taxRate } from "./money";
-export type IncomeComparisonInput={salaryCents:number;pensionCents:number;otherCents:number;pensionContributionCents:number;aow:"none"|"full"|"before1946"|"transition";singleElderly:boolean;iack:boolean;disabled:boolean};
+import { calculateZvw } from "./zvw";
+import type { ZvwLine } from "./types";
+export type IncomeComparisonInput={salaryCents:number;pensionCents:number;otherCents:number;pensionContributionCents:number;aow:"none"|"full"|"before1946"|"transition";singleElderly:boolean;iack:boolean;disabled:boolean;zvwLines?:ZvwLine[]};
 export function calculateIncomeYear(input:IncomeComparisonInput,year:2026|2027){
   [input.salaryCents,input.pensionCents,input.otherCents,input.pensionContributionCents].forEach(v=>requireCents(v));
   if(input.pensionContributionCents>input.salaryCents)throw new Error("De pensioeninhouding is hoger dan het loon.");
@@ -23,5 +25,7 @@ export function calculateIncomeYear(input:IncomeComparisonInput,year:2026|2027){
   const fixedCredits=general+elderly+single+iack+disabled;
   const taxMin=Math.max(0,gross.totalCents-fixedCredits-workMax);
   const taxMax=Math.max(0,gross.totalCents-fixedCredits-workMin);
-  return {year,incomeCents:income,grossTaxCents:gross.totalCents,generalCents:general,elderlyCents:elderly,singleCents:single,iackCents:iack,disabledCents:disabled,workMinCents:workMin,workMaxCents:workMax,taxMinCents:taxMin,taxMaxCents:taxMax,netMinCents:income-taxMax,netMaxCents:income-taxMin,uncertain};
+  const zvw=calculateZvw({year,lines:input.zvwLines??[]});
+  const zvwOnNet=zvw.employeeCents+zvw.selfEmployedCents;
+  return {year,incomeCents:income,grossTaxCents:gross.totalCents,generalCents:general,elderlyCents:elderly,singleCents:single,iackCents:iack,disabledCents:disabled,workMinCents:workMin,workMaxCents:workMax,zvwEmployeeCents:zvw.employeeCents,zvwEmployerCents:zvw.employerCents,zvwSelfEmployedCents:zvw.selfEmployedCents,zvwCents:zvwOnNet,taxMinCents:taxMin,taxMaxCents:taxMax,netMinCents:income-taxMax-zvwOnNet,netMaxCents:income-taxMin-zvwOnNet,uncertain,zvwWarnings:zvw.warnings};
 }

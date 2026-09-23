@@ -73,6 +73,8 @@ export type SourceDatasetFamily =
   | "allowance-calculation-rules"
   | "planning-debt-priority-rules"
   | "tax-box1-rates"
+  | "tax-box1-credits"
+  | "tax-zvw-rates"
   | "tax-box3-provisional"
   | "tax-proposal-rules"
   | "mortgage-provider-rate";
@@ -239,6 +241,31 @@ export type DuoIncomeBasedRule = {
   notes?: string;
 };
 
+export type Box1CreditRules = {
+  meta: AssumptionMeta;
+  general: { max: number; start: number; reductionRate: number };
+  generalAow: { max: number; start: number; reductionRate: number };
+  labour: {
+    limits: number[];
+    rates: number[];
+    bases: number[];
+    aowRates: number[];
+    aowBases: number[];
+  };
+  elderly: { max: number; start: number };
+  singleElderly: number;
+  iack: { max: number; start: number };
+  disabled: number;
+};
+
+export type ZvwRules = {
+  meta: AssumptionMeta;
+  employerRate: number;
+  employeeRate: number;
+  selfEmployedRate: number;
+  maxContributionIncome: number;
+};
+
 export type AnnualFinancialConstants = {
   year: number;
   duo: {
@@ -271,9 +298,11 @@ export type AnnualFinancialConstants = {
       upTo: number | null;
       rate: number;
       label: string;
-    }>;
+    }>; 
     mortgageInterestDeductionMaxRate?: number;
+    credits: Box1CreditRules;
   };
+  zvw: ZvwRules;
   box3: {
     meta: AssumptionMeta;
     taxRate: number;

@@ -1,5 +1,34 @@
 export type TaxYear = number;
 export type Box3Method = "actual" | "forfaitary";
+export type ZvwMode = "employer" | "employee" | "self-employed" | "none";
+
+export type ZvwLine = {
+  incomeCents: number;
+  mode: ZvwMode;
+  label?: string;
+};
+
+export type ZvwInput = {
+  lines: ZvwLine[];
+  year?: TaxYear;
+};
+
+export type ZvwResult = {
+  year: TaxYear;
+  contributionIncomeCents: number;
+  employerCents: number;
+  employeeCents: number;
+  selfEmployedCents: number;
+  rows: Array<{
+    label: string;
+    mode: ZvwMode;
+    inputCents: number;
+    cappedIncomeCents: number;
+    rate: number;
+    amountCents: number;
+  }>;
+  warnings: string[];
+};
 
 export type Box1IncomeInput = {
   taxableIncome: number;
