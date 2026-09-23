@@ -3,8 +3,8 @@ tool: box3-indicatie
 title: Box 3 indicatie
 route: /apps/box3-indicatie
 status: active-public
-lastReviewed: 2026-09-22
-sourceHash: sha256:92e8c58a785970c589e1f1aef81e5c62bea5eba23c2c4b1afa72f698d596916f
+lastReviewed: 2026-09-23
+sourceHash: sha256:836dd5ed2706f579b424eed0e65d2632c0432692be4dac4cb5c10245c5af1d11
 sources:
   - apps/box3-indicatie/app.json
   - apps/box3-indicatie/Calculator.tsx

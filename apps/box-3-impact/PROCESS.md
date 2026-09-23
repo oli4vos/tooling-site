@@ -3,8 +3,8 @@ tool: box-3-impact
 title: Wat kost mijn vermogen in box 3?
 route: /apps/box-3-impact
 status: active-public
-lastReviewed: 2026-09-21
-sourceHash: sha256:48e5a2601b3a7067d6e8419769c6cb2d42a652418597c9de90a78a48081ab195
+lastReviewed: 2026-09-23
+sourceHash: sha256:16b916c30202ef1741b02ff0ee68914a758d37018258e3ad43e25b295fd90801
 sources:
   - apps/box-3-impact/app.json
   - apps/box-3-impact/Calculator.tsx

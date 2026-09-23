@@ -3,8 +3,8 @@ tool: annuitair-lineair
 title: Annuïtair of lineair
 route: /apps/annuitair-lineair
 status: active-public
-lastReviewed: 2026-09-22
-sourceHash: sha256:1cda2ffb5f52385ab3bc4ecf3959f51837d4c18a78eb2ddf67244e94db253170
+lastReviewed: 2026-09-23
+sourceHash: sha256:9a4eef80388a48f535cb0509e500c59aad1aaeb064549238a5d97f5a66dafc24
 sources:
   - apps/annuitair-lineair/app.json
   - apps/annuitair-lineair/Calculator.tsx

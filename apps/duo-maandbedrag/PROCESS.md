@@ -3,8 +3,8 @@ tool: duo-maandbedrag
 title: Wat wordt mijn DUO-maandbedrag?
 route: /apps/duo-maandbedrag
 status: active-public
-lastReviewed: 2026-09-18
-sourceHash: sha256:c723ecf0a0753b3a15d2c59c2106f4c9c21dfc8d0de583c5a3a96c1f1279fcbf
+lastReviewed: 2026-09-23
+sourceHash: sha256:467fec9082f1b2c8a6d4ca3483428afaf872dc763b30fc3174c940ba7ec69985
 sources:
   - apps/duo-maandbedrag/app.json
   - apps/duo-maandbedrag/Calculator.tsx
