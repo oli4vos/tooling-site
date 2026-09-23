@@ -30,6 +30,9 @@ type FormState = {
   debts: string;
   hasFiscalPartner: boolean;
   actualAnnualReturnRate: string;
+  actualIncome: string;
+  actualValueChange: string;
+  actualDebtInterest: string;
 };
 
 type ValidationErrors = Partial<Record<keyof FormState, string>>;
@@ -42,6 +45,9 @@ const exampleValues: FormState = {
   debts: "0",
   hasFiscalPartner: false,
   actualAnnualReturnRate: "5",
+  actualIncome: "",
+  actualValueChange: "",
+  actualDebtInterest: "",
 };
 
 const defaultValues: FormState = {
@@ -52,6 +58,9 @@ const defaultValues: FormState = {
   debts: "",
   hasFiscalPartner: false,
   actualAnnualReturnRate: "",
+  actualIncome: "",
+  actualValueChange: "",
+  actualDebtInterest: "",
 };
 
 type CalculatorContentProps = {
@@ -87,6 +96,12 @@ function validateForm(values: FormState) {
   const investmentsAndOtherAssets = parseOptionalNumber(values.investmentsAndOtherAssets);
   const debts = parseOptionalNumber(values.debts);
   const actualAnnualReturnRate = parseOptionalNumber(values.actualAnnualReturnRate);
+  const actualIncome = parseOptionalNumber(values.actualIncome);
+  const actualValueChange = parseOptionalNumber(values.actualValueChange);
+  const actualDebtInterest = parseOptionalNumber(values.actualDebtInterest);
+  const hasActualComponents = [actualIncome, actualValueChange, actualDebtInterest].some(
+    (value) => value !== undefined,
+  );
 
   if (year === undefined || !Number.isFinite(year) || year < 2000 || year > 2200) {
     errors.year = "Gebruik een geldig belastingjaar.";
@@ -114,10 +129,10 @@ function validateForm(values: FormState) {
 
   if (
     values.method === "actual" &&
-    (actualAnnualReturnRate === undefined ||
+    (!hasActualComponents && (actualAnnualReturnRate === undefined ||
       !Number.isFinite(actualAnnualReturnRate) ||
       actualAnnualReturnRate < 0 ||
-      actualAnnualReturnRate > 100)
+      actualAnnualReturnRate > 100))
   ) {
     errors.actualAnnualReturnRate = "Gebruik een rendement tussen 0 en 100.";
   }
@@ -133,6 +148,9 @@ function validateForm(values: FormState) {
           hasFiscalPartner: values.hasFiscalPartner,
           actualAnnualReturnRate:
             values.method === "actual" ? actualAnnualReturnRate : undefined,
+          actualIncome: values.method === "actual" ? actualIncome : undefined,
+          actualValueChange: values.method === "actual" ? actualValueChange : undefined,
+          actualDebtInterest: values.method === "actual" ? actualDebtInterest : undefined,
         }
       : null;
 
@@ -183,6 +201,7 @@ function CalculatorContent({
     "debts",
     "hasFiscalPartner",
     ...(formValues.method === "actual" ? ["actualAnnualReturnRate"] : []),
+    ...(formValues.method === "actual" ? ["actualIncome", "actualValueChange", "actualDebtInterest"] : []),
   ]);
 
   const isCurrentFieldBlocked = Boolean(
@@ -192,6 +211,9 @@ function CalculatorContent({
       investmentsAndOtherAssets: errors.investmentsAndOtherAssets,
       debts: errors.debts,
       actualAnnualReturnRate: errors.actualAnnualReturnRate,
+      actualIncome: undefined,
+      actualValueChange: undefined,
+      actualDebtInterest: undefined,
     }[mobileFlow.activeFieldId],
   );
 
@@ -263,7 +285,7 @@ function CalculatorContent({
                 }
                 className="size-4 accent-[var(--accent)]"
               />
-              Gebruik forfaitair rendement (default = werkelijk rendement)
+              Gebruik forfaitair rendement (uit = werkelijk rendement)
             </span>
           </label>
 
@@ -349,7 +371,7 @@ function CalculatorContent({
           {formValues.method === "actual" ? (
             <label className={mobileFlow.getFieldClassName("actualAnnualReturnRate")}>
               <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">
-                Werkelijk rendement (%)
+                Snelle rendement-projectie (%) — leeg laten bij componenten
               </span>
               <input
                 inputMode="decimal"
@@ -363,6 +385,34 @@ function CalculatorContent({
               />
               <FieldError message={errors.actualAnnualReturnRate} />
             </label>
+          ) : null}
+
+          {formValues.method === "actual" ? (
+            <div className="grid gap-4 rounded-xl border border-[var(--hair)] bg-[var(--paper-soft)] p-4">
+              <p className="text-[13px] leading-[1.6] text-[var(--muted)]">
+                Voor een inhoudelijker werkelijk-rendementsscenario kun je de echte inkomsten,
+                waardeverandering en betaalde rente op box 3-schulden opgeven. Als je één component
+                invult, wordt de percentage-projectie genegeerd.
+              </p>
+              <label className={mobileFlow.getFieldClassName("actualIncome")}>
+                <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">
+                  Werkelijke inkomsten uit vermogen (€)
+                </span>
+                <input inputMode="decimal" value={formValues.actualIncome} onChange={(event) => updateField("actualIncome", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+              </label>
+              <label className={mobileFlow.getFieldClassName("actualValueChange")}>
+                <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">
+                  Werkelijke waardeverandering (+/- €)
+                </span>
+                <input inputMode="decimal" value={formValues.actualValueChange} onChange={(event) => updateField("actualValueChange", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+              </label>
+              <label className={mobileFlow.getFieldClassName("actualDebtInterest")}>
+                <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">
+                  Betaalde rente op box 3-schulden (€)
+                </span>
+                <input inputMode="decimal" value={formValues.actualDebtInterest} onChange={(event) => updateField("actualDebtInterest", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+              </label>
+            </div>
           ) : null}
 
           <MobileFieldFlowControls
@@ -409,8 +459,8 @@ function CalculatorContent({
               <ResultRow label="Netto vermogen" value={formatCurrency(result.netWorth)} />
               <ResultRow
                 label="Heffingsvrij vermogen"
-                value={formatCurrency(result.taxFreeAllowance)}
-                sub="Afhankelijk van single of fiscale partner"
+                value={result.method === "actual" ? "Niet toegepast" : formatCurrency(result.taxFreeAllowance)}
+                sub={result.method === "actual" ? "Bij werkelijk rendement geldt deze vrijstelling niet" : "Afhankelijk van single of fiscale partner"}
               />
               <ResultRow
                 label="Belastbare grondslag"
@@ -420,6 +470,13 @@ function CalculatorContent({
                 label="Belastbaar (forfaitair/werkelijk) rendement"
                 value={formatCurrency(result.taxableDeemedReturn)}
               />
+              {result.method === "actual" ? (
+                <ResultRow
+                  label="Werkelijk rendement uit invoer"
+                  value={formatCurrency(result.actualReturn)}
+                  sub={result.actualReturnComponentsProvided ? "Inkomsten + waardeverandering − betaalde rente op schulden" : "Vereenvoudigde percentage-projectie"}
+                />
+              ) : null}
               <ResultRow
                 label="Indicatieve box 3-heffing"
                 value={formatCurrency(result.box3Tax)}

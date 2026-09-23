@@ -10,6 +10,9 @@ export type Box3ToolInput = {
   debts: number;
   hasFiscalPartner: boolean;
   actualAnnualReturnRate?: number;
+  actualIncome?: number;
+  actualValueChange?: number;
+  actualDebtInterest?: number;
 };
 
 export type Box3ToolResult = {
@@ -21,6 +24,8 @@ export type Box3ToolResult = {
   taxFreeAllowance: number;
   taxableBase: number;
   taxableDeemedReturn: number;
+  actualReturn: number;
+  actualReturnComponentsProvided: boolean;
   box3Tax: number;
   effectiveTaxRateOnNetWorth: number;
   rates: {
@@ -80,6 +85,9 @@ export function calculateBox3Indicatie(input: Box3ToolInput): Box3ToolResult {
     debts,
     actualAnnualReturnRate:
       input.method === "actual" ? sanitizePercent(input.actualAnnualReturnRate) : undefined,
+    actualIncome: input.method === "actual" ? input.actualIncome : undefined,
+    actualValueChange: input.method === "actual" ? input.actualValueChange : undefined,
+    actualDebtInterest: input.method === "actual" ? input.actualDebtInterest : undefined,
   });
 
   return {
@@ -91,6 +99,8 @@ export function calculateBox3Indicatie(input: Box3ToolInput): Box3ToolResult {
     taxFreeAllowance: base.taxFreeAllowance,
     taxableBase: base.taxableBase,
     taxableDeemedReturn: base.taxableDeemedReturn,
+    actualReturn: base.actualReturn,
+    actualReturnComponentsProvided: base.actualReturnComponentsProvided,
     box3Tax: base.box3Tax,
     effectiveTaxRateOnNetWorth: base.effectiveTaxRateOnNetWorth,
     rates: {
