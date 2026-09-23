@@ -32,6 +32,13 @@ export function calculateZvw(input: ZvwInput): ZvwResult {
   let employeeCents = 0;
   let selfEmployedCents = 0;
   const rows: ZvwResult["rows"] = [];
+  const warnings = [
+    "De Zvw-premie voor de zorgverzekeraar zelf zit niet in deze inkomensafhankelijke bijdrage.",
+    "Bij meerdere inkomensregels wordt het officiële maximumbijdrage-inkomen één keer gedeeld over de opgegeven regels.",
+  ];
+  if (year !== 2026) {
+    warnings.push("Voor dit jaar is nog geen afzonderlijk gecontroleerde Zvw-dataset geactiveerd; de 2026-regels zijn alleen als transparante technische fallback gebruikt.");
+  }
 
   for (const [index, line] of input.lines.entries()) {
     requireCents(line.incomeCents);
@@ -61,9 +68,6 @@ export function calculateZvw(input: ZvwInput): ZvwResult {
     employeeCents,
     selfEmployedCents,
     rows,
-    warnings: [
-      "De Zvw-premie voor de zorgverzekeraar zelf zit niet in deze inkomensafhankelijke bijdrage.",
-      "Bij meerdere inkomensregels wordt het officiële maximumbijdrage-inkomen één keer gedeeld over de opgegeven regels.",
-    ],
+    warnings,
   };
 }
