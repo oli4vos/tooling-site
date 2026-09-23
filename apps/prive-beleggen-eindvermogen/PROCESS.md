@@ -4,12 +4,13 @@ title: Wat wordt mijn eindvermogen met beleggen?
 route: /apps/prive-beleggen-eindvermogen
 status: active-public
 lastReviewed: 2026-09-23
-sourceHash: sha256:8b7349940064e0eece4744903729943dd8947c409454fb9c741704d8fbce3e4d
+sourceHash: sha256:7f385a25eb7d73c1049684818055d2c87ec1d9f3c3468035e9e031b809df201f
 sources:
   - apps/prive-beleggen-eindvermogen/app.json
   - apps/prive-beleggen-eindvermogen/Calculator.tsx
   - apps/prive-beleggen-eindvermogen/logic.ts
   - apps/prive-beleggen-eindvermogen/logic.test.ts
+  - src/components/WealthJourneyLinks.tsx
   - src/lib/planning/wealth-planning.ts
   - src/lib/tax/box3.ts
   - src/lib/financial-constants/index.ts
@@ -64,7 +65,7 @@ flowchart TD
 
 ## 5. Gegevensstroom en koppelingen
 
-Er is alleen lokale formulierstatus: geen backend, opslag, analytics of URL-invoer. De categorieprojectie komt uit `src/lib/planning/wealth-planning.ts`; Box 3-parameters en berekening komen uit `src/lib/financial-constants` en `src/lib/tax`.
+Er is alleen lokale formulierstatus: geen backend, opslag, analytics of URL-invoer. De categorieprojectie komt uit `src/lib/planning/wealth-planning.ts`; Box 3-parameters en berekening komen uit `src/lib/financial-constants` en `src/lib/tax`. De vervolglinks sturen door naar de centrale planning, Box 3 of FIRE.
 
 ## 6. Resultaten en uitzonderingen
 
@@ -76,6 +77,7 @@ De uitkomst toont eindvermogen per categorie en totaal, maandelijkse en totale i
 - `apps/prive-beleggen-eindvermogen/Calculator.tsx`
 - `apps/prive-beleggen-eindvermogen/logic.ts`
 - `apps/prive-beleggen-eindvermogen/logic.test.ts`
+- `src/components/WealthJourneyLinks.tsx`
 - `src/lib/planning/wealth-planning.ts`
 - `src/lib/tax/box3.ts`
 - `src/lib/financial-constants/index.ts`

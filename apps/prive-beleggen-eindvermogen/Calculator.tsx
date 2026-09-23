@@ -13,6 +13,7 @@ import {
 } from "@/components/charts";
 import { CalculatorShell } from "@/components/tool/CalculatorShell";
 import { ToolActionButton } from "@/components/tool/ToolActionButton";
+import { WealthJourneyLinks } from "@/components/WealthJourneyLinks";
 import { Pill } from "@/components/ui";
 import { useMobileFieldFlow } from "@/hooks/useMobileFieldFlow";
 import { useSubmittedCalculation } from "@/hooks/useSubmittedCalculation";
@@ -501,6 +502,7 @@ function CalculatorContent({
               <li>Gebruik dit als indicatief scenario, niet als gegarandeerde uitkomst.</li>
             </ul>
           </DisclosureSection>
+          {result ? <WealthJourneyLinks current="plan" /> : null}
         </>
       }
       disclaimer={
