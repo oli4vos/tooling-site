@@ -4,7 +4,7 @@ title: Wat wordt mijn eindvermogen met beleggen?
 route: /apps/prive-beleggen-eindvermogen
 status: active-public
 lastReviewed: 2026-09-23
-sourceHash: sha256:67c477c0eac7ebe9574a95ad62d8627d3b4bc175c22baba1aa357eb4bebcb2ec
+sourceHash: sha256:0c88d7d9d732ec99bca5e82184772477697b55570ce01b0db130439e7174efb4
 sources:
   - apps/prive-beleggen-eindvermogen/app.json
   - apps/prive-beleggen-eindvermogen/Calculator.tsx
