@@ -4,7 +4,7 @@ title: Wat wordt mijn DUO-maandbedrag?
 route: /apps/duo-maandbedrag
 status: active-public
 lastReviewed: 2026-09-23
-sourceHash: sha256:467fec9082f1b2c8a6d4ca3483428afaf872dc763b30fc3174c940ba7ec69985
+sourceHash: sha256:776d5d5a200227b66a6d59025cf4ed96087befefc313147c411f002ea3658b9f
 sources:
   - apps/duo-maandbedrag/app.json
   - apps/duo-maandbedrag/Calculator.tsx

@@ -4,7 +4,7 @@ title: Welk ZZP-uurtarief heb ik nodig?
 route: /apps/zzp-uurtarief
 status: active-public
 lastReviewed: 2026-09-23
-sourceHash: sha256:bace956a76d76f4bc5e4b81b1c7bab768decb1d0811ea4f6a4d1a809fda5a3be
+sourceHash: sha256:c279c1e9cb7be3e3d45d0de0819a42b4766766784e8305f35766d22e1603039e
 sources:
   - apps/zzp-uurtarief/app.json
   - apps/zzp-uurtarief/Calculator.tsx

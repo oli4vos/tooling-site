@@ -4,7 +4,7 @@ title: Box 3 indicatie
 route: /apps/box3-indicatie
 status: active-public
 lastReviewed: 2026-09-23
-sourceHash: sha256:c399ffeb003966fb7717abd97b42acfd173d7ac62a2e065e3496b1f211855d22
+sourceHash: sha256:edab9bd37f34a2bb221ee4c169937543787714c7d55c7ead1562b2c5edaf2848
 sources:
   - apps/box3-indicatie/app.json
   - apps/box3-indicatie/Calculator.tsx
