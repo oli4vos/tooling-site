@@ -4,12 +4,13 @@ title: Wanneer kan ik stoppen of minder werken?
 route: /apps/fire-na-belasting
 status: active-public
 lastReviewed: 2026-09-23
-sourceHash: sha256:0b102a01ff02bd68fbb1cb3f7207ba55edd0be8c8ee33776e16ee3b76ca13153
+sourceHash: sha256:868c416f183cbc0791f6f7ec27da82157d5f22d7a6583c3028b9d5046e5e4475
 sources:
   - apps/fire-na-belasting/app.json
   - apps/fire-na-belasting/Calculator.tsx
   - apps/fire-na-belasting/logic.ts
   - apps/fire-na-belasting/logic.test.ts
+  - src/components/WealthJourneyLinks.tsx
   - src/lib/planning/wealth-planning.ts
   - src/lib/tax/index.ts
   - src/lib/financial-constants/index.ts
@@ -57,7 +58,7 @@ flowchart TD
 
 ## 5. Gegevensstroom en koppelingen
 
-De React-laag beheert alleen lokale invoer. Er is geen profielopslag, backend of externe beleggingskoppeling. De categorieprojectie komt uit `src/lib/planning/wealth-planning.ts`; scherm en download gebruiken hetzelfde resultaatmodel.
+De React-laag beheert alleen lokale invoer. Er is geen profielopslag, backend of externe beleggingskoppeling. De categorieprojectie komt uit `src/lib/planning/wealth-planning.ts`; scherm en download gebruiken hetzelfde resultaatmodel. Na de uitkomst biedt `WealthJourneyLinks` de financiële planning en Box 3-verfijning als vervolg.
 
 ## 6. Resultaten en uitzonderingen
 
@@ -69,5 +70,6 @@ De tool toont een indicatief jaar waarin uitgaven mogelijk door vermogen worden 
 - `apps/fire-na-belasting/Calculator.tsx`
 - `apps/fire-na-belasting/logic.ts`
 - `apps/fire-na-belasting/logic.test.ts`
+- `src/components/WealthJourneyLinks.tsx`
 - `src/lib/planning/wealth-planning.ts`
 - `src/lib/tax`

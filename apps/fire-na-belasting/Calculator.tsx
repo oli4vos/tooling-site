@@ -6,6 +6,7 @@ import { ResultRow } from "@/components/ResultRow";
 import { ToolDisclosure } from "@/components/ToolDisclosure";
 import { CalculatorShell } from "@/components/tool/CalculatorShell";
 import { ToolActionButton } from "@/components/tool/ToolActionButton";
+import { WealthJourneyLinks } from "@/components/WealthJourneyLinks";
 import { Pill } from "@/components/ui";
 import { useMobileFieldFlow } from "@/hooks/useMobileFieldFlow";
 import { useSubmittedCalculation } from "@/hooks/useSubmittedCalculation";
@@ -671,6 +672,7 @@ function CalculatorContent({
             </ul>
           ) : null}
         </DisclosureSection>
+        {result ? <WealthJourneyLinks current="fire" /> : null}
         </>
       }
     />
