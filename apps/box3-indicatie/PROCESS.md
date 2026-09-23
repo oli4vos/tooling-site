@@ -4,12 +4,13 @@ title: Box 3 indicatie
 route: /apps/box3-indicatie
 status: active-public
 lastReviewed: 2026-09-23
-sourceHash: sha256:ab4222ba9748ff45179de4fc44be88685f062769f4a473624f4526111bb16bab
+sourceHash: sha256:a13c2c566452a7a62d07e94144ab46e26110f9665b73258f8ca14ea2000f09aa
 sources:
   - apps/box3-indicatie/app.json
   - apps/box3-indicatie/Calculator.tsx
   - apps/box3-indicatie/logic.ts
   - apps/box3-indicatie/logic.test.ts
+  - src/components/WealthJourneyLinks.tsx
   - src/lib/tax/box3.ts
   - src/lib/tax/types.ts
   - src/lib/planning/wealth-planning.ts
@@ -49,7 +50,7 @@ flowchart TD
 ```
 
 ## 5. Gegevensstroom en koppelingen
-De calculator geeft invoer door aan `calculateBox3Tax`. Er is geen backend of profielopslag; scherm en download delen hetzelfde resultaatmodel.
+De calculator geeft invoer door aan `calculateBox3Tax`. Er is geen backend of profielopslag; scherm en download delen hetzelfde resultaatmodel. Na een berekening koppelt `WealthJourneyLinks` door naar de financiële planning of FIRE-route.
 
 ## 6. Resultaten en uitzonderingen
 De tool toont methode, grondslag, indicatieve heffing, de eindpositie per categorie, een uitklapbaar jaaroverzicht en waarschuwingen. Werkelijk rendement is hier een transparante componentenprojectie en geen officiële vaststelling.
@@ -59,6 +60,7 @@ De tool toont methode, grondslag, indicatieve heffing, de eindpositie per catego
 - `apps/box3-indicatie/Calculator.tsx`
 - `apps/box3-indicatie/logic.ts`
 - `apps/box3-indicatie/logic.test.ts`
+- `src/components/WealthJourneyLinks.tsx`
 - `src/lib/tax/box3.ts`
 - `src/lib/tax/types.ts`
 - `src/lib/planning/wealth-planning.ts`
