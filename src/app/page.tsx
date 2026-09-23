@@ -22,6 +22,11 @@ export default function HomePage() {
           <p className="mt-3 text-[13px] text-[var(--muted)]">Een hulpmiddel om te begrijpen en te vergelijken. Geen persoonlijk financieel of belastingadvies.</p>
         </aside>
       </section>
+      <section className="grid gap-3 border-y border-[var(--hair)] py-5 sm:grid-cols-3" aria-label="Start bij een onderwerp">
+        <BtnLink href="/hypotheek" kind="outline" size="md">Hypotheek begrijpen</BtnLink>
+        <BtnLink href="/vermogen" kind="outline" size="md">Vermogen en beleggen</BtnLink>
+        <BtnLink href="/belasting" kind="outline" size="md">Belasting begrijpen</BtnLink>
+      </section>
       <section id="route" className="scroll-mt-36 border-t border-[var(--hair)] py-10">
         <h2 className="font-serif text-fluid-h2 tracking-[-0.02em] text-[var(--ink)]">Waar wil je inzicht in?</h2>
         <p className="mt-3 max-w-[60ch] text-[14px] leading-7 text-[var(--muted)]">Kies wat nu bij je past. Er is geen vaste volgorde.</p>
