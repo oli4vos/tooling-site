@@ -73,6 +73,9 @@ export type Box3Input = {
   hasFiscalPartner?: boolean;
   method?: Box3Method;
   actualAnnualReturnRate?: number;
+  actualIncome?: number;
+  actualValueChange?: number;
+  actualDebtInterest?: number;
   year?: TaxYear;
 };
 
@@ -89,6 +92,8 @@ export type Box3Result = {
   deemedReturnInvestments: number;
   deemedReturnDebts: number;
   taxableDeemedReturn: number;
+  actualReturn: number;
+  actualReturnComponentsProvided: boolean;
   box3Tax: number;
   effectiveTaxRateOnNetWorth: number;
   method: Box3Method;

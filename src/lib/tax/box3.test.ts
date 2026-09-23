@@ -16,7 +16,7 @@ describe("calculateBox3Tax", () => {
     expect(result.taxableBase).toBe(0);
   });
 
-  it("returns zero tax below tax-free allowance", () => {
+  it("does not apply the tax-free allowance to actual return", () => {
     const result = calculateBox3Tax({
       bankDeposits: 30000,
       investmentsAndOtherAssets: 0,
@@ -28,7 +28,8 @@ describe("calculateBox3Tax", () => {
     });
 
     expect(result.taxableBase).toBe(0);
-    expect(result.box3Tax).toBe(0);
+    expect(result.actualReturn).toBe(1500);
+    expect(result.box3Tax).toBe(540);
   });
 
   it("returns tax at or above zero above tax-free allowance", () => {
@@ -129,6 +130,23 @@ describe("calculateBox3Tax", () => {
     expect(result.method).toBe("forfaitary");
     expect(result.deemedReturnInvestments).toBeGreaterThan(0);
     expect(result.box3Tax).toBeGreaterThan(0);
+  });
+
+  it("accepts actual return components instead of a guessed percentage", () => {
+    const result = calculateBox3Tax({
+      bankDeposits: 100000,
+      investmentsAndOtherAssets: 50000,
+      debts: 20000,
+      method: "actual",
+      actualIncome: 2500,
+      actualValueChange: -1000,
+      actualDebtInterest: 300,
+      year: 2026,
+    });
+
+    expect(result.actualReturnComponentsProvided).toBe(true);
+    expect(result.actualReturn).toBe(1200);
+    expect(result.box3Tax).toBe(432);
   });
 
   it("only deducts box 3 debts above the 2026 debt threshold", () => {

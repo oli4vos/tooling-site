@@ -27,6 +27,10 @@ function sanitizePercent(value: number | undefined) {
   return Math.min(Math.max(value as number, 0), 100);
 }
 
+function sanitizeSignedMoney(value: number | undefined) {
+  return Number.isFinite(value) ? (value as number) : 0;
+}
+
 export function calculateBox3Tax(input: Box3Input): Box3Result {
   const year = input.year ?? getDefaultFinancialYear();
   const constants = getFinancialConstants(year);
@@ -50,6 +54,10 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
     Math.max(netWorthAfterDebtThreshold - taxFreeAllowance, 0),
   );
   const method = input.method ?? "actual";
+  const actualReturnComponentsProvided =
+    input.actualIncome !== undefined ||
+    input.actualValueChange !== undefined ||
+    input.actualDebtInterest !== undefined;
 
   const deemedReturnBankDeposits =
     method === "forfaitary"
@@ -67,6 +75,17 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
       ? roundMoney(deductibleDebts * (box3.deemedReturns.debts / 100))
       : 0;
 
+  const actualReturn =
+    actualReturnComponentsProvided
+      ? roundMoney(
+          sanitizeSignedMoney(input.actualIncome) +
+            sanitizeSignedMoney(input.actualValueChange) -
+            Math.max(sanitizeSignedMoney(input.actualDebtInterest), 0),
+        )
+      : roundMoney(
+          assetsTotal * (sanitizePercent(input.actualAnnualReturnRate) / 100),
+        );
+
   const taxableDeemedReturn =
     method === "forfaitary"
       ? (() => {
@@ -79,17 +98,7 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
               : 0;
           return roundMoney(Math.max(grossDeemedReturn * taxableShare, 0));
         })()
-      : (() => {
-          const actualAnnualReturnRate = sanitizePercent(input.actualAnnualReturnRate);
-          const annualReturnOnNetWorth = roundMoney(
-            netWorthAfterDebtThreshold * (actualAnnualReturnRate / 100),
-          );
-          const taxableShare =
-            netWorthAfterDebtThreshold > 0
-              ? taxableBase / netWorthAfterDebtThreshold
-              : 0;
-          return roundMoney(Math.max(annualReturnOnNetWorth * taxableShare, 0));
-        })();
+      : Math.max(actualReturn, 0);
 
   const box3Tax = roundMoney(taxableDeemedReturn * (box3.taxRate / 100));
   const effectiveTaxRateOnNetWorth =
@@ -104,8 +113,11 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
           "Werkelijke box 3-systematiek kan wijzigen en persoonlijke fiscale regels kunnen afwijken.",
         ]
       : [
-          "De route met een ingevuld rendement is alleen een vereenvoudigde projectie en niet de officiële berekening van werkelijk rendement.",
-          "Werkelijke box 3-systematiek kan wijzigen en persoonlijke fiscale regels kunnen afwijken.",
+          actualReturnComponentsProvided
+            ? "Werkelijk rendement gebruikt inkomsten + waardeverandering − betaalde rente op schulden. Bij deze route geldt geen heffingsvrij vermogen."
+            : "Een ingevoerd rendementpercentage is alleen een vereenvoudigde projectie van werkelijk rendement; vul inkomsten, waardeverandering en betaalde rente op schulden in voor een inhoudelijker scenario.",
+          "Bij werkelijk rendement wordt het rendement over het totale vermogen beoordeeld; de forfaitaire schuldendrempel en vrijstelling zijn daarom niet toegepast.",
+          "Dit blijft een indicatie en geen volledige aangifteberekening: onder meer begin-/eindwaarden, specifieke vermogenscategorieën en uitzonderingen kunnen de officiële uitkomst beïnvloeden.",
         ];
   if (box3.meta.status === "voorlopig") {
     warnings.push(
@@ -126,6 +138,8 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
     deemedReturnInvestments,
     deemedReturnDebts,
     taxableDeemedReturn,
+    actualReturn,
+    actualReturnComponentsProvided,
     box3Tax,
     effectiveTaxRateOnNetWorth,
     method,
