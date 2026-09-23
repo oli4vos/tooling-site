@@ -111,6 +111,25 @@ describe("source dataset registry", () => {
     expect(dataset.meta.year).toBe(2026);
   });
 
+  it("registers the 2026 box 1 credit and Zvw datasets separately", () => {
+    const credits = getActiveDataset("tax-box1-credits", {
+      scenario: "national-credits-2026",
+      asOf: "2026-09-23",
+    });
+    const zvw = getActiveDataset("tax-zvw-rates", {
+      scenario: "employment-types-2026",
+      asOf: "2026-09-23",
+    });
+
+    expect(credits.meta.sourceName).toBe("Belastingdienst");
+    expect((credits.data as { general: { max: number } }).general.max).toBe(311500);
+    expect((zvw.data as { employerRate: number; employeeRate: number; maxContributionIncome: number })).toMatchObject({
+      employerRate: 6.1,
+      employeeRate: 4.85,
+      maxContributionIncome: 79409,
+    });
+  });
+
   it("selects by peildatum and rejects missing active periods", () => {
     expect(
       getDatasetForDate("mortgage-afm-test-rate", "2026-07-18", {
