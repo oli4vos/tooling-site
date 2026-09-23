@@ -101,9 +101,13 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
       : Math.max(actualReturn, 0);
 
   const box3Tax = roundMoney(taxableDeemedReturn * (box3.taxRate / 100));
+  const effectiveNetWorth =
+    method === "actual"
+      ? Math.max(assetsTotal - debtsTotal, 0)
+      : netWorthAfterDebtThreshold;
   const effectiveTaxRateOnNetWorth =
-    netWorthAfterDebtThreshold > 0
-      ? roundRate((box3Tax / netWorthAfterDebtThreshold) * 100)
+    effectiveNetWorth > 0
+      ? roundRate((box3Tax / effectiveNetWorth) * 100)
       : 0;
 
   const warnings =
