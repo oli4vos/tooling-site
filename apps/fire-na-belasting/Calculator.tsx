@@ -24,8 +24,12 @@ type FormState = {
   currentSavings: string;
   currentInvestments: string;
   monthlyContribution: string;
+  monthlySavingsContribution: string;
+  monthlyInvestmentsContribution: string;
   yearlyContribution: string;
   expectedAnnualReturn: string;
+  expectedSavingsReturn: string;
+  expectedInvestmentsReturn: string;
   annualInflation: string;
   includeBox3Effect: boolean;
   taxYear: string;
@@ -44,8 +48,12 @@ const exampleValues: FormState = {
   currentSavings: "15000",
   currentInvestments: "35000",
   monthlyContribution: "750",
+  monthlySavingsContribution: "250",
+  monthlyInvestmentsContribution: "500",
   yearlyContribution: "0",
   expectedAnnualReturn: "5",
+  expectedSavingsReturn: "2",
+  expectedInvestmentsReturn: "6",
   annualInflation: "2",
   includeBox3Effect: true,
   taxYear: String(getDefaultFinancialYear()),
@@ -62,8 +70,12 @@ const defaultValues: FormState = {
   currentSavings: "",
   currentInvestments: "",
   monthlyContribution: "",
+  monthlySavingsContribution: "",
+  monthlyInvestmentsContribution: "",
   yearlyContribution: "",
   expectedAnnualReturn: "",
+  expectedSavingsReturn: "",
+  expectedInvestmentsReturn: "",
   annualInflation: "",
   includeBox3Effect: true,
   taxYear: "",
@@ -107,8 +119,12 @@ function validateForm(values: FormState) {
   const currentSavings = parseOptionalNumber(values.currentSavings);
   const currentInvestments = parseOptionalNumber(values.currentInvestments);
   const monthlyContribution = parseOptionalNumber(values.monthlyContribution);
+  const monthlySavingsContribution = parseOptionalNumber(values.monthlySavingsContribution);
+  const monthlyInvestmentsContribution = parseOptionalNumber(values.monthlyInvestmentsContribution);
   const yearlyContribution = parseOptionalNumber(values.yearlyContribution);
   const expectedAnnualReturn = parseOptionalNumber(values.expectedAnnualReturn);
+  const expectedSavingsReturn = parseOptionalNumber(values.expectedSavingsReturn);
+  const expectedInvestmentsReturn = parseOptionalNumber(values.expectedInvestmentsReturn);
   const annualInflation = parseOptionalNumber(values.annualInflation);
   const taxYear = parseOptionalNumber(values.taxYear);
   const annualExpensesNow = parseOptionalNumber(values.annualExpensesNow);
@@ -121,6 +137,8 @@ function validateForm(values: FormState) {
     ["currentSavings", currentSavings],
     ["currentInvestments", currentInvestments],
     ["monthlyContribution", monthlyContribution],
+    ["monthlySavingsContribution", monthlySavingsContribution],
+    ["monthlyInvestmentsContribution", monthlyInvestmentsContribution],
     ["yearlyContribution", yearlyContribution],
     ["annualExpensesNow", annualExpensesNow],
   ] as const) {
@@ -136,6 +154,15 @@ function validateForm(values: FormState) {
     expectedAnnualReturn > 100
   ) {
     errors.expectedAnnualReturn = "Gebruik een rendement tussen 0 en 100.";
+  }
+
+  for (const [field, value] of [
+    ["expectedSavingsReturn", expectedSavingsReturn],
+    ["expectedInvestmentsReturn", expectedInvestmentsReturn],
+  ] as const) {
+    if (value === undefined || !Number.isFinite(value) || value < 0 || value > 100) {
+      errors[field] = "Gebruik een rendement tussen 0 en 100.";
+    }
   }
 
   if (
@@ -183,8 +210,12 @@ function validateForm(values: FormState) {
           currentSavings: currentSavings ?? 0,
           currentInvestments: currentInvestments ?? 0,
           monthlyContribution: monthlyContribution ?? 0,
+          monthlySavingsContribution: monthlySavingsContribution ?? 0,
+          monthlyInvestmentsContribution: monthlyInvestmentsContribution ?? 0,
           yearlyContribution: yearlyContribution ?? 0,
           expectedAnnualReturn: expectedAnnualReturn ?? 0,
+          expectedSavingsReturn: expectedSavingsReturn ?? 0,
+          expectedInvestmentsReturn: expectedInvestmentsReturn ?? 0,
           annualInflation: annualInflation ?? 0,
           includeBox3Effect: values.includeBox3Effect,
           taxYear: taxYear ?? getDefaultFinancialYear(),
@@ -374,6 +405,8 @@ function CalculatorContent({
             ["currentSavings", "Spaargeld"],
             ["currentInvestments", "Beleggingen"],
             ["monthlyContribution", "Maandelijkse inleg"],
+            ["monthlySavingsContribution", "Maandelijkse spaarinleg"],
+            ["monthlyInvestmentsContribution", "Maandelijkse beleggingsinleg"],
             ["yearlyContribution", "Jaarlijkse extra inleg"],
           ].map(([field, label]) => (
             <label key={field} className={mobileFlow.getFieldClassName(field)}>
@@ -395,6 +428,8 @@ function CalculatorContent({
 
           {[
             ["expectedAnnualReturn", "Verwacht jaarlijks rendement (%)"],
+            ["expectedSavingsReturn", "Verwacht rendement spaargeld (%)"],
+            ["expectedInvestmentsReturn", "Verwacht rendement beleggingen (%)"],
             ["annualInflation", "Inflatie (%)"],
             ["taxYear", "Belastingjaar"],
             ["annualExpensesNow", "Jaarlijkse uitgaven nu"],

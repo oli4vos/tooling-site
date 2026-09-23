@@ -1,5 +1,6 @@
 import { getDefaultFinancialYear } from "@/lib/financial-constants";
 import { calculateBox3Tax } from "@/lib/tax";
+import { projectWealthPlan } from "@/lib/planning/wealth-planning";
 import type { RiskProfile } from "@/lib/user-profile";
 
 export type FireNaBelastingInput = {
@@ -7,8 +8,12 @@ export type FireNaBelastingInput = {
   currentSavings?: number;
   currentInvestments?: number;
   monthlyContribution?: number;
+  monthlySavingsContribution?: number;
+  monthlyInvestmentsContribution?: number;
   yearlyContribution?: number;
   expectedAnnualReturn?: number;
+  expectedSavingsReturn?: number;
+  expectedInvestmentsReturn?: number;
   annualInflation?: number;
   includeBox3Effect?: boolean;
   taxYear?: number;
@@ -56,7 +61,11 @@ type SimulateInput = {
   startSavings: number;
   startInvestments: number;
   annualContribution: number;
+  annualSavingsContribution?: number;
+  annualInvestmentsContribution?: number;
   expectedAnnualReturn: number;
+  expectedSavingsReturn?: number;
+  expectedInvestmentsReturn?: number;
   annualInflation: number;
   includeBox3Effect: boolean;
   taxYear: number;
@@ -147,6 +156,10 @@ function simulateProjection(input: SimulateInput): SimulateResult {
   let savings = input.startSavings;
   let investments = input.startInvestments;
   let cumulativeBox3Tax = 0;
+  const annualSavingsContribution = input.annualSavingsContribution ?? 0;
+  const annualInvestmentsContribution = input.annualInvestmentsContribution ?? input.annualContribution;
+  const savingsReturn = (input.expectedSavingsReturn ?? input.expectedAnnualReturn) / 100;
+  const investmentsReturn = (input.expectedInvestmentsReturn ?? input.expectedAnnualReturn) / 100;
 
   const initialAssets = roundMoney(savings + investments);
   const initialTarget = getFireTarget(
@@ -177,10 +190,21 @@ function simulateProjection(input: SimulateInput): SimulateResult {
 
   for (let year = 1; year <= input.horizonYears; year += 1) {
     const startAssets = savings + investments;
-    const growth = startAssets * (input.expectedAnnualReturn / 100);
-    savings = savings + savings * (input.expectedAnnualReturn / 100);
-    investments = investments + investments * (input.expectedAnnualReturn / 100);
-    investments += input.annualContribution;
+    const plan = projectWealthPlan({
+      startBankDeposits: savings,
+      startInvestmentsAndOtherAssets: investments,
+      monthlyBankDepositsContribution: annualSavingsContribution / 12,
+      monthlyInvestmentsContribution: annualInvestmentsContribution / 12,
+      expectedBankDepositsReturn: savingsReturn * 100,
+      expectedInvestmentsReturn: investmentsReturn * 100,
+      horizonYears: 1,
+    });
+    const yearEnd = plan.points.at(-1);
+    const growth = startAssets > 0
+      ? (yearEnd?.growthThisYear ?? 0)
+      : 0;
+    savings = yearEnd?.bankDeposits ?? savings;
+    investments = yearEnd?.investmentsAndOtherAssets ?? investments;
 
     let box3Tax = 0;
     if (input.includeBox3Effect) {
@@ -188,7 +212,7 @@ function simulateProjection(input: SimulateInput): SimulateResult {
         year: input.taxYear,
         hasFiscalPartner: input.hasFiscalPartner,
         method: "actual",
-        actualAnnualReturnRate: input.expectedAnnualReturn,
+        actualAnnualReturnRate: input.expectedInvestmentsReturn ?? input.expectedAnnualReturn,
         bankDeposits: savings,
         investmentsAndOtherAssets: investments,
         debts: 0,
@@ -223,7 +247,7 @@ function simulateProjection(input: SimulateInput): SimulateResult {
           ? Math.round(input.currentAge) + year
           : undefined,
       assets,
-      contributions: roundMoney(input.annualContribution),
+      contributions: roundMoney(annualSavingsContribution + annualInvestmentsContribution),
       growth: roundMoney(growth),
       box3Tax: roundMoney(box3Tax),
       fireTarget,
@@ -286,8 +310,16 @@ export function calculateFireNaBelasting(input: FireNaBelastingInput): FireNaBel
   const annualInflation = sanitizePercent(input.annualInflation, 2);
   const withdrawalRate = sanitizePercent(input.withdrawalRate, 4);
   const horizonYears = sanitizeYears(input.horizonYears, 40);
+  const monthlySavingsContribution = sanitizeMoney(input.monthlySavingsContribution);
+  const hasCategoryContributions = Number.isFinite(input.monthlySavingsContribution)
+    || Number.isFinite(input.monthlyInvestmentsContribution);
+  const monthlyInvestmentsContribution = hasCategoryContributions
+    ? sanitizeMoney(input.monthlyInvestmentsContribution)
+    : sanitizeMoney(input.monthlyContribution);
+  const expectedSavingsReturn = sanitizePercent(input.expectedSavingsReturn, expectedAnnualReturn);
+  const expectedInvestmentsReturn = sanitizePercent(input.expectedInvestmentsReturn, expectedAnnualReturn);
   const annualContribution =
-    sanitizeMoney(input.yearlyContribution) + sanitizeMoney(input.monthlyContribution) * 12;
+    sanitizeMoney(input.yearlyContribution) + (monthlySavingsContribution + monthlyInvestmentsContribution) * 12;
   const annualExpensesNow = sanitizeMoney(input.annualExpensesNow);
   const includeBox3Effect = Boolean(input.includeBox3Effect);
   const hasFiscalPartner = Boolean(input.hasFiscalPartner);
@@ -318,7 +350,11 @@ export function calculateFireNaBelasting(input: FireNaBelastingInput): FireNaBel
     startSavings: startingBuckets.savings,
     startInvestments: startingBuckets.investments,
     annualContribution,
+    annualSavingsContribution: monthlySavingsContribution * 12,
+    annualInvestmentsContribution: monthlyInvestmentsContribution * 12 + sanitizeMoney(input.yearlyContribution),
     expectedAnnualReturn,
+    expectedSavingsReturn,
+    expectedInvestmentsReturn,
     annualInflation,
     includeBox3Effect,
     taxYear,
