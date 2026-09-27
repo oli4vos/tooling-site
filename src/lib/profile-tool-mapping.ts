@@ -102,8 +102,13 @@ export const PROFILE_FIELDS_VOLGENDE_EURO = [
 
 export const PROFILE_FIELDS_FIRE_NA_BELASTING = [
   "savingInvesting.currentSavings",
+  "savingInvesting.currentInvestments",
   "savingInvesting.monthlyFreeCashflow",
+  "savingInvesting.monthlySavingsContribution",
+  "savingInvesting.monthlyInvestmentsContribution",
   "savingInvesting.expectedAnnualReturn",
+  "savingInvesting.expectedSavingsReturn",
+  "savingInvesting.expectedInvestmentsReturn",
   "savingInvesting.investmentHorizonYears",
   "savingInvesting.riskProfile",
   "tax.preferredTaxYear",
@@ -112,8 +117,13 @@ export const PROFILE_FIELDS_FIRE_NA_BELASTING = [
 
 export const PROFILE_FIELDS_PRIVE_BELEGGEN_EINDVERMOGEN = [
   "savingInvesting.currentSavings",
+  "savingInvesting.currentInvestments",
   "savingInvesting.monthlyFreeCashflow",
+  "savingInvesting.monthlySavingsContribution",
+  "savingInvesting.monthlyInvestmentsContribution",
   "savingInvesting.expectedAnnualReturn",
+  "savingInvesting.expectedSavingsReturn",
+  "savingInvesting.expectedInvestmentsReturn",
   "savingInvesting.investmentHorizonYears",
   "tax.preferredTaxYear",
   "tax.hasFiscalPartner",
@@ -229,6 +239,11 @@ type Box3IndicatieDefaults = Partial<{
   debts: string;
   hasFiscalPartner: boolean;
   actualAnnualReturnRate: string;
+  monthlyBankDepositsContribution: string;
+  monthlyInvestmentsContribution: string;
+  expectedBankDepositsReturn: string;
+  expectedInvestmentsReturn: string;
+  horizonYears: string;
 }>;
 
 type Box3ImpactDefaults = Partial<{
@@ -274,8 +289,12 @@ type FireNaBelastingDefaults = Partial<{
   currentSavings: string;
   currentInvestments: string;
   monthlyContribution: string;
+  monthlySavingsContribution: string;
+  monthlyInvestmentsContribution: string;
   yearlyContribution: string;
   expectedAnnualReturn: string;
+  expectedSavingsReturn: string;
+  expectedInvestmentsReturn: string;
   annualInflation: string;
   taxYear: string;
   hasFiscalPartner: boolean;
@@ -289,7 +308,11 @@ type PriveBeleggenEindvermogenDefaults = Partial<{
   box3Method: "actual" | "forfaitary";
   startVermogen: string;
   maandelijkseInleg: string;
+  maandelijkseSpaarinleg: string;
+  maandelijkseBeleggingsinleg: string;
   verwachtRendementPct: string;
+  verwachtSpaarRendementPct: string;
+  verwachtBeleggingsRendementPct: string;
   horizonJaren: string;
 }>;
 
@@ -708,6 +731,36 @@ export function getBox3IndicatieDefaultsFromProfile(
     defaults.bankDeposits = bankDeposits;
   }
 
+  const investments = toStringValue(profile.savingInvesting?.currentInvestments);
+  if (investments !== undefined) {
+    defaults.investmentsAndOtherAssets = investments;
+  }
+
+  const monthlySavingsContribution = toStringValue(profile.savingInvesting?.monthlySavingsContribution);
+  if (monthlySavingsContribution !== undefined) {
+    defaults.monthlyBankDepositsContribution = monthlySavingsContribution;
+  }
+
+  const monthlyInvestmentsContribution = toStringValue(profile.savingInvesting?.monthlyInvestmentsContribution);
+  if (monthlyInvestmentsContribution !== undefined) {
+    defaults.monthlyInvestmentsContribution = monthlyInvestmentsContribution;
+  }
+
+  const expectedSavingsReturn = toStringValue(profile.savingInvesting?.expectedSavingsReturn);
+  if (expectedSavingsReturn !== undefined) {
+    defaults.expectedBankDepositsReturn = expectedSavingsReturn;
+  }
+
+  const expectedInvestmentsReturn = toStringValue(profile.savingInvesting?.expectedInvestmentsReturn);
+  if (expectedInvestmentsReturn !== undefined) {
+    defaults.expectedInvestmentsReturn = expectedInvestmentsReturn;
+  }
+
+  const horizonYears = toStringValue(profile.savingInvesting?.investmentHorizonYears);
+  if (horizonYears !== undefined) {
+    defaults.horizonYears = horizonYears;
+  }
+
   if (profile.tax?.hasFiscalPartner !== undefined) {
     defaults.hasFiscalPartner = profile.tax.hasFiscalPartner;
   } else if (
@@ -916,6 +969,12 @@ export function getFireNaBelastingDefaultsFromProfile(
     defaults.currentNetWorth = currentSavings;
   }
 
+  const currentInvestments = toStringValue(profile.savingInvesting?.currentInvestments);
+  if (currentInvestments !== undefined) {
+    defaults.currentInvestments = currentInvestments;
+    defaults.currentNetWorth = toStringValue((profile.savingInvesting?.currentSavings ?? 0) + (profile.savingInvesting?.currentInvestments ?? 0));
+  }
+
   const monthlyContribution = toStringValue(
     profile.savingInvesting?.monthlyFreeCashflow,
   );
@@ -923,12 +982,21 @@ export function getFireNaBelastingDefaultsFromProfile(
     defaults.monthlyContribution = monthlyContribution;
   }
 
+  const monthlySavingsContribution = toStringValue(profile.savingInvesting?.monthlySavingsContribution);
+  if (monthlySavingsContribution !== undefined) defaults.monthlySavingsContribution = monthlySavingsContribution;
+  const monthlyInvestmentsContribution = toStringValue(profile.savingInvesting?.monthlyInvestmentsContribution);
+  if (monthlyInvestmentsContribution !== undefined) defaults.monthlyInvestmentsContribution = monthlyInvestmentsContribution;
+
   const expectedAnnualReturn = toStringValue(
     profile.savingInvesting?.expectedAnnualReturn,
   );
   if (expectedAnnualReturn !== undefined) {
     defaults.expectedAnnualReturn = expectedAnnualReturn;
   }
+  const expectedSavingsReturn = toStringValue(profile.savingInvesting?.expectedSavingsReturn);
+  if (expectedSavingsReturn !== undefined) defaults.expectedSavingsReturn = expectedSavingsReturn;
+  const expectedInvestmentsReturn = toStringValue(profile.savingInvesting?.expectedInvestmentsReturn);
+  if (expectedInvestmentsReturn !== undefined) defaults.expectedInvestmentsReturn = expectedInvestmentsReturn;
 
   const horizonYears = toStringValue(profile.savingInvesting?.investmentHorizonYears);
   if (horizonYears !== undefined) {
@@ -993,11 +1061,19 @@ export function getPriveBeleggenEindvermogenDefaultsFromProfile(
   if (startVermogen !== undefined) {
     defaults.startVermogen = startVermogen;
   }
+  const startInvestments = toStringValue(profile.savingInvesting?.currentInvestments);
+  if (startInvestments !== undefined) {
+    defaults.startVermogen = toStringValue((profile.savingInvesting?.currentSavings ?? 0) + (profile.savingInvesting?.currentInvestments ?? 0));
+  }
 
   const maandelijkseInleg = toStringValue(profile.savingInvesting?.monthlyFreeCashflow);
   if (maandelijkseInleg !== undefined) {
     defaults.maandelijkseInleg = maandelijkseInleg;
   }
+  const maandelijkseSpaarinleg = toStringValue(profile.savingInvesting?.monthlySavingsContribution);
+  if (maandelijkseSpaarinleg !== undefined) defaults.maandelijkseSpaarinleg = maandelijkseSpaarinleg;
+  const maandelijkseBeleggingsinleg = toStringValue(profile.savingInvesting?.monthlyInvestmentsContribution);
+  if (maandelijkseBeleggingsinleg !== undefined) defaults.maandelijkseBeleggingsinleg = maandelijkseBeleggingsinleg;
 
   const verwachtRendementPct = toStringValue(
     profile.savingInvesting?.expectedAnnualReturn,
@@ -1005,6 +1081,10 @@ export function getPriveBeleggenEindvermogenDefaultsFromProfile(
   if (verwachtRendementPct !== undefined) {
     defaults.verwachtRendementPct = verwachtRendementPct;
   }
+  const verwachtSpaarRendementPct = toStringValue(profile.savingInvesting?.expectedSavingsReturn);
+  if (verwachtSpaarRendementPct !== undefined) defaults.verwachtSpaarRendementPct = verwachtSpaarRendementPct;
+  const verwachtBeleggingsRendementPct = toStringValue(profile.savingInvesting?.expectedInvestmentsReturn);
+  if (verwachtBeleggingsRendementPct !== undefined) defaults.verwachtBeleggingsRendementPct = verwachtBeleggingsRendementPct;
 
   const horizonJaren = toStringValue(
     profile.savingInvesting?.investmentHorizonYears,

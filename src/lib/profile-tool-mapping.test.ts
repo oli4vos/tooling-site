@@ -8,6 +8,7 @@ import {
   getJaarruimteVsVrijBeleggenDefaultsFromProfile,
   getMortgageImpactDefaultsFromProfile,
   getMaxMortgageDefaultsFromProfile,
+  getPriveBeleggenEindvermogenDefaultsFromProfile,
   getStudentDebtVsInvestingDefaultsFromProfile,
   getFireNaBelastingDefaultsFromProfile,
   getVolgendeEuroDefaultsFromProfile,
@@ -414,6 +415,50 @@ describe("profile tool mapping", () => {
     expect(mapped.riskProfile).toBe("neutral");
     expect(mapped.taxYear).toBe("2026");
     expect(mapped.hasFiscalPartner).toBe(true);
+  });
+
+  it("keeps savings and investments separate when a financial plan is reused", () => {
+    const profile: UserProfile = {
+      savingInvesting: {
+        currentSavings: 18000,
+        currentInvestments: 52000,
+        monthlySavingsContribution: 250,
+        monthlyInvestmentsContribution: 650,
+        expectedSavingsReturn: 2.1,
+        expectedInvestmentsReturn: 6.4,
+        investmentHorizonYears: 18,
+      },
+      tax: { preferredTaxYear: 2026, preferredBox3Method: "actual" },
+    };
+
+    expect(getBox3IndicatieDefaultsFromProfile(profile)).toMatchObject({
+      method: "actual",
+      year: "2026",
+      bankDeposits: "18000",
+      investmentsAndOtherAssets: "52000",
+      monthlyBankDepositsContribution: "250",
+      monthlyInvestmentsContribution: "650",
+      expectedBankDepositsReturn: "2.1",
+      expectedInvestmentsReturn: "6.4",
+      horizonYears: "18",
+    });
+    expect(getFireNaBelastingDefaultsFromProfile(profile)).toMatchObject({
+      currentSavings: "18000",
+      currentInvestments: "52000",
+      currentNetWorth: "70000",
+      monthlySavingsContribution: "250",
+      monthlyInvestmentsContribution: "650",
+      expectedSavingsReturn: "2.1",
+      expectedInvestmentsReturn: "6.4",
+    });
+    expect(getPriveBeleggenEindvermogenDefaultsFromProfile(profile)).toMatchObject({
+      startVermogen: "70000",
+      maandelijkseSpaarinleg: "250",
+      maandelijkseBeleggingsinleg: "650",
+      verwachtSpaarRendementPct: "2.1",
+      verwachtBeleggingsRendementPct: "6.4",
+      horizonJaren: "18",
+    });
   });
 
   it("maps hypotheek-aflossen-vs-beleggen defaults from profile values", () => {

@@ -3,8 +3,8 @@ tool: fire-na-belasting
 title: Wanneer kan ik stoppen of minder werken?
 route: /apps/fire-na-belasting
 status: active-public
-lastReviewed: 2026-09-23
-sourceHash: sha256:868c416f183cbc0791f6f7ec27da82157d5f22d7a6583c3028b9d5046e5e4475
+lastReviewed: 2026-09-27
+sourceHash: sha256:9f564b1288c8fb593b525b6a666fda227c11fbfa824ea4b3f1e24ad936863552
 sources:
   - apps/fire-na-belasting/app.json
   - apps/fire-na-belasting/Calculator.tsx

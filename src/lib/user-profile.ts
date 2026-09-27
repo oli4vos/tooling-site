@@ -54,9 +54,14 @@ export type UserProfile = {
   };
   savingInvesting?: {
     currentSavings?: number;
+    currentInvestments?: number;
     targetEmergencyFund?: number;
     monthlyFreeCashflow?: number;
+    monthlySavingsContribution?: number;
+    monthlyInvestmentsContribution?: number;
     expectedAnnualReturn?: number;
+    expectedSavingsReturn?: number;
+    expectedInvestmentsReturn?: number;
     investmentHorizonYears?: number;
     riskProfile?: RiskProfile;
     hasAov?: boolean;
@@ -254,14 +259,27 @@ export function sanitizeUserProfile(profile: UserProfile): UserProfile {
 
   const savingInvesting = {
     currentSavings: sanitizeNonNegativeNumber(profile.savingInvesting?.currentSavings),
+    currentInvestments: sanitizeNonNegativeNumber(profile.savingInvesting?.currentInvestments),
     targetEmergencyFund: sanitizeNonNegativeNumber(
       profile.savingInvesting?.targetEmergencyFund,
     ),
     monthlyFreeCashflow: sanitizeNonNegativeNumber(
       profile.savingInvesting?.monthlyFreeCashflow,
     ),
+    monthlySavingsContribution: sanitizeNonNegativeNumber(
+      profile.savingInvesting?.monthlySavingsContribution,
+    ),
+    monthlyInvestmentsContribution: sanitizeNonNegativeNumber(
+      profile.savingInvesting?.monthlyInvestmentsContribution,
+    ),
     expectedAnnualReturn: sanitizePercentNumber(
       profile.savingInvesting?.expectedAnnualReturn,
+    ),
+    expectedSavingsReturn: sanitizePercentNumber(
+      profile.savingInvesting?.expectedSavingsReturn,
+    ),
+    expectedInvestmentsReturn: sanitizePercentNumber(
+      profile.savingInvesting?.expectedInvestmentsReturn,
     ),
     investmentHorizonYears: sanitizePositiveYears(
       profile.savingInvesting?.investmentHorizonYears,

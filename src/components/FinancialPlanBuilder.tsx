@@ -8,6 +8,8 @@ import { getDefaultFinancialYear } from "@/lib/financial-constants";
 import { parseOptionalDecimalInput } from "@/lib/number-input";
 import { BtnLink } from "@/components/ui";
 import { ToolActionButton } from "@/components/tool/ToolActionButton";
+import { useUserProfile } from "@/hooks/useUserProfile";
+import type { UserProfile } from "@/lib/user-profile";
 
 type FormValues = Record<keyof FinancialPlanInput, string | boolean>;
 
@@ -25,9 +27,30 @@ function number(value: string | boolean | undefined) {
   return typeof value === "string" ? parseOptionalDecimalInput(value) ?? 0 : 0;
 }
 
+function profileValues(profile: UserProfile): Partial<FormValues> {
+  const saving = profile.savingInvesting;
+  const tax = profile.tax;
+  const value = (input: number | undefined) => input === undefined ? undefined : String(input);
+  const values = {
+    year: value(tax?.preferredTaxYear),
+    hasFiscalPartner: tax?.hasFiscalPartner,
+    box3Method: tax?.preferredBox3Method,
+    currentSavings: value(saving?.currentSavings),
+    currentInvestments: value(saving?.currentInvestments),
+    monthlySavingsContribution: value(saving?.monthlySavingsContribution),
+    monthlyInvestmentsContribution: value(saving?.monthlyInvestmentsContribution),
+    expectedSavingsReturn: value(saving?.expectedSavingsReturn),
+    expectedInvestmentsReturn: value(saving?.expectedInvestmentsReturn),
+    horizonYears: value(saving?.investmentHorizonYears),
+  };
+  return Object.fromEntries(Object.entries(values).filter(([, entry]) => entry !== undefined)) as Partial<FormValues>;
+}
+
 export function FinancialPlanBuilder() {
+  const { profile, hasProfile, mergeProfile } = useUserProfile();
   const [values, setValues] = useState<FormValues>(defaults);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [saveMessage, setSaveMessage] = useState<string | null>(null);
   const input = useMemo<FinancialPlanInput>(() => ({
     year: number(values.year), hasFiscalPartner: Boolean(values.hasFiscalPartner),
     box3Method: values.box3Method === "actual" ? "actual" : "forfaitary",
@@ -40,6 +63,25 @@ export function FinancialPlanBuilder() {
 
   function set(field: keyof FormValues, value: string | boolean) {
     setValues((current) => ({ ...current, [field]: value }));
+    setSaveMessage(null);
+  }
+
+  function saveForNextTools() {
+    mergeProfile({
+      savingInvesting: {
+        currentSavings: number(values.currentSavings),
+        currentInvestments: number(values.currentInvestments),
+        monthlyFreeCashflow: number(values.monthlySavingsContribution) + number(values.monthlyInvestmentsContribution),
+        monthlySavingsContribution: number(values.monthlySavingsContribution),
+        monthlyInvestmentsContribution: number(values.monthlyInvestmentsContribution),
+        expectedAnnualReturn: number(values.expectedInvestmentsReturn),
+        expectedSavingsReturn: number(values.expectedSavingsReturn),
+        expectedInvestmentsReturn: number(values.expectedInvestmentsReturn),
+        investmentHorizonYears: number(values.horizonYears),
+      },
+      tax: { hasFiscalPartner: Boolean(values.hasFiscalPartner), preferredTaxYear: number(values.year), preferredBox3Method: values.box3Method === "actual" ? "actual" : "forfaitary" },
+    });
+    setSaveMessage("Opgeslagen op dit apparaat. De vervolgstappen nemen deze waarden mee.");
   }
 
   async function download() {
@@ -61,6 +103,8 @@ export function FinancialPlanBuilder() {
       <div className="section-label">Stap 1 - jouw uitgangspunt</div>
       <h2 className="mt-3 font-serif text-[26px] tracking-[-0.03em] text-[var(--ink)]">Bouw een scenario dat bij jou past.</h2>
       <p className="mt-3 text-[14px] leading-7 text-[var(--muted)]">Vul bedragen per vermogenscategorie in. Lege velden tellen als nul. Alles blijft lokaal in je browser.</p>
+      <div className="mt-4 flex flex-wrap gap-2"><ToolActionButton type="button" variant="secondary" onClick={saveForNextTools}>Bewaar voor vervolgstappen</ToolActionButton>{hasProfile ? <ToolActionButton type="button" variant="secondary" onClick={() => { setValues((current) => ({ ...current, ...profileValues(profile) })); setSaveMessage("Opgeslagen planning geladen."); }}>Gebruik opgeslagen planning</ToolActionButton> : null}</div>
+      {saveMessage ? <p className="mt-3 text-[13px] leading-6 text-[var(--muted)]" role="status">{saveMessage}</p> : null}
       <div className="mt-6 grid gap-4">
         {fields.map(([field, label, placeholder]) => <label key={field} className="grid gap-2">
           <span className="text-[12px] font-medium uppercase tracking-[0.04em] text-[var(--muted)]">{label}</span>

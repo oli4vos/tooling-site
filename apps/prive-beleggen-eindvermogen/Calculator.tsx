@@ -202,8 +202,10 @@ function CalculatorContent({
   const mobileFlow = useMobileFieldFlow([
     "taxYear",
     "startVermogen",
-    "maandelijkseInleg",
-    "verwachtRendementPct",
+    "maandelijkseSpaarinleg",
+    "maandelijkseBeleggingsinleg",
+    "verwachtSpaarRendementPct",
+    "verwachtBeleggingsRendementPct",
     "horizonJaren",
     "hasFiscalPartner",
     "box3Method",
@@ -213,8 +215,10 @@ function CalculatorContent({
     {
       taxYear: errors.taxYear,
       startVermogen: errors.startVermogen,
-      maandelijkseInleg: errors.maandelijkseInleg,
-      verwachtRendementPct: errors.verwachtRendementPct,
+      maandelijkseSpaarinleg: errors.maandelijkseSpaarinleg,
+      maandelijkseBeleggingsinleg: errors.maandelijkseBeleggingsinleg,
+      verwachtSpaarRendementPct: errors.verwachtSpaarRendementPct,
+      verwachtBeleggingsRendementPct: errors.verwachtBeleggingsRendementPct,
       horizonJaren: errors.horizonJaren,
     }[mobileFlow.activeFieldId],
   );
