@@ -43,6 +43,7 @@ function formatCurrency(value: number) {
 export default function Calculator() {
   const [values, setValues] = useState<FormState>(defaultValues);
   const [submitted, setSubmitted] = useState<FormState | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
 
   const result = useMemo(() => {
     if (!submitted) return null;
@@ -87,6 +88,22 @@ export default function Calculator() {
           className="grid gap-4"
           onSubmit={(event) => {
             event.preventDefault();
+            const maxMortgage = parseOptionalDecimal(values.maxMortgageWithoutLease);
+            const leaseCost = parseOptionalDecimal(values.monthlyLeaseCost);
+            const factor = parseOptionalDecimal(values.debtToMortgageFactor);
+            if (maxMortgage === undefined || maxMortgage <= 0) {
+              setFormError("Vul je hypotheekruimte zonder lease in.");
+              return;
+            }
+            if (leaseCost === undefined || leaseCost < 0) {
+              setFormError("Vul je maandelijkse private lease in.");
+              return;
+            }
+            if (factor === undefined || factor <= 0) {
+              setFormError("Vul een omrekenfactor groter dan 0 in.");
+              return;
+            }
+            setFormError(null);
             setSubmitted(values);
           }}
         >
@@ -97,6 +114,8 @@ export default function Calculator() {
             <input
               inputMode="decimal"
               value={values.maxMortgageWithoutLease}
+              aria-required="true"
+              aria-invalid={formError ? "true" : "false"}
               onChange={(event) =>
                 setValues((current) => ({
                   ...current,
@@ -113,6 +132,8 @@ export default function Calculator() {
             <input
               inputMode="decimal"
               value={values.monthlyLeaseCost}
+              aria-required="true"
+              aria-invalid={formError ? "true" : "false"}
               onChange={(event) =>
                 setValues((current) => ({
                   ...current,
@@ -129,6 +150,8 @@ export default function Calculator() {
             <input
               inputMode="decimal"
               value={values.debtToMortgageFactor}
+              aria-required="true"
+              aria-invalid={formError ? "true" : "false"}
               onChange={(event) =>
                 setValues((current) => ({
                   ...current,
@@ -141,6 +164,11 @@ export default function Calculator() {
           <ToolActionButton type="submit" variant="accent" size="md">
             Bereken
           </ToolActionButton>
+          {formError ? (
+            <p className="text-[13px] text-[oklch(35%_0.13_28)]" role="alert">
+              {formError}
+            </p>
+          ) : null}
         </form>
       }
       result={
