@@ -65,6 +65,15 @@ type ProfileFormState = {
   mortgageRate: string;
   mortgageTermYears: string;
   maxMortgageWithoutStudentDebt: string;
+  currentSavings: string;
+  currentInvestments: string;
+  monthlySavingsContribution: string;
+  monthlyInvestmentsContribution: string;
+  investmentHorizonYears: string;
+  riskProfile: "conservative" | "neutral" | "offensive";
+  preferredBox3Method: "actual" | "forfaitary";
+  hasFiscalPartner: "unknown" | "yes" | "no";
+  preferredTaxYear: string;
 };
 
 type ValidationErrors = Partial<Record<keyof ProfileFormState, string>>;
@@ -89,9 +98,18 @@ const defaultFormState: ProfileFormState = {
   mortgageRate: "",
   mortgageTermYears: "",
   maxMortgageWithoutStudentDebt: "",
+  currentSavings: "",
+  currentInvestments: "",
+  monthlySavingsContribution: "",
+  monthlyInvestmentsContribution: "",
+  investmentHorizonYears: "",
+  riskProfile: "neutral",
+  preferredBox3Method: "forfaitary",
+  hasFiscalPartner: "unknown",
+  preferredTaxYear: "",
 };
 
-const profileSteps = ["Inkomen", "Studieschuld", "Wonen"] as const;
+const profileSteps = ["Inkomen", "Vermogen", "Belasting", "Studieschuld", "Wonen"] as const;
 
 const profileStepByField: Record<keyof ProfileFormState, number> = {
   grossAnnualIncome: 0,
@@ -113,6 +131,15 @@ const profileStepByField: Record<keyof ProfileFormState, number> = {
   mortgageRate: 2,
   mortgageTermYears: 2,
   maxMortgageWithoutStudentDebt: 2,
+  currentSavings: 1,
+  currentInvestments: 1,
+  monthlySavingsContribution: 1,
+  monthlyInvestmentsContribution: 1,
+  investmentHorizonYears: 1,
+  riskProfile: 1,
+  preferredBox3Method: 2,
+  hasFiscalPartner: 2,
+  preferredTaxYear: 2,
 };
 
 const employmentTypeOptions: EmploymentType[] = [
@@ -211,6 +238,15 @@ function profileToFormState(profile: UserProfile): ProfileFormState {
     maxMortgageWithoutStudentDebt: toFormValue(
       profile.housing?.maxMortgageWithoutStudentDebt,
     ),
+    currentSavings: toFormValue(profile.savingInvesting?.currentSavings),
+    currentInvestments: toFormValue(profile.savingInvesting?.currentInvestments),
+    monthlySavingsContribution: toFormValue(profile.savingInvesting?.monthlySavingsContribution),
+    monthlyInvestmentsContribution: toFormValue(profile.savingInvesting?.monthlyInvestmentsContribution),
+    investmentHorizonYears: toFormValue(profile.savingInvesting?.investmentHorizonYears),
+    riskProfile: profile.savingInvesting?.riskProfile ?? "neutral",
+    preferredBox3Method: profile.tax?.preferredBox3Method ?? "forfaitary",
+    hasFiscalPartner: profile.tax?.hasFiscalPartner === undefined ? "unknown" : profile.tax.hasFiscalPartner ? "yes" : "no",
+    preferredTaxYear: toFormValue(profile.tax?.preferredTaxYear),
   };
 }
 
@@ -272,6 +308,12 @@ function formStateToProfile(formValues: ProfileFormState) {
   const maxMortgageWithoutStudentDebt = parseOptionalDecimalInput(
     formValues.maxMortgageWithoutStudentDebt,
   );
+  const currentSavings = parseOptionalDecimalInput(formValues.currentSavings);
+  const currentInvestments = parseOptionalDecimalInput(formValues.currentInvestments);
+  const monthlySavingsContribution = parseOptionalDecimalInput(formValues.monthlySavingsContribution);
+  const monthlyInvestmentsContribution = parseOptionalDecimalInput(formValues.monthlyInvestmentsContribution);
+  const investmentHorizonYears = parseOptionalDecimalInput(formValues.investmentHorizonYears);
+  const preferredTaxYear = parseOptionalDecimalInput(formValues.preferredTaxYear);
   const debtPartsValidation = validateDuoDebtPartFormValues(formValues.debtParts);
 
   validateNonNegative(
@@ -338,6 +380,14 @@ function formStateToProfile(formValues: ProfileFormState) {
     errors,
     "Gebruik 0 of een hogere maximale hypotheek.",
   );
+  validateNonNegative("currentSavings", currentSavings, errors, "Gebruik 0 of een hoger spaarsaldo.");
+  validateNonNegative("currentInvestments", currentInvestments, errors, "Gebruik 0 of een hogere beleggingswaarde.");
+  validateNonNegative("monthlySavingsContribution", monthlySavingsContribution, errors, "Gebruik 0 of een hogere maandelijkse spaarinleg.");
+  validateNonNegative("monthlyInvestmentsContribution", monthlyInvestmentsContribution, errors, "Gebruik 0 of een hogere maandelijkse beleggingsinleg.");
+  validatePositive("investmentHorizonYears", investmentHorizonYears, errors, "Gebruik een beleggingshorizon groter dan 0.");
+  if (preferredTaxYear !== undefined && (!Number.isInteger(preferredTaxYear) || preferredTaxYear < 2020 || preferredTaxYear > 2200)) {
+    errors.preferredTaxYear = "Gebruik een geldig belastingjaar.";
+  }
 
   if (
     duoRateYear !== undefined &&
@@ -368,7 +418,7 @@ function formStateToProfile(formValues: ProfileFormState) {
     "Gebruik een hypotheeklooptijd groter dan 0.",
   );
 
-  const profile: Pick<UserProfile, "income" | "studentDebt" | "housing"> | null =
+  const profile: Pick<UserProfile, "income" | "studentDebt" | "housing" | "savingInvesting" | "tax"> | null =
     Object.keys(errors).length === 0
       ? {
           income: {
@@ -418,6 +468,19 @@ function formStateToProfile(formValues: ProfileFormState) {
             mortgageRate,
             mortgageTermYears,
             maxMortgageWithoutStudentDebt,
+          },
+          savingInvesting: {
+            currentSavings,
+            currentInvestments,
+            monthlySavingsContribution,
+            monthlyInvestmentsContribution,
+            investmentHorizonYears,
+            riskProfile: formValues.riskProfile,
+          },
+          tax: {
+            preferredBox3Method: formValues.preferredBox3Method,
+            hasFiscalPartner: formValues.hasFiscalPartner === "unknown" ? undefined : formValues.hasFiscalPartner === "yes",
+            preferredTaxYear,
           },
         }
       : null;
@@ -987,6 +1050,26 @@ function ProfileEditor({
         ) : null}
 
         {activeStep === 1 ? (
+          <ProfileStep title="Vermogen en beleggen">
+            <TextField field="currentSavings" label="Huidig spaargeld" value={formValues.currentSavings} error={errors.currentSavings} placeholder="Optioneel" onChange={(value) => updateField("currentSavings", value)} />
+            <TextField field="currentInvestments" label="Huidige beleggingen" value={formValues.currentInvestments} error={errors.currentInvestments} placeholder="Optioneel" onChange={(value) => updateField("currentInvestments", value)} />
+            <TextField field="monthlySavingsContribution" label="Maandelijkse spaarinleg" value={formValues.monthlySavingsContribution} error={errors.monthlySavingsContribution} placeholder="Optioneel" onChange={(value) => updateField("monthlySavingsContribution", value)} />
+            <TextField field="monthlyInvestmentsContribution" label="Maandelijkse beleggingsinleg" value={formValues.monthlyInvestmentsContribution} error={errors.monthlyInvestmentsContribution} placeholder="Optioneel" onChange={(value) => updateField("monthlyInvestmentsContribution", value)} />
+            <TextField field="investmentHorizonYears" label="Beleggingshorizon in jaren" value={formValues.investmentHorizonYears} error={errors.investmentHorizonYears} placeholder="Optioneel" onChange={(value) => updateField("investmentHorizonYears", value)} />
+            <SelectField field="riskProfile" label="Risicoprofiel" value={formValues.riskProfile} options={[{ value: "conservative", label: "Voorzichtig" }, { value: "neutral", label: "Neutraal" }, { value: "offensive", label: "Offensief" }]} onChange={(value) => updateField("riskProfile", value)} />
+            <p className="md:col-span-2 text-[13px] leading-[1.6] text-[var(--muted)]">Deze gegevens worden alleen gebruikt om tools voor vermogensopbouw en maandelijkse inleg vooraf te vullen. Lege velden blijven optioneel.</p>
+          </ProfileStep>
+        ) : null}
+
+        {activeStep === 2 ? (
+          <ProfileStep title="Belastingvoorkeuren">
+            <SelectField field="preferredBox3Method" label="Methode Box 3" value={formValues.preferredBox3Method} options={[{ value: "forfaitary", label: "Forfaitair rendement" }, { value: "actual", label: "Werkelijk rendement vergelijken" }]} onChange={(value) => updateField("preferredBox3Method", value)} hint="De tool blijft een indicatie; controleer altijd de actuele wetgeving." />
+            <SelectField field="hasFiscalPartner" label="Fiscale partner" value={formValues.hasFiscalPartner} options={[{ value: "unknown", label: "Nog niet ingevuld" }, { value: "yes", label: "Ja" }, { value: "no", label: "Nee" }]} onChange={(value) => updateField("hasFiscalPartner", value)} />
+            <TextField field="preferredTaxYear" label="Voorkeursbelastingjaar" value={formValues.preferredTaxYear} error={errors.preferredTaxYear} placeholder="Bijv. 2026" onChange={(value) => updateField("preferredTaxYear", value)} />
+          </ProfileStep>
+        ) : null}
+
+        {activeStep === 3 ? (
           <ProfileStep title="Studieschuld en DUO">
             <TextField
               field="remainingDebt"
@@ -1106,7 +1189,7 @@ function ProfileEditor({
           </ProfileStep>
         ) : null}
 
-        {activeStep === 2 ? (
+        {activeStep === 4 ? (
           <ProfileStep title="Wonen">
             <TextField
               field="targetHomePrice"
