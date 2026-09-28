@@ -6,6 +6,7 @@ import { KnowledgeLevelHint } from "@/components/KnowledgeLevelHint";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ToolIndependenceNotice } from "@/components/tool/ToolIndependenceNotice";
+import { ToolJourneyHeader } from "@/components/tool/ToolJourneyHeader";
 import { ENABLE_KNOWLEDGE_LEVEL } from "@/lib/feature-flags";
 import { appRegistry, appRegistryBySlug } from "@/lib/app-registry";
 
@@ -66,6 +67,7 @@ export default async function AppDetailPage({ params }: AppDetailPageProps) {
               <KnowledgeLevelHint />
             </div>
           ) : null}
+          <ToolJourneyHeader app={app} />
           <AppRenderer slug={app.slug} />
         </section>
         {usesDuoSources ? (
