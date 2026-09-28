@@ -1,5 +1,6 @@
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
+import { StartIntake } from "@/components/StartIntake";
 import { BtnLink } from "@/components/ui";
 import { appRegistryBySlug } from "@/lib/app-registry";
 import { toolGroups } from "@/lib/tool-groups";
@@ -27,6 +28,9 @@ export default function HomePage() {
         <BtnLink href="/vermogen" kind="outline" size="md">Vermogen en beleggen</BtnLink>
         <BtnLink href="/belasting" kind="outline" size="md">Belasting begrijpen</BtnLink>
       </section>
+      <div className="mt-10">
+        <StartIntake />
+      </div>
       <section id="route" className="scroll-mt-36 border-t border-[var(--hair)] py-10">
         <h2 className="font-serif text-fluid-h2 tracking-[-0.02em] text-[var(--ink)]">Waar wil je inzicht in?</h2>
         <p className="mt-3 max-w-[60ch] text-[14px] leading-7 text-[var(--muted)]">Kies wat nu bij je past. Er is geen vaste volgorde.</p>
