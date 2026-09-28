@@ -251,8 +251,28 @@ export const FINANCIAL_CONSTANTS_BY_YEAR: Record<number, AnnualFinancialConstant
                 "Q4 2026 was op 2026-07-18 nog niet de actuele kwartaalwaarde.",
             },
           },
+          {
+            quarter: "2026-Q4",
+            rate: 5,
+            meta: {
+              sourceLabel: "AFM toetsrente Q4 2026",
+              lastChecked: "2026-09-15",
+              status: "definitief",
+              sourceUrl: "https://www.afm.nl/nl-nl/sector/actueel/2026/sep/sb-toetsrente",
+              sourceTier: "toezicht",
+              publishedAt: "2026-09-15",
+              validFrom: "2026-10-01",
+              validUntil: "2026-12-31",
+              appliesTo:
+                "Hypotheken met een rentevaste periode van minder dan tien jaar.",
+              unit: "percent",
+              ruleType: "uitvoeringsbeleid",
+              uncertainties:
+                "De AFM stelt de toetsrente ieder kwartaal opnieuw vast.",
+            },
+          },
         ],
-        defaultAfmTestRateQuarter: "2026-Q3",
+        defaultAfmTestRateQuarter: "2026-Q4",
       },
       box1: {
         meta: {

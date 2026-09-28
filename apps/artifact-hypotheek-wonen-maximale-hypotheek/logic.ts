@@ -1,10 +1,10 @@
 import { calculateIndicativeMaxMortgage, type MortgageMaxMortgageInput, type MortgageMaxMortgageResult } from "@/lib/mortgage";
-import { getMortgageAfmTestRateForQuarter } from "@/lib/financial-constants";
+import { getMortgageAfmTestRateForDate } from "@/lib/financial-constants";
 import { parseOptionalDecimalInput } from "@/lib/number-input";
 
 type MortgageEnergyLabel = NonNullable<NonNullable<MortgageMaxMortgageInput["property"]>["energyLabel"]>;
 
-const DEFAULT_AFM_TEST_RATE = getMortgageAfmTestRateForQuarter("2026-Q3", 2026).rate;
+const DEFAULT_AFM_TEST_RATE = getMortgageAfmTestRateForDate().rate;
 const DEFAULT_AFM_TEST_RATE_INPUT = String(DEFAULT_AFM_TEST_RATE);
 
 export type MortgageFormState = {

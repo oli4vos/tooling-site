@@ -133,6 +133,14 @@ describe("financial constants helpers", () => {
     expect(afm.meta.sourceTier).toBe("toezicht");
   });
 
+  it("exposes the published Q4 2026 AFM test rate", () => {
+    const afm = getMortgageAfmTestRateForQuarter("2026-Q4", 2026);
+    expect(afm.rate).toBe(5);
+    expect(afm.meta.validFrom).toBe("2026-10-01");
+    expect(afm.meta.validUntil).toBe("2026-12-31");
+    expect(afm.meta.sourceUrl).toContain("/2026/sep/sb-toetsrente");
+  });
+
   it("exposes DUO rate-year metadata without changing historical rates", () => {
     const metadata2026 = getDuoRateYearMetadata(2026);
 

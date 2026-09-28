@@ -19,7 +19,7 @@ import type {
 import { FINANCIAL_CONSTANTS_BY_YEAR } from "@/lib/financial-constants/years";
 import { TAX_PROPOSALS, TAX_PROPOSAL_SOURCE, validateTaxParameter } from "@/lib/financial-constants/tax-proposals";
 
-export const SOURCE_DATA_REFERENCE_DATE = "2026-07-19";
+export const SOURCE_DATA_REFERENCE_DATE = "2026-09-28";
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
@@ -1060,6 +1060,21 @@ export const SOURCE_DATASET_REGISTRY: readonly SourceDataset[] = [
       sourceName: "Autoriteit Financiele Markten",
     }),
     data: constants2026.mortgage.afmTestRates[0],
+    usedBy: ["artifact-hypotheek-wonen-maximale-hypotheek"],
+  },
+  {
+    family: "mortgage-afm-test-rate",
+    scenario: "short-fixed-rate-2026-q4",
+    meta: datasetMetaFromAssumption({
+      id: "mortgage-afm-test-rate-2026-q4",
+      title: "AFM-toetsrente Q4 2026",
+      year: 2026,
+      version: "1.0.0",
+      meta: constants2026.mortgage.afmTestRates[1].meta,
+      nextReviewAt: "2026-12-15",
+      sourceName: "Autoriteit Financiele Markten",
+    }),
+    data: constants2026.mortgage.afmTestRates[1],
     usedBy: ["artifact-hypotheek-wonen-maximale-hypotheek"],
   },
   {

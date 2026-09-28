@@ -480,12 +480,12 @@ describe("source dataset registry", () => {
     expect(debtRules.data).toMatchObject({ highInterestThresholdPercent: 7 });
   });
 
-  it("reports AFM Q3 2026 freshness as fresh, review-due and expired by date", () => {
+  it("switches from AFM Q3 to Q4 2026 on the effective date", () => {
     expect(getMortgageAfmTestRateForDate("2026-07-18").rate).toBe(5);
-    expect(getMortgageAfmTestRateDatasetFreshness("2026-07-18").status).toBe("fresh");
-    expect(getMortgageAfmTestRateDatasetFreshness("2026-09-10").status).toBe("review-due");
-    expect(getMortgageAfmTestRateDatasetFreshness("2026-10-01").status).toBe("expired");
-    expect(() => getMortgageAfmTestRateForDate("2026-10-01")).toThrow("Geen actieve brondata");
+    expect(getMortgageAfmTestRateForDate("2026-09-30").quarter).toBe("2026-Q3");
+    expect(getMortgageAfmTestRateForDate("2026-10-01").quarter).toBe("2026-Q4");
+    expect(getMortgageAfmTestRateForDate("2026-10-01").meta.validFrom).toBe("2026-10-01");
+    expect(getMortgageAfmTestRateDatasetFreshness("2026-10-01").status).toBe("fresh");
   });
 
   it("validates the production registry without hard failures", () => {

@@ -247,8 +247,8 @@ export function getMortgageAfmTestRateForQuarter(
   const targetQuarter = quarter ?? constants.mortgage.defaultAfmTestRateQuarter;
   const dataset = getSourceDatasetForDate(
     "mortgage-afm-test-rate",
-    targetQuarter === "2026-Q3" ? "2026-07-01" : `${sanitizeYear(year)}-07-01`,
-    { scenario: targetQuarter === "2026-Q3" ? "short-fixed-rate-2026-q3" : undefined },
+    targetQuarter === "2026-Q3" ? "2026-07-01" : `${sanitizeYear(year)}-10-01`,
+    { scenario: `short-fixed-rate-${targetQuarter.toLowerCase()}` },
   );
 
   return dataset.data as MortgageAfmTestRate;
@@ -263,7 +263,7 @@ export function getMortgageAfmTestRateDatasetFreshness(asOf?: string) {
   const dataset = SOURCE_DATASET_REGISTRY.find(
     (candidate) =>
       candidate.family === "mortgage-afm-test-rate" &&
-      candidate.scenario === "short-fixed-rate-2026-q3",
+      candidate.scenario === "short-fixed-rate-2026-q4",
   );
   if (!dataset) {
     throw new Error("Geen AFM-toetsrentedataset geregistreerd.");
