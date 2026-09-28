@@ -2,6 +2,20 @@ import { describe, expect, it } from "vitest";
 import { calculateBox3Tax } from "@/lib/tax/box3";
 
 describe("calculateBox3Tax", () => {
+  it("can compare forfaitary and actual scenarios without selecting a legal route", () => {
+    const result = calculateBox3Tax({
+      year: 2026,
+      method: "actual",
+      bankDeposits: 100000,
+      investmentsAndOtherAssets: 0,
+      debts: 0,
+      actualAnnualReturnRate: 0,
+      compareMethods: true,
+    });
+
+    expect(result.comparison?.forfaitaryTax).toBeGreaterThan(result.comparison?.actualScenarioTax ?? 0);
+    expect(result.comparison?.note).toContain("geen formele tegenbewijsbeoordeling");
+  });
   it("returns zero tax when there is no wealth", () => {
     const result = calculateBox3Tax({
       bankDeposits: 0,

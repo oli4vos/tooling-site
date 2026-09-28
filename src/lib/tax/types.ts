@@ -76,7 +76,15 @@ export type Box3Input = {
   actualIncome?: number;
   actualValueChange?: number;
   actualDebtInterest?: number;
+  compareMethods?: boolean;
   year?: TaxYear;
+};
+
+export type Box3MethodComparison = {
+  forfaitaryTax: number;
+  actualScenarioTax: number;
+  differenceActualMinusForfaitary: number;
+  note: string;
 };
 
 export type Box3Result = {
@@ -97,5 +105,6 @@ export type Box3Result = {
   box3Tax: number;
   effectiveTaxRateOnNetWorth: number;
   method: Box3Method;
+  comparison?: Box3MethodComparison;
   warnings: string[];
 };

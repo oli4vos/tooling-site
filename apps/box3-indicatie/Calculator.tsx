@@ -34,6 +34,7 @@ type FormState = {
   actualIncome: string;
   actualValueChange: string;
   actualDebtInterest: string;
+  compareMethods: boolean;
   monthlyBankDepositsContribution: string;
   monthlyInvestmentsContribution: string;
   expectedBankDepositsReturn: string;
@@ -54,6 +55,7 @@ const exampleValues: FormState = {
   actualIncome: "",
   actualValueChange: "",
   actualDebtInterest: "",
+  compareMethods: true,
   monthlyBankDepositsContribution: "250",
   monthlyInvestmentsContribution: "500",
   expectedBankDepositsReturn: "2",
@@ -72,6 +74,7 @@ const defaultValues: FormState = {
   actualIncome: "",
   actualValueChange: "",
   actualDebtInterest: "",
+  compareMethods: false,
   monthlyBankDepositsContribution: "",
   monthlyInvestmentsContribution: "",
   expectedBankDepositsReturn: "",
@@ -192,6 +195,7 @@ function validateForm(values: FormState) {
           actualIncome: values.method === "actual" ? actualIncome : undefined,
           actualValueChange: values.method === "actual" ? actualValueChange : undefined,
           actualDebtInterest: values.method === "actual" ? actualDebtInterest : undefined,
+          compareMethods: values.compareMethods,
           monthlyBankDepositsContribution: monthlyBankDepositsContribution ?? 0,
           monthlyInvestmentsContribution: monthlyInvestmentsContribution ?? 0,
           expectedBankDepositsReturn: expectedBankDepositsReturn ?? 0,
@@ -343,6 +347,16 @@ function CalculatorContent({
               />
               Gebruik forfaitair rendement (uit = werkelijk rendement)
             </span>
+          </label>
+
+          <label className="flex items-center gap-3 text-[14px] text-[var(--ink)]">
+            <input
+              type="checkbox"
+              checked={formValues.compareMethods}
+              onChange={(event) => updateField("compareMethods", event.target.checked)}
+              className="size-4 accent-[var(--accent)]"
+            />
+            Vergelijk forfaitair en werkelijk als scenario
           </label>
 
           <label className={mobileFlow.getFieldClassName("year")}>
@@ -573,6 +587,17 @@ function CalculatorContent({
                 label="Effectieve druk op netto vermogen"
                 value={`${formatPercent(result.effectiveTaxRateOnNetWorth)}%`}
               />
+              {result.comparison ? (
+                <div className="mt-5 rounded-xl border border-[var(--hair)] bg-[var(--paper-soft)] p-4 text-[13px] leading-[1.6] text-[var(--muted)]">
+                  <div className="font-medium text-[var(--ink)]">Scenariovergelijking</div>
+                  <div className="mt-2 grid gap-1">
+                    <div>Forfaitair: {formatCurrency(result.comparison.forfaitaryTax)}</div>
+                    <div>Werkelijk scenario: {formatCurrency(result.comparison.actualScenarioTax)}</div>
+                    <div>Verschil werkelijk − forfaitair: {formatCurrency(result.comparison.differenceActualMinusForfaitary)}</div>
+                  </div>
+                  <p className="mt-2">{result.comparison.note}</p>
+                </div>
+              ) : null}
             </div>
           </div>
         ) : null}

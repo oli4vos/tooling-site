@@ -14,6 +14,7 @@ export type Box3ToolInput = {
   actualIncome?: number;
   actualValueChange?: number;
   actualDebtInterest?: number;
+  compareMethods?: boolean;
   monthlyBankDepositsContribution?: number;
   monthlyInvestmentsContribution?: number;
   expectedBankDepositsReturn?: number;
@@ -33,6 +34,12 @@ export type Box3ToolResult = {
   actualReturn: number;
   actualReturnComponentsProvided: boolean;
   box3Tax: number;
+  comparison?: {
+    forfaitaryTax: number;
+    actualScenarioTax: number;
+    differenceActualMinusForfaitary: number;
+    note: string;
+  };
   effectiveTaxRateOnNetWorth: number;
   rates: {
     taxRate: number;
@@ -114,6 +121,7 @@ export function calculateBox3Indicatie(input: Box3ToolInput): Box3ToolResult {
     actualIncome: input.method === "actual" ? input.actualIncome : undefined,
     actualValueChange: input.method === "actual" ? input.actualValueChange : undefined,
     actualDebtInterest: input.method === "actual" ? input.actualDebtInterest : undefined,
+    compareMethods: input.compareMethods,
   });
   const planningTax = calculateBox3Tax({
     year: year + planning.points.length - 1,
@@ -137,6 +145,7 @@ export function calculateBox3Indicatie(input: Box3ToolInput): Box3ToolResult {
     actualReturn: base.actualReturn,
     actualReturnComponentsProvided: base.actualReturnComponentsProvided,
     box3Tax: base.box3Tax,
+    comparison: base.comparison,
     effectiveTaxRateOnNetWorth: base.effectiveTaxRateOnNetWorth,
     rates: {
       taxRate: constants.box3.taxRate,

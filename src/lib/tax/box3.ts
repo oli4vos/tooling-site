@@ -129,6 +129,28 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
     );
   }
 
+  const comparison = input.compareMethods
+    ? (() => {
+        const counterpart = calculateBox3Tax({
+          ...input,
+          method: method === "actual" ? "forfaitary" : "actual",
+          compareMethods: false,
+        });
+        const forfaitaryTax = method === "forfaitary" ? box3Tax : counterpart.box3Tax;
+        const actualScenarioTax = method === "actual" ? box3Tax : counterpart.box3Tax;
+        return {
+          forfaitaryTax,
+          actualScenarioTax,
+          differenceActualMinusForfaitary: roundMoney(actualScenarioTax - forfaitaryTax),
+          note: "Dit is een transparante scenariovergelijking. Het is geen formele tegenbewijsbeoordeling en kiest niet automatisch de laagste uitkomst.",
+        };
+      })()
+    : undefined;
+
+  if (comparison) {
+    warnings.push(comparison.note);
+  }
+
   return {
     year,
     assetsTotal,
@@ -147,6 +169,7 @@ export function calculateBox3Tax(input: Box3Input): Box3Result {
     box3Tax,
     effectiveTaxRateOnNetWorth,
     method,
+    comparison,
     warnings,
   };
 }
