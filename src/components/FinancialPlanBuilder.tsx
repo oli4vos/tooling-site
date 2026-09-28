@@ -1,12 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { calculateFinancialPlan, type FinancialPlanInput } from "@/lib/financial-plan";
 import { downloadFinancialPlanPdf } from "@/lib/financial-plan-report";
 import { getDefaultFinancialYear } from "@/lib/financial-constants";
 import { parseOptionalDecimalInput } from "@/lib/number-input";
-import { BtnLink } from "@/components/ui";
 import { ToolActionButton } from "@/components/tool/ToolActionButton";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import type { UserProfile } from "@/lib/user-profile";
@@ -42,11 +41,14 @@ function profileValues(profile: UserProfile): Partial<FormValues> {
     expectedSavingsReturn: value(saving?.expectedSavingsReturn),
     expectedInvestmentsReturn: value(saving?.expectedInvestmentsReturn),
     horizonYears: value(saving?.investmentHorizonYears),
+    annualExpenses: value(saving?.annualExpenses),
+    withdrawalRate: value(saving?.withdrawalRate),
   };
   return Object.fromEntries(Object.entries(values).filter(([, entry]) => entry !== undefined)) as Partial<FormValues>;
 }
 
 export function FinancialPlanBuilder() {
+  const router = useRouter();
   const { profile, hasProfile, mergeProfile } = useUserProfile();
   const [values, setValues] = useState<FormValues>(defaults);
   const [isDownloading, setIsDownloading] = useState(false);
@@ -66,7 +68,7 @@ export function FinancialPlanBuilder() {
     setSaveMessage(null);
   }
 
-  function saveForNextTools() {
+  function persistPlanning() {
     mergeProfile({
       savingInvesting: {
         currentSavings: number(values.currentSavings),
@@ -78,10 +80,21 @@ export function FinancialPlanBuilder() {
         expectedSavingsReturn: number(values.expectedSavingsReturn),
         expectedInvestmentsReturn: number(values.expectedInvestmentsReturn),
         investmentHorizonYears: number(values.horizonYears),
+        annualExpenses: number(values.annualExpenses),
+        withdrawalRate: number(values.withdrawalRate),
       },
       tax: { hasFiscalPartner: Boolean(values.hasFiscalPartner), preferredTaxYear: number(values.year), preferredBox3Method: values.box3Method === "actual" ? "actual" : "forfaitary" },
     });
+  }
+
+  function saveForNextTools() {
+    persistPlanning();
     setSaveMessage("Opgeslagen op dit apparaat. De vervolgstappen nemen deze waarden mee.");
+  }
+
+  function continueWithPlanning(href: string) {
+    persistPlanning();
+    router.push(href);
   }
 
   async function download() {
@@ -133,9 +146,9 @@ export function FinancialPlanBuilder() {
           <div className="flex justify-between gap-4 py-3"><dt>Indicatieve Box 3 in eindjaar</dt><dd className="font-mono tabular text-[var(--ink)]">{currency(result.endingBox3Tax)}</dd></div>
         </dl>
         {result.fireTarget !== null ? <p className="mt-5 rounded-lg bg-[var(--paper-soft)] p-4 text-[13px] leading-6 text-[var(--ink-2)]">Je ingevulde uitgaven geven een indicatief FIRE-doel van <strong>{currency(result.fireTarget)}</strong>. {result.fireGap && result.fireGap > 0 ? `Op de eindhorizon resteert nog ${currency(result.fireGap)}.` : "Dit scenario bereikt dat doel."}</p> : null}
-        <div className="mt-6 flex flex-wrap gap-3"><ToolActionButton type="button" onClick={download} variant="accent" size="md" disabled={isDownloading}>{isDownloading ? "Planning wordt gemaakt..." : "Download mijn planning (PDF)"}</ToolActionButton><BtnLink href="/apps/box3-indicatie" kind="outline" size="md">Verfijn Box 3</BtnLink></div>
+        <div className="mt-6 flex flex-wrap gap-3"><ToolActionButton type="button" onClick={download} variant="accent" size="md" disabled={isDownloading}>{isDownloading ? "Planning wordt gemaakt..." : "Download mijn planning (PDF)"}</ToolActionButton><ToolActionButton type="button" onClick={() => continueWithPlanning("/apps/box3-indicatie")} variant="secondary" size="md">Verfijn Box 3 met deze waarden</ToolActionButton></div>
       </div>
-      <section className="mt-6 border-t border-[var(--hair)] pt-6"><div className="section-label">Stap 3 - maak het scherper</div><h2 className="mt-3 font-serif text-[25px] tracking-[-0.03em] text-[var(--ink)]">Logische vervolgstappen</h2><div className="mt-4 grid gap-3">{result.nextSteps.map((step, index) => <Link key={step.href} href={step.href} className="group rounded-xl border border-[var(--hair)] bg-white p-4 transition hover:-translate-y-0.5 hover:shadow-paper"><span className="font-mono text-[11px] text-[var(--accent)]">0{index + 1}</span><h3 className="mt-2 font-medium text-[var(--ink)] group-hover:underline">{step.title}</h3><p className="mt-1 text-[13px] leading-6 text-[var(--muted)]">{step.detail}</p></Link>)}</div></section>
+      <section className="mt-6 border-t border-[var(--hair)] pt-6"><div className="section-label">Stap 3 - maak het scherper</div><h2 className="mt-3 font-serif text-[25px] tracking-[-0.03em] text-[var(--ink)]">Logische vervolgstappen</h2><p className="mt-2 text-[13px] leading-6 text-[var(--muted)]">Je planning wordt lokaal opgeslagen en meteen meegenomen naar de volgende tool.</p><div className="mt-4 grid gap-3">{result.nextSteps.map((step, index) => <button key={step.href} type="button" onClick={() => continueWithPlanning(step.href)} className="group rounded-xl border border-[var(--hair)] bg-white p-4 text-left transition hover:-translate-y-0.5 hover:shadow-paper focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2"><span className="font-mono text-[11px] text-[var(--accent)]">0{index + 1}</span><h3 className="mt-2 font-medium text-[var(--ink)] group-hover:underline">{step.title}</h3><p className="mt-1 text-[13px] leading-6 text-[var(--muted)]">{step.detail}</p></button>)}</div></section>
       <details className="mt-6 rounded-xl border border-[var(--hair)] bg-white p-4"><summary className="cursor-pointer font-medium text-[var(--ink)]">Jaarlijkse planning bekijken</summary><div className="mt-4 overflow-x-auto"><table className="min-w-full text-[12px]"><thead><tr className="border-b border-[var(--hair)] text-left"><th className="p-2">Jaar</th><th className="p-2 text-right">Vermogen</th><th className="p-2 text-right">Inleg</th><th className="p-2 text-right">Groei</th></tr></thead><tbody>{result.yearly.map((point) => <tr key={point.year} className="border-b border-[var(--hair)]/70"><td className="p-2">{point.year}</td><td className="p-2 text-right font-mono">{currency(point.totalAssets)}</td><td className="p-2 text-right font-mono">{currency(point.contributions)}</td><td className="p-2 text-right font-mono">{currency(point.growth)}</td></tr>)}</tbody></table></div></details>
     </section>
   </div>;

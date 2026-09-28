@@ -11,13 +11,13 @@ Een tool valt in deze index wanneer het manifest onder `apps/<slug>/app.json` zo
 | Tool | Publieke route | Procesdocument | Laatst gecontroleerd | Procesplaten |
 | --- | --- | --- | --- | --- |
 | Annuïtair of lineair | `/apps/annuitair-lineair` | [PROCESS.md](../../apps/annuitair-lineair/PROCESS.md) | 2026-09-23 | Gebruiker, Beslissingen, Berekening |
-| Maximale hypotheek | `/apps/artifact-hypotheek-wonen-maximale-hypotheek` | [PROCESS.md](../../apps/artifact-hypotheek-wonen-maximale-hypotheek/PROCESS.md) | 2026-09-27 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Maximale hypotheek | `/apps/artifact-hypotheek-wonen-maximale-hypotheek` | [PROCESS.md](../../apps/artifact-hypotheek-wonen-maximale-hypotheek/PROCESS.md) | 2026-09-28 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Wat kost mijn vermogen in box 3? | `/apps/box-3-impact` | [PROCESS.md](../../apps/box-3-impact/PROCESS.md) | 2026-09-23 | Gebruiker, Beslissingen, Berekening |
 | Box 3 indicatie | `/apps/box3-indicatie` | [PROCESS.md](../../apps/box3-indicatie/PROCESS.md) | 2026-09-23 | Gebruiker, Beslissingen, Berekening |
 | Aanvullende beurs berekenen | `/apps/duo-aanvullende-beurs` | [PROCESS.md](../../apps/duo-aanvullende-beurs/PROCESS.md) | 2026-09-23 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
-| Wat doet extra aflossen? | `/apps/duo-extra-aflossen` | [PROCESS.md](../../apps/duo-extra-aflossen/PROCESS.md) | 2026-09-27 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Wat doet extra aflossen? | `/apps/duo-extra-aflossen` | [PROCESS.md](../../apps/duo-extra-aflossen/PROCESS.md) | 2026-09-28 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Impact van mijn leenbedrag | `/apps/duo-leenbedrag-impact` | [PROCESS.md](../../apps/duo-leenbedrag-impact/PROCESS.md) | 2026-09-23 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
-| Wat wordt mijn DUO-maandbedrag? | `/apps/duo-maandbedrag` | [PROCESS.md](../../apps/duo-maandbedrag/PROCESS.md) | 2026-09-27 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
+| Wat wordt mijn DUO-maandbedrag? | `/apps/duo-maandbedrag` | [PROCESS.md](../../apps/duo-maandbedrag/PROCESS.md) | 2026-09-28 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Wat wordt mijn studieschuld? | `/apps/duo-schuld-bij-starten-lenen` | [PROCESS.md](../../apps/duo-schuld-bij-starten-lenen/PROCESS.md) | 2026-09-23 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | Wat kost stoppen met studeren? | `/apps/duo-stoppen-kosten-prestatiebeurs` | [PROCESS.md](../../apps/duo-stoppen-kosten-prestatiebeurs/PROCESS.md) | 2026-09-23 | Gebruiker, Beslissingen, Berekening, Gegevensstroom |
 | EIA Investeringsvoordeel | `/apps/eia-investeringsvoordeel` | [PROCESS.md](../../apps/eia-investeringsvoordeel/PROCESS.md) | 2026-09-20 | Gebruiker, Beslissingen, Berekening |

@@ -63,6 +63,8 @@ export type UserProfile = {
     expectedSavingsReturn?: number;
     expectedInvestmentsReturn?: number;
     investmentHorizonYears?: number;
+    annualExpenses?: number;
+    withdrawalRate?: number;
     riskProfile?: RiskProfile;
     hasAov?: boolean;
     pensionBuildUp?: PensionBuildUp;
@@ -284,6 +286,8 @@ export function sanitizeUserProfile(profile: UserProfile): UserProfile {
     investmentHorizonYears: sanitizePositiveYears(
       profile.savingInvesting?.investmentHorizonYears,
     ),
+    annualExpenses: sanitizeNonNegativeNumber(profile.savingInvesting?.annualExpenses),
+    withdrawalRate: sanitizePercentNumber(profile.savingInvesting?.withdrawalRate),
     riskProfile: sanitizeEnum(profile.savingInvesting?.riskProfile, riskProfiles),
     hasAov:
       typeof profile.savingInvesting?.hasAov === "boolean"

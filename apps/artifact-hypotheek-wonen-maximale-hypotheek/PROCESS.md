@@ -3,8 +3,8 @@ tool: artifact-hypotheek-wonen-maximale-hypotheek
 title: Maximale hypotheek
 route: /apps/artifact-hypotheek-wonen-maximale-hypotheek
 status: active-public
-lastReviewed: 2026-09-27
-sourceHash: sha256:cffb214fc697786acf83966bd3e18838e011d20317f18a00b05a093eb7cf8e3e
+lastReviewed: 2026-09-28
+sourceHash: sha256:6b72c1bd7e0c083ad6959127a3c951d5ab3cd182ad7e1e609fc95365bf9b58e6
 sources:
   - apps/artifact-hypotheek-wonen-maximale-hypotheek/app.json
   - apps/artifact-hypotheek-wonen-maximale-hypotheek/Calculator.tsx

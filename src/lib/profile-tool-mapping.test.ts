@@ -427,6 +427,8 @@ describe("profile tool mapping", () => {
         expectedSavingsReturn: 2.1,
         expectedInvestmentsReturn: 6.4,
         investmentHorizonYears: 18,
+        annualExpenses: 36000,
+        withdrawalRate: 3.5,
       },
       tax: { preferredTaxYear: 2026, preferredBox3Method: "actual" },
     };
@@ -450,6 +452,8 @@ describe("profile tool mapping", () => {
       monthlyInvestmentsContribution: "650",
       expectedSavingsReturn: "2.1",
       expectedInvestmentsReturn: "6.4",
+      annualExpensesNow: "36000",
+      withdrawalRate: "3.5",
     });
     expect(getPriveBeleggenEindvermogenDefaultsFromProfile(profile)).toMatchObject({
       startVermogen: "70000",

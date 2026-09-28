@@ -360,6 +360,34 @@ test("publieke links verwijzen alleen naar bestaande publieke routes", async ({
   expect(getPublicToolRoutes()).toContain("/apps/volgende-euro");
 });
 
+test("vermogensplan bewaart waarden voordat het naar een vervolgtool gaat", async ({
+  page,
+}, testInfo) => {
+  test.skip(!testInfo.project.name.startsWith("desktop"), "Desktop routecontrole");
+
+  await page.goto("/vermogen/plan", { waitUntil: "networkidle" });
+  await page.getByLabel("Spaargeld nu").fill("18000");
+  await page.getByLabel("Beleggingen nu").fill("52000");
+  await page.getByLabel("Maandelijkse spaarinleg").fill("250");
+  await page.getByLabel("Maandelijkse beleggingsinleg").fill("650");
+  await page.getByLabel("Rendement spaargeld (%)").fill("2.1");
+  await page.getByLabel("Rendement beleggingen (%)").fill("6.4");
+  await page.getByLabel("Horizon (jaren)").fill("18");
+  await page.getByLabel("Jaarlijkse uitgaven (optioneel)").fill("36000");
+  await page.getByLabel("Opnamepercentage (%)").fill("3.5");
+
+  await page.getByRole("button", { name: "Verfijn Box 3 met deze waarden" }).click();
+  await expect(page).toHaveURL(/\/apps\/box3-indicatie$/);
+  await expect(page.getByLabel("Banktegoeden / spaargeld")).toHaveValue("18000");
+  await expect(page.getByLabel("Beleggingen / overige bezittingen")).toHaveValue("52000");
+  await expect(page.getByLabel("Maandelijkse inleg bank/spaartegoeden (€)")).toHaveValue("250");
+  await expect(page.getByLabel("Maandelijkse inleg beleggingen/overige bezittingen (€)")).toHaveValue("650");
+
+  await page.goto("/apps/fire-na-belasting", { waitUntil: "networkidle" });
+  await expect(page.getByLabel("Jaarlijkse uitgaven nu")).toHaveValue("36000");
+  await expect(page.getByLabel("Jaarlijks opnamepercentage (%)")).toHaveValue("3.5");
+});
+
 test("publieke oppervlakken blijven binnen dezelfde horizontale randen", async ({
   page,
 }, testInfo) => {

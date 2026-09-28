@@ -110,6 +110,8 @@ export const PROFILE_FIELDS_FIRE_NA_BELASTING = [
   "savingInvesting.expectedSavingsReturn",
   "savingInvesting.expectedInvestmentsReturn",
   "savingInvesting.investmentHorizonYears",
+  "savingInvesting.annualExpenses",
+  "savingInvesting.withdrawalRate",
   "savingInvesting.riskProfile",
   "tax.preferredTaxYear",
   "tax.hasFiscalPartner",
@@ -296,6 +298,8 @@ type FireNaBelastingDefaults = Partial<{
   expectedSavingsReturn: string;
   expectedInvestmentsReturn: string;
   annualInflation: string;
+  annualExpensesNow: string;
+  withdrawalRate: string;
   taxYear: string;
   hasFiscalPartner: boolean;
   horizonYears: string;
@@ -1001,6 +1005,16 @@ export function getFireNaBelastingDefaultsFromProfile(
   const horizonYears = toStringValue(profile.savingInvesting?.investmentHorizonYears);
   if (horizonYears !== undefined) {
     defaults.horizonYears = horizonYears;
+  }
+
+  const annualExpensesNow = toStringValue(profile.savingInvesting?.annualExpenses);
+  if (annualExpensesNow !== undefined) {
+    defaults.annualExpensesNow = annualExpensesNow;
+  }
+
+  const withdrawalRate = toStringValue(profile.savingInvesting?.withdrawalRate);
+  if (withdrawalRate !== undefined) {
+    defaults.withdrawalRate = withdrawalRate;
   }
 
   if (profile.savingInvesting?.riskProfile !== undefined) {
