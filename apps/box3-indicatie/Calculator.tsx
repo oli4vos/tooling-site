@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { MobileFieldFlowControls } from "@/components/MobileFieldFlowControls";
 import { FieldError } from "@/components/forms/FieldError";
+import { ChartContainer, ChartLegend } from "@/components/ChartPrimitives";
+import { AreaChart, getAdaptiveEuroTicks, getAdaptiveYearTicks } from "@/components/charts";
 import { ResultRow } from "@/components/ResultRow";
 import { ToolDisclosure } from "@/components/ToolDisclosure";
 import { CalculatorShell } from "@/components/tool/CalculatorShell";
@@ -615,6 +617,20 @@ function CalculatorContent({
               <ResultRow label="Eindwaarde beleggen" value={formatCurrency(result.planning.endingInvestmentsAndOtherAssets)} />
               <ResultRow label={`Eindvermogen na ${result.planning.horizonYears} jaar`} value={formatCurrency(result.planning.endingTotalAssets)} accent />
               <ResultRow label="Indicatieve Box 3-heffing op eindpositie" value={formatCurrency(result.planning.endingBox3Tax)} />
+            </div>
+            <div className="mt-6 border-t border-[var(--hair)] pt-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h4 className="font-serif text-[20px] text-[var(--ink)]">Vermogen door de tijd</h4>
+                  <p className="mt-1 text-[12.5px] text-[var(--muted)]">De categorieën blijven zichtbaar, zodat je ziet waar je eindvermogen vandaan komt.</p>
+                </div>
+                <ChartLegend items={[{ label: "Spaargeld", color: "oklch(52% 0.08 230)" }, { label: "Beleggingen", color: "oklch(56% 0.11 150)" }]} />
+              </div>
+              <ChartContainer
+                yearTicks={getAdaptiveYearTicks(result.planning.horizonYears)}
+                xValues={result.planning.points.map((point) => point.yearIndex)}
+                chart={<AreaChart width={620} height={220} series={[{ color: "oklch(52% 0.08 230)", points: result.planning.points.map((point) => point.bankDeposits) }, { color: "oklch(56% 0.11 150)", points: result.planning.points.map((point) => point.investmentsAndOtherAssets) }]} yTicks={getAdaptiveEuroTicks(result.planning.endingTotalAssets)} xValues={result.planning.points.map((point) => point.yearIndex)} seriesLabels={["Spaargeld", "Beleggingen"]} />}
+              />
             </div>
             <details className="mt-5 rounded-lg border border-[var(--hair)] p-4">
               <summary className="cursor-pointer text-[13px] font-medium text-[var(--ink)]">Jaaroverzicht uitklappen</summary>

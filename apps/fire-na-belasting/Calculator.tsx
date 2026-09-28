@@ -1,6 +1,8 @@
 "use client";
 
 import { DisclosureSection } from "@/components/DisclosureSection";
+import { ChartContainer, ChartLegend } from "@/components/ChartPrimitives";
+import { AreaChart, getAdaptiveEuroTicks, getAdaptiveYearTicks } from "@/components/charts";
 import { MobileFieldFlowControls } from "@/components/MobileFieldFlowControls";
 import { ResultRow } from "@/components/ResultRow";
 import { ToolDisclosure } from "@/components/ToolDisclosure";
@@ -597,6 +599,20 @@ function CalculatorContent({
                     ? formatCurrency(result.requiredMonthlyContributionToReachWithinHorizon)
                     : "Niet haalbaar binnen horizon"
                 }
+              />
+            </div>
+            <div className="mt-6 border-t border-[var(--hair)] pt-5">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <h3 className="font-serif text-[20px] text-[var(--ink)]">Vermogen versus FIRE-doel</h3>
+                  <p className="mt-1 text-[12.5px] text-[var(--muted)]">De kruising van beide lijnen is het indicatieve FIRE-moment.</p>
+                </div>
+                <ChartLegend items={[{ label: "Vermogen", color: "oklch(52% 0.08 230)" }, { label: "FIRE-doel", color: "oklch(56% 0.11 30)" }]} />
+              </div>
+              <ChartContainer
+                yearTicks={getAdaptiveYearTicks(result.assumptions.horizonYears)}
+                xValues={result.projection.map((point) => point.year)}
+                chart={<AreaChart width={620} height={220} series={[{ color: "oklch(52% 0.08 230)", points: result.projection.map((point) => point.assets) }, { color: "oklch(56% 0.11 30)", points: result.projection.map((point) => point.fireTarget) }]} yTicks={getAdaptiveEuroTicks(Math.max(result.endAssetsAtHorizon, ...result.projection.map((point) => point.fireTarget)))} xValues={result.projection.map((point) => point.year)} seriesLabels={["Vermogen", "FIRE-doel"]} />}
               />
             </div>
           </div>
