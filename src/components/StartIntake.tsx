@@ -73,14 +73,13 @@ export function StartIntake() {
         </div>
 
         <div>
-          <div className="grid gap-2 sm:grid-cols-2" role="list" aria-label="Kies je financiële vraag">
+          <div className="grid gap-2 sm:grid-cols-2" role="group" aria-label="Kies je financiële vraag">
             {goals.map((item) => {
               const active = item.id === selected;
               return (
                 <button
                   key={item.id}
                   type="button"
-                  role="listitem"
                   aria-pressed={active}
                   onClick={() => setSelected(item.id)}
                   className={`rounded-xl border p-4 text-left transition focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2 ${
