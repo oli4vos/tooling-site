@@ -11,6 +11,7 @@ import { validateTaxForm } from "./form";
 import type { TaxToolConfig, TaxView } from "./types";
 import { TAX_PROPOSALS } from "@/lib/financial-constants/tax-proposals";
 import Link from "next/link";
+import { HorizontalBarChart, ResultVisualization } from "@/components/ResultVisualization";
 
 export function TaxCalculator({ config }: { config: TaxToolConfig }) {
   const state = useSubmittedCalculation(config.empty);
@@ -66,6 +67,7 @@ export function TaxCalculator({ config }: { config: TaxToolConfig }) {
       {!result ? <p>Vul je gegevens in en bekijk de indicatie.</p> : <>
         {state.hasDirtyChanges && <p role="status" className="mb-3">Je invoer is gewijzigd. Bereken opnieuw om de uitkomst bij te werken.</p>}
         <h2 className="text-xl">{result.conclusion}</h2><dl className="my-5 space-y-3">{result.rows.map(row => <div key={row.label} className="grid gap-1 border-b border-[var(--hair)] pb-3"><dt className="text-sm text-[var(--muted)]">{row.label}</dt><dd className="font-mono text-lg">{row.value}</dd></div>)}</dl>
+        {result.chart ? <ResultVisualization title={result.chart.title} description={result.chart.description}><HorizontalBarChart data={result.chart.data} caption={result.chart.title} /></ResultVisualization> : null}
         {result.warnings.map(warning => <p key={warning} className="my-3 text-sm">{warning}</p>)}
         {result.table && <div className="my-5 overflow-x-auto" tabIndex={0} role="region" aria-label="Vergelijking per jaar"><table className="w-full text-left text-sm"><caption className="sr-only">Vergelijking per jaar</caption><thead><tr>{result.table.headers.map(header=><th key={header} scope="col" className="p-2">{header}</th>)}</tr></thead><tbody>{result.table.rows.map((row,index)=><tr key={index}>{row.map((cell,column)=><td key={column} className="border-t border-[var(--hair)] p-2 font-mono">{cell}</td>)}</tr>)}</tbody></table></div>}
         <details className="my-5"><summary className="min-h-11 cursor-pointer">Berekening en bronnen</summary><ol className="list-decimal space-y-2 pl-5">{result.steps.map(step=><li key={step}>{step}</li>)}</ol><p className="my-3 text-sm">Regelversie: {result.version}. Gecontroleerd: {result.verifiedAt}. Fiscale review: nog niet afgerond.</p>{result.sources.map(source=><p key={source.url}><a className="underline" href={source.url} target="_blank" rel="noopener noreferrer">{source.title}</a></p>)}</details>

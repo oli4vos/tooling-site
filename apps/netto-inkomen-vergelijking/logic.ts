@@ -60,6 +60,17 @@ export const config: TaxToolConfig = {
         headers: ["Jaar", "Belasting vóór korting", "Algemene korting", "Arbeidskorting", "Overige kortingen", "Zvw op netto", "Netto jaar"],
         rows: rows.map((row) => [String(row.year), euro(row.grossTaxCents), euro(row.generalCents), format(row.workMinCents, row.workMaxCents), euro(row.elderlyCents + row.singleCents + row.iackCents + row.disabledCents), euro(row.zvwCents), format(row.netMinCents, row.netMaxCents)]),
       },
+      chart: {
+        title: "Indicatief netto per maand",
+        description: "Een snelle visuele vergelijking van de netto maandruimte per jaar. De tabel blijft leidend bij bandbreedtes.",
+        data: rows.map((row) => ({
+          key: String(row.year),
+          label: String(row.year),
+          value: row.netMinCents / 100 / 12,
+          formattedValue: format(ratio(row.netMinCents, 1, 12), ratio(row.netMaxCents, 1, 12)),
+          color: row.year === 2026 ? "oklch(52% 0.08 230)" : "oklch(56% 0.11 150)",
+        })),
+      },
       warnings: [
         "De WML-afhankelijke grenzen voor 2027 zijn voorlopig tot de vaststelling in november 2026.",
         ...(rows.some((row) => row.uncertain) ? ["De volledige opbouwparameters van arbeidskorting 2027 zijn in deze bronversie niet geverifieerd. De getoonde bandbreedte omvat nul tot de gepubliceerde maximale korting; dit is geen verwachting of persoonlijke voorspelling."] : []),
