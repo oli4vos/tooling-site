@@ -20,6 +20,15 @@ type FormState = {
   loanAmount: string;
   interestRatePercent: string;
   loanTermYears: string;
+  hraTaxableIncome: string;
+  hraLabourIncome: string;
+  hraWozValue: string;
+  hraOtherDeductibleCosts: string;
+  hraLoanStartYear: string;
+  hraRemainingDeductionYears: string;
+  hraQualifies: boolean;
+  hraRepaymentCompliant: boolean;
+  hraLoanReported: boolean;
   annualReturnPercent: string;
   showInvestmentDeepDive: boolean;
   includeBox3Effect: boolean;
@@ -37,6 +46,15 @@ const exampleValues: FormState = {
   loanAmount: "385000",
   interestRatePercent: "3.89",
   loanTermYears: "30",
+  hraTaxableIncome: "60000",
+  hraLabourIncome: "60000",
+  hraWozValue: "400000",
+  hraOtherDeductibleCosts: "0",
+  hraLoanStartYear: "2020",
+  hraRemainingDeductionYears: "24",
+  hraQualifies: true,
+  hraRepaymentCompliant: true,
+  hraLoanReported: true,
   annualReturnPercent: "5.5",
   showInvestmentDeepDive: true,
   includeBox3Effect: false,
@@ -52,6 +70,15 @@ const defaults: FormState = {
   loanAmount: "",
   interestRatePercent: "",
   loanTermYears: "",
+  hraTaxableIncome: "",
+  hraLabourIncome: "",
+  hraWozValue: "",
+  hraOtherDeductibleCosts: "",
+  hraLoanStartYear: "",
+  hraRemainingDeductionYears: "",
+  hraQualifies: false,
+  hraRepaymentCompliant: false,
+  hraLoanReported: false,
   annualReturnPercent: "",
   showInvestmentDeepDive: false,
   includeBox3Effect: false,
@@ -99,8 +126,19 @@ function validate(values: FormState) {
   }
 
   const loanTermYears = parseOptionalDecimalInput(values.loanTermYears) ?? Number.NaN;
+  const hraTaxableIncome = parseOptionalDecimalInput(values.hraTaxableIncome);
+  const hraLabourIncome = parseOptionalDecimalInput(values.hraLabourIncome);
+  const hraWozValue = parseOptionalDecimalInput(values.hraWozValue);
+  const hraOtherDeductibleCosts = parseOptionalDecimalInput(values.hraOtherDeductibleCosts);
+  const hraLoanStartYear = parseOptionalDecimalInput(values.hraLoanStartYear);
+  const hraRemainingDeductionYears = parseOptionalDecimalInput(values.hraRemainingDeductionYears);
   if (!Number.isFinite(loanTermYears) || loanTermYears < 1 || loanTermYears > 40) {
     errors.loanTermYears = "Kies een looptijd tussen 1 en 40 jaar.";
+  }
+
+  const hraValues = [hraTaxableIncome, hraLabourIncome, hraWozValue, hraOtherDeductibleCosts, hraRemainingDeductionYears];
+  if (hraValues.some((value) => value !== undefined && (!Number.isFinite(value) || value < 0))) {
+    errors.hraTaxableIncome = "Gebruik voor het HRA-profiel alleen bedragen van 0 of hoger.";
   }
 
   const annualReturnPercent =
@@ -158,6 +196,19 @@ function validate(values: FormState) {
             loanAmount,
             interestRatePercent,
             loanTermYears,
+            ownHomeProfile: hraTaxableIncome !== undefined && hraWozValue !== undefined
+              ? {
+                  taxableIncome: hraTaxableIncome,
+                  labourIncome: hraLabourIncome ?? hraTaxableIncome,
+                  wozValue: hraWozValue,
+                  otherDeductibleCosts: hraOtherDeductibleCosts ?? 0,
+                  loanStartYear: hraLoanStartYear,
+                  remainingDeductionYears: hraRemainingDeductionYears,
+                  qualifiesAsMainResidence: values.hraQualifies,
+                  repaymentCompliant: values.hraRepaymentCompliant,
+                  loanReportedToTaxAuthority: values.hraLoanReported,
+                }
+              : undefined,
             annualReturnPercent: values.showInvestmentDeepDive ? annualReturnPercent : undefined,
             includeInvestmentScenario: values.showInvestmentDeepDive,
             box3EffectEnabled: values.showInvestmentDeepDive && values.includeBox3Effect,
@@ -329,6 +380,23 @@ export default function Calculator() {
             <FieldError message={errors.loanTermYears} />
           </label>
 
+          <details className="rounded-xl border border-[var(--hair)] bg-[var(--paper-soft)] p-4">
+            <summary className="cursor-pointer text-[13px] font-medium text-[var(--ink)]">Eigenwoningprofiel voor centrale HRA-berekening (2026)</summary>
+            <div className="mt-4 grid gap-4">
+              <p className="text-[12.5px] leading-[1.6] text-[var(--muted)]">Laat leeg voor de oude vaste factor-aanname. Vul dit profiel in voor een indicatieve berekening met eigenwoningforfait, Hillen en de 2026 Box 1-regels.</p>
+              <label className="grid gap-2"><span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Box 1-inkomen vóór eigen woning</span><input inputMode="decimal" value={formValues.hraTaxableIncome} onChange={(event) => updateField("hraTaxableIncome", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" /><FieldError message={errors.hraTaxableIncome} /></label>
+              <label className="grid gap-2"><span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Arbeidsinkomen</span><input inputMode="decimal" value={formValues.hraLabourIncome} onChange={(event) => updateField("hraLabourIncome", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" /></label>
+              <label className="grid gap-2"><span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">WOZ-waarde</span><input inputMode="decimal" value={formValues.hraWozValue} onChange={(event) => updateField("hraWozValue", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" /></label>
+              <label className="grid gap-2"><span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Resterende HRA-jaren</span><input inputMode="numeric" value={formValues.hraRemainingDeductionYears} onChange={(event) => updateField("hraRemainingDeductionYears", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" /></label>
+              <label className="grid gap-2"><span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Startjaar lening</span><input inputMode="numeric" value={formValues.hraLoanStartYear} onChange={(event) => updateField("hraLoanStartYear", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" /></label>
+              <div className="grid gap-2 text-[13px] text-[var(--ink-2)]">
+                <label className="flex gap-3"><input type="checkbox" checked={formValues.hraQualifies} onChange={(event) => updateField("hraQualifies", event.target.checked)} />Hoofdverblijf en lening kwalificeert als eigenwoningschuld</label>
+                <label className="flex gap-3"><input type="checkbox" checked={formValues.hraRepaymentCompliant} onChange={(event) => updateField("hraRepaymentCompliant", event.target.checked)} />Aflossingsvereiste nagekomen</label>
+                <label className="flex gap-3"><input type="checkbox" checked={formValues.hraLoanReported} onChange={(event) => updateField("hraLoanReported", event.target.checked)} />Leningsgegevens waar nodig gemeld</label>
+              </div>
+            </div>
+          </details>
+
           <label className="grid gap-2">
             <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">
               Verdieping
@@ -454,9 +522,8 @@ export default function Calculator() {
             Bekijk uitkomst
           </ToolActionButton>
           <p className="text-[12.5px] leading-[1.65] text-[var(--muted)]">
-            De bestaande hypotheeklogica rekent met een vaste belastingfactor en een
-            maandelijkse beleggingspot op basis van het netto verschil tussen beide
-            routes. Dat maakt de keuze vergelijkbaar en transparant.
+            De tool gebruikt waar ingevuld de centrale 2026-eigenwoninglaag; zonder profiel
+            blijft de vaste factor zichtbaar als scenario-aanname.
           </p>
         </div>
       }
@@ -534,6 +601,11 @@ export default function Calculator() {
                 value={formatCurrency(result.totals.interestBenefitLinear)}
                 sub="Lagere totale rente over de hele looptijd"
                 accent
+              />
+              <ResultRow
+                label="HRA-rekenmethode"
+                value={result.hraCalculationMethod === "central-own-home" ? "Centrale eigenwoninglaag" : "Vaste scenariofactor"}
+                sub={result.hraWarning}
               />
               {result.investmentScenario ? (
                 <>
@@ -683,12 +755,12 @@ export default function Calculator() {
 
         <DisclosureSection
           title="Welke aannames gebruiken we?"
-          subtitle="Vaste belastingfactor en vast verwacht rendement voor een zuivere vergelijking."
+          subtitle="HRA-bron, rendement en Box 3 als afzonderlijke aannames."
         >
           <p className="mt-2 text-[12.5px] leading-[1.65] text-[var(--muted)]">
-            Deze vergelijking gebruikt een vaste belastingfactor en een vast verwacht
-            rendement op de beleggingspot. Het is bedoeld als scenariovergelijking, niet
-            als offerte of persoonlijk advies.
+            De netto rente gebruikt de centrale eigenwoninglaag wanneer je een profiel invult;
+            anders is de factor een expliciete scenario-aanname. Het verwachte rendement en
+            een eventueel Box 3-effect blijven scenario’s, geen offerte of persoonlijk advies.
           </p>
         </DisclosureSection>
 

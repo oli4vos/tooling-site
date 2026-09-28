@@ -6,6 +6,7 @@ import {
 import { aggregatePerYear, simulateInvestmentPot } from "./investmentStrategy";
 import { getDefaultFinancialYear } from "@/lib/financial-constants";
 import { calculateBox3Tax, type Box3Method } from "@/lib/tax";
+import { calculateOwnHomeTaxAssessment, type OwnHomeAowStatus } from "@/lib/tax";
 
 export type MortgageInput = {
   loanAmount: number;
@@ -13,6 +14,19 @@ export type MortgageInput = {
   loanTermYears: number;
   annualReturnPercent?: number;
   taxFactor?: number;
+  ownHomeProfile?: {
+    wozValue: number;
+    taxableIncome: number;
+    labourIncome?: number;
+    otherDeductibleCosts?: number;
+    loanStartYear?: number;
+    remainingDeductionYears?: number;
+    aow?: OwnHomeAowStatus;
+    iackEligible?: boolean;
+    qualifiesAsMainResidence: boolean;
+    repaymentCompliant: boolean;
+    loanReportedToTaxAuthority: boolean;
+  };
   includeInvestmentScenario?: boolean;
   box3EffectEnabled?: boolean;
   taxYear?: number;
@@ -22,6 +36,46 @@ export type MortgageInput = {
   box3InvestmentsAndOtherAssets?: number;
   box3Debts?: number;
 };
+
+function resolveTaxFactor(input: MortgageInput, firstMonthInterest: number) {
+  if (input.ownHomeProfile && input.taxYear === 2026 && firstMonthInterest > 0) {
+    const assessment = calculateOwnHomeTaxAssessment({
+      year: 2026,
+      ownHome: {
+        wozValue: input.ownHomeProfile.wozValue,
+        mortgageInterestPaid: firstMonthInterest * 12,
+        otherDeductibleCosts: input.ownHomeProfile.otherDeductibleCosts,
+        qualification: {
+          qualifiesAsMainResidence: input.ownHomeProfile.qualifiesAsMainResidence,
+          loanStartYear: input.ownHomeProfile.loanStartYear,
+          repaymentCompliant: input.ownHomeProfile.repaymentCompliant,
+          loanReportedToTaxAuthority: input.ownHomeProfile.loanReportedToTaxAuthority,
+          remainingDeductionYears: input.ownHomeProfile.remainingDeductionYears,
+        },
+      },
+      taxpayers: [{
+        id: "belastingplichtige",
+        box1IncomeBeforeOwnHome: input.ownHomeProfile.taxableIncome,
+        labourIncome: input.ownHomeProfile.labourIncome ?? input.ownHomeProfile.taxableIncome,
+        aow: input.ownHomeProfile.aow ?? "none",
+        iackEligible: input.ownHomeProfile.iackEligible,
+      }],
+    });
+    const annualInterest = firstMonthInterest * 12;
+    return {
+      taxFactor: Math.min(Math.max(1 - assessment.household.eligibleCostsTaxBenefit / annualInterest, 0), 1),
+      method: "central-own-home" as const,
+      warning: "De netto rente gebruikt de centrale eigenwoningrekenlaag voor 2026 op basis van de ingevoerde profielgegevens."
+    };
+  }
+  return {
+    taxFactor: input.taxFactor ?? TAX_FACTOR_DEFAULT,
+    method: "legacy-rate-approximation" as const,
+    warning: input.taxFactor === undefined
+      ? "Geen eigenwoningprofiel voor 2026 ingevuld; de tool gebruikt een vaste netto-rentefactor als transparante scenario-aanname."
+      : "De netto-rentefactor is handmatig gekozen en is geen volledige HRA-berekening."
+  };
+}
 
 type InvestmentScenarioYear = {
   year: number;
@@ -198,7 +252,7 @@ export function calculateMortgageComparison({
   interestRatePercent,
   loanTermYears,
   annualReturnPercent = 0,
-  taxFactor = TAX_FACTOR_DEFAULT,
+  taxFactor,
   includeInvestmentScenario = false,
   box3EffectEnabled = false,
   taxYear,
@@ -207,18 +261,37 @@ export function calculateMortgageComparison({
   box3BankDeposits,
   box3InvestmentsAndOtherAssets,
   box3Debts,
+  ownHomeProfile,
 }: MortgageInput) {
+  const grossFirstMonthInterest = loanAmount * (interestRatePercent / 100) / 12;
+  const hra = resolveTaxFactor({
+    loanAmount,
+    interestRatePercent,
+    loanTermYears,
+    annualReturnPercent,
+    taxFactor,
+    includeInvestmentScenario,
+    box3EffectEnabled,
+    taxYear,
+    hasFiscalPartner,
+    box3Method,
+    box3BankDeposits,
+    box3InvestmentsAndOtherAssets,
+    box3Debts,
+    ownHomeProfile,
+  }, grossFirstMonthInterest);
+  const appliedTaxFactor = hra.taxFactor;
   const annuityRows = calculateAnnuitySchedule(
     loanAmount,
     interestRatePercent,
     loanTermYears,
-    taxFactor,
+    appliedTaxFactor,
   );
   const linearRows = calculateLinearSchedule(
     loanAmount,
     interestRatePercent,
     loanTermYears,
-    taxFactor,
+    appliedTaxFactor,
   );
   const potSimulation = simulateInvestmentPot({
     annuityRows,
@@ -259,6 +332,8 @@ export function calculateMortgageComparison({
     potSimulation,
     yearlySummary,
     investmentScenario,
+    hraCalculationMethod: hra.method,
+    hraWarning: hra.warning,
     firstMonth: {
       annuityBruto: firstAnnuity.totalPayment,
       annuityNetto: firstAnnuity.nettoMonthly,

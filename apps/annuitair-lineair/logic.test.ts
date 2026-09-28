@@ -16,6 +16,28 @@ describe("calculateMortgageComparison", () => {
     expect(Number.isFinite(result.totals.totalLinearInterest)).toBe(true);
   });
 
+  it("uses the central own-home layer when a 2026 profile is supplied", () => {
+    const result = calculateMortgageComparison({
+      loanAmount: 300000,
+      interestRatePercent: 4,
+      loanTermYears: 30,
+      taxYear: 2026,
+      ownHomeProfile: {
+        wozValue: 400000,
+        taxableIncome: 60000,
+        labourIncome: 60000,
+        loanStartYear: 2020,
+        remainingDeductionYears: 24,
+        qualifiesAsMainResidence: true,
+        repaymentCompliant: true,
+        loanReportedToTaxAuthority: true,
+      },
+    });
+
+    expect(result.hraCalculationMethod).toBe("central-own-home");
+    expect(result.hraWarning).toContain("centrale eigenwoningrekenlaag");
+  });
+
   it("keeps investment scenario optional", () => {
     const baseOnly = calculateMortgageComparison({
       loanAmount: 300000,
