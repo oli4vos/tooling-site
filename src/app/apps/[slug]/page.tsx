@@ -7,6 +7,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ToolIndependenceNotice } from "@/components/tool/ToolIndependenceNotice";
 import { ToolJourneyHeader } from "@/components/tool/ToolJourneyHeader";
+import { ToolRouteFooter } from "@/components/tool/ToolRouteFooter";
 import { ENABLE_KNOWLEDGE_LEVEL } from "@/lib/feature-flags";
 import { appRegistry, appRegistryBySlug } from "@/lib/app-registry";
 
@@ -69,6 +70,7 @@ export default async function AppDetailPage({ params }: AppDetailPageProps) {
           ) : null}
           <ToolJourneyHeader app={app} />
           <AppRenderer slug={app.slug} />
+          <ToolRouteFooter app={app} />
         </section>
         {usesDuoSources ? (
           <section className="mt-8" aria-label="Onafhankelijkheid en bronnen">
