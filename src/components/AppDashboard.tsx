@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { AppManifest } from "@/lib/app-types";
 import { toAnchorId } from "@/lib/anchor-ids";
 import { ENABLE_PROFILE } from "@/lib/feature-flags";
@@ -19,6 +19,8 @@ function isArtifactImportedApp(app: AppManifest) {
 }
 
 export function AppDashboard({ apps }: AppDashboardProps) {
+  const [query, setQuery] = useState("");
+  const [selectedGroup, setSelectedGroup] = useState("Alle");
   const artifactApps = useMemo(
     () => apps.filter(isArtifactImportedApp),
     [apps],
@@ -64,15 +66,42 @@ export function AppDashboard({ apps }: AppDashboardProps) {
           ...group,
           apps: group.slugs
             .map((slug) => appsBySlug[slug])
-            .filter((app): app is AppManifest => Boolean(app)),
+            .filter((app): app is AppManifest => {
+              if (!app) return false;
+              const haystack = `${app.title} ${app.description} ${app.tags.join(" ")}`.toLowerCase();
+              return haystack.includes(query.trim().toLowerCase());
+            }),
         }))
+        .filter((group) => selectedGroup === "Alle" || group.title === selectedGroup)
         .filter((group) => group.apps.length > 0),
-    [appsBySlug],
+    [appsBySlug, query, selectedGroup],
   );
 
   return (
     <div className="space-y-8">
       <KnowledgeLevelSelector />
+
+      <section className="surface-subtle grid gap-3 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-end" aria-label="Tools zoeken en filteren">
+        <label className="grid gap-2">
+          <span className="text-[12px] font-medium uppercase tracking-[0.06em] text-[var(--muted)]">Zoek op vraag of onderwerp</span>
+          <input
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder="Bijv. box 3, hypotheek of DUO"
+            className="ring-focus hair h-11 rounded-lg border bg-white px-3 text-[14px] text-[var(--ink)] outline-none"
+          />
+        </label>
+        <label className="grid gap-2 sm:min-w-48">
+          <span className="text-[12px] font-medium uppercase tracking-[0.06em] text-[var(--muted)]">Onderwerp</span>
+          <select value={selectedGroup} onChange={(event) => setSelectedGroup(event.target.value)} className="ring-focus hair h-11 rounded-lg border bg-white px-3 text-[14px] text-[var(--ink)] outline-none">
+            <option>Alle</option>
+            {toolGroups.map((group) => <option key={group.title}>{group.title}</option>)}
+          </select>
+        </label>
+        {query || selectedGroup !== "Alle" ? (
+          <p className="text-[12px] text-[var(--muted)] sm:col-span-2">{groupedApps.reduce((total, group) => total + group.apps.length, 0)} tools gevonden.</p>
+        ) : null}
+      </section>
 
       <section id="apps" className="space-y-6">
         {groupedApps.map((group) => (
