@@ -67,7 +67,11 @@ export function TopicLanding({ eyebrow, title, intro, promise, steps, apps, jour
           <div className="section-label">Kies je situatie</div>
           <h2 className="mt-3 font-serif text-fluid-h2 tracking-[-0.03em] text-[var(--ink)]">Tools die bij deze vraag horen.</h2>
           <div className="mt-7 grid gap-4 md:grid-cols-2">
-            {apps.map((app) => <article key={app.slug} className="flex flex-col rounded-[1.25rem] border border-[var(--hair)] bg-white p-5 shadow-paper">
+            {apps.map((app, index) => <article key={app.slug} className={`flex flex-col rounded-[1.25rem] border bg-white p-5 shadow-paper ${index === 0 ? "border-[var(--accent-line)] ring-1 ring-[var(--accent-soft)]" : "border-[var(--hair)]"}`}>
+              <div className="flex items-center justify-between gap-3">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.1em] text-[var(--accent)]">{index === 0 ? "Begin hier" : `Stap 0${index + 1}`}</span>
+                <span className="rounded-full bg-[var(--paper-soft)] px-2.5 py-1 text-[11px] text-[var(--muted)]">Voorbeeld beschikbaar</span>
+              </div>
               <h3 className="font-serif text-[22px] leading-tight tracking-[-0.02em] text-[var(--ink)]">{app.title}</h3>
               <p className="mt-3 text-[14px] leading-6 text-[var(--muted)]">{app.description}</p>
               <div className="mt-auto pt-6"><BtnLink href={`/apps/${app.slug}`} kind="outline" size="sm">Open deze tool</BtnLink></div>
