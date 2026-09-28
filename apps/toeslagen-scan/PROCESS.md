@@ -4,7 +4,7 @@ title: Welke toeslagen passen mogelijk bij mij?
 route: /apps/toeslagen-scan
 status: disabled
 lastReviewed: 2026-09-28
-sourceHash: sha256:9d3a5e150457581f35067ed87b6bac2b2141d73a28d45fce40e4fd64798c4518
+sourceHash: sha256:cd5397bb918db27123b8db2ac148a1186b0c480715b42c6e340e8f763ed6e6df
 sources:
   - apps/toeslagen-scan/app.json
   - apps/toeslagen-scan/Calculator.tsx

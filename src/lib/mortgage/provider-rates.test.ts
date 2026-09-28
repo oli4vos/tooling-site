@@ -89,6 +89,7 @@ describe("mortgage provider rate average", () => {
         provider("ing", 4.27),
         provider("rabobank", 4.32),
       ]),
+      { asOf: "2026-07-18" },
     );
 
     expect(result.status).toBe("complete");

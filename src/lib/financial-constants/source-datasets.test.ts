@@ -384,6 +384,7 @@ describe("source dataset registry", () => {
   it("exposes a UI-neutral source reference contract", () => {
     const [reference] = getSourceReferences("duo-rate-year", {
       scenario: "sf35-sf15-sf15-old-lllk",
+      asOf: "2026-07-18",
     });
 
     expect(reference.datasetId).toBe("duo-rate-year-2026");

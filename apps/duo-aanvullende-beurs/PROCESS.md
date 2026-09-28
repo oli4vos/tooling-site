@@ -4,7 +4,7 @@ title: Aanvullende beurs berekenen
 route: /apps/duo-aanvullende-beurs
 status: active-public
 lastReviewed: 2026-09-28
-sourceHash: sha256:a2595cfc0c4f24917219e62df131c5eada9464534b872134cb6f5c108c90ed28
+sourceHash: sha256:9a406cb4cd6365595ea5a21e020da5572d8ff9970cff142319968dbf60f5eb28
 sources:
   - apps/duo-aanvullende-beurs/app.json
   - apps/duo-aanvullende-beurs/Calculator.tsx
