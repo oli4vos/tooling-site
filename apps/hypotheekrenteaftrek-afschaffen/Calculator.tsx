@@ -17,6 +17,14 @@ type FormState = {
   taxYear: string;
   firstMortgageYear: string;
   taxableIncome: string;
+  labourIncome: string;
+  wozValue: string;
+  otherDeductibleCosts: string;
+  aow: "none" | "full";
+  iackEligible: boolean;
+  qualifiesAsMainResidence: boolean;
+  repaymentCompliant: boolean;
+  loanReportedToTaxAuthority: boolean;
   remainingMortgageDebt: string;
   mortgageRatePercent: string;
   mortgageType: "annuity" | "linear" | "interestOnly";
@@ -31,6 +39,14 @@ const defaultValues: FormState = {
   taxYear: String(getDefaultFinancialYear()),
   firstMortgageYear: String(getDefaultFinancialYear()),
   taxableIncome: "",
+  labourIncome: "",
+  wozValue: "",
+  otherDeductibleCosts: "",
+  aow: "none",
+  iackEligible: false,
+  qualifiesAsMainResidence: false,
+  repaymentCompliant: false,
+  loanReportedToTaxAuthority: false,
   remainingMortgageDebt: "",
   mortgageRatePercent: "",
   mortgageType: "annuity",
@@ -43,6 +59,14 @@ const exampleValues: FormState = {
   taxYear: String(getDefaultFinancialYear()),
   firstMortgageYear: "2020",
   taxableIncome: "70000",
+  labourIncome: "70000",
+  wozValue: "420000",
+  otherDeductibleCosts: "0",
+  aow: "none",
+  iackEligible: false,
+  qualifiesAsMainResidence: true,
+  repaymentCompliant: true,
+  loanReportedToTaxAuthority: true,
   remainingMortgageDebt: "350000",
   mortgageRatePercent: "4.0",
   mortgageType: "annuity",
@@ -68,6 +92,9 @@ function validate(values: FormState) {
   const taxYear = parseNumber(values.taxYear);
   const firstMortgageYear = parseNumber(values.firstMortgageYear);
   const taxableIncome = parseNumber(values.taxableIncome);
+  const labourIncome = parseNumber(values.labourIncome);
+  const wozValue = parseNumber(values.wozValue);
+  const otherDeductibleCosts = parseNumber(values.otherDeductibleCosts);
   const remainingMortgageDebt = parseNumber(values.remainingMortgageDebt);
   const mortgageRatePercent = parseNumber(values.mortgageRatePercent);
   const remainingMortgageTermYears = parseNumber(values.remainingMortgageTermYears);
@@ -87,6 +114,15 @@ function validate(values: FormState) {
   }
   if (taxableIncome === undefined || !Number.isFinite(taxableIncome) || taxableIncome < 0) {
     errors.taxableIncome = "Gebruik 0 of een hoger belastbaar inkomen.";
+  }
+  if (labourIncome === undefined || !Number.isFinite(labourIncome) || labourIncome < 0) {
+    errors.labourIncome = "Gebruik 0 of een hoger arbeidsinkomen.";
+  }
+  if (wozValue === undefined || !Number.isFinite(wozValue) || wozValue < 0) {
+    errors.wozValue = "Gebruik de WOZ-waarde van de eigen woning.";
+  }
+  if (otherDeductibleCosts === undefined || !Number.isFinite(otherDeductibleCosts) || otherDeductibleCosts < 0) {
+    errors.otherDeductibleCosts = "Gebruik 0 of een hoger aftrekbaar kostenbedrag.";
   }
   if (
     remainingMortgageDebt === undefined ||
@@ -134,6 +170,16 @@ function validate(values: FormState) {
             taxYear: Math.round(taxYear ?? getDefaultFinancialYear()),
             firstMortgageYear: Math.round(firstMortgageYear ?? getDefaultFinancialYear()),
             taxableIncome: taxableIncome ?? 0,
+            ownHomeProfile: {
+              labourIncome: labourIncome ?? 0,
+              wozValue: wozValue ?? 0,
+              otherDeductibleCosts: otherDeductibleCosts ?? 0,
+              aow: values.aow,
+              iackEligible: values.iackEligible,
+              qualifiesAsMainResidence: values.qualifiesAsMainResidence,
+              repaymentCompliant: values.repaymentCompliant,
+              loanReportedToTaxAuthority: values.loanReportedToTaxAuthority,
+            },
             remainingMortgageDebt: remainingMortgageDebt ?? 0,
             mortgageRatePercent: mortgageRatePercent ?? 0,
             mortgageType: values.mortgageType,
@@ -245,10 +291,46 @@ export default function Calculator() {
           </label>
 
           <label className="grid gap-2">
-            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Belastbaar inkomen</span>
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Box 1-inkomen vóór eigen woning</span>
             <input inputMode="decimal" value={formValues.taxableIncome} onChange={(event) => updateField("taxableIncome", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
             <FieldError message={activeErrors.taxableIncome} />
           </label>
+
+          <label className="grid gap-2">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Arbeidsinkomen</span>
+            <input inputMode="decimal" value={formValues.labourIncome} onChange={(event) => updateField("labourIncome", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+            <span className="text-[12px] leading-[1.5] text-[var(--muted)]">Nodig voor arbeidskorting en eventuele IACK; pensioen is geen arbeidsinkomen.</span>
+            <FieldError message={activeErrors.labourIncome} />
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">WOZ-waarde eigen woning</span>
+            <input inputMode="decimal" value={formValues.wozValue} onChange={(event) => updateField("wozValue", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+            <span className="text-[12px] leading-[1.5] text-[var(--muted)]">Hiermee berekenen we het eigenwoningforfait; zonder WOZ geen daadwerkelijke HRA-berekening.</span>
+            <FieldError message={activeErrors.wozValue} />
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Andere aftrekbare eigenwoningkosten</span>
+            <input inputMode="decimal" value={formValues.otherDeductibleCosts} onChange={(event) => updateField("otherDeductibleCosts", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+            <FieldError message={activeErrors.otherDeductibleCosts} />
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">AOW-situatie</span>
+            <select value={formValues.aow} onChange={(event) => updateField("aow", event.target.value as FormState["aow"])} className="ring-focus hair h-12 rounded-md border bg-white px-4 text-[15px] text-[var(--ink)] outline-none">
+              <option value="none">Nog niet AOW-gerechtigd</option>
+              <option value="full">Heel jaar AOW-gerechtigd</option>
+            </select>
+          </label>
+
+          <div className="grid gap-3 rounded-xl border border-[var(--hair)] bg-[var(--paper-soft)] p-4 text-[13px] leading-[1.55] text-[var(--ink-2)]">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Kwalificatie eigenwoningschuld</span>
+            <label className="flex gap-3"><input type="checkbox" checked={formValues.qualifiesAsMainResidence} onChange={(event) => updateField("qualifiesAsMainResidence", event.target.checked)} />Dit is mijn hoofdverblijf en de lening is gebruikt voor de eigen woning.</label>
+            <label className="flex gap-3"><input type="checkbox" checked={formValues.repaymentCompliant} onChange={(event) => updateField("repaymentCompliant", event.target.checked)} />De lening voldoet aan de toepasselijke aflossingsverplichting.</label>
+            <label className="flex gap-3"><input type="checkbox" checked={formValues.loanReportedToTaxAuthority} onChange={(event) => updateField("loanReportedToTaxAuthority", event.target.checked)} />Leningsgegevens zijn waar nodig aan de Belastingdienst doorgegeven.</label>
+            <label className="flex gap-3"><input type="checkbox" checked={formValues.iackEligible} onChange={(event) => updateField("iackEligible", event.target.checked)} />Ik voldoe aan alle voorwaarden voor IACK.</label>
+          </div>
 
           <label className="grid gap-2">
             <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Resterende hypotheekschuld</span>
@@ -332,6 +414,7 @@ export default function Calculator() {
               <div className="mt-4">
                 <ResultRow label="Bruto rente per jaar (gebruikt)" value={formatCurrency(result.annualGrossInterestUsed)} />
                 <ResultRow label="Aftrekvoordeel per jaar (nu)" value={formatCurrency(result.annualTaxBenefitNow)} />
+                <ResultRow label="Rekenmethode" value={result.hraCalculationMethod === "central-own-home" ? "Centrale eigenwoninglaag (2026)" : "Overgang: tariefbenadering"} />
                 <ResultRow label="Netto rente mét aftrek" value={formatCurrency(result.annualNetCostWithDeduction)} />
                 <ResultRow label="Netto rente zonder aftrek" value={formatCurrency(result.annualNetCostWithoutDeduction)} />
                 <ResultRow label="Jaarverschil zonder aftrek" value={formatCurrency(result.annualDifference)} accent />
@@ -389,7 +472,8 @@ export default function Calculator() {
             <ul className="space-y-2 text-[13px] leading-[1.65] text-[var(--muted)]">
               <li>We schatten eerst je jaarlijkse bruto hypotheekrente.</li>
               <li>Die schatting volgt je hypotheekvorm (annuïtair, lineair of aflossingsvrij) en resterende looptijd.</li>
-              <li>Daarna berekenen we indicatief het aftrekvoordeel via de centrale tax-laag, alleen zolang je nog aftrekjaren hebt.</li>
+              <li>Daarna vergelijken we de volledige Box 1-uitkomst met en zonder aftrekbare eigenwoningkosten, inclusief eigenwoningforfait, Wet Hillen, tariefcorrectie en relevante heffingskortingen.</li>
+              <li>Zvw blijft apart: hypotheekrenteaftrek verlaagt de bijdragegrondslag niet.</li>
               <li>Scenario zonder aftrek = bruto rente als netto kostenpost.</li>
             </ul>
           </DisclosureSection>

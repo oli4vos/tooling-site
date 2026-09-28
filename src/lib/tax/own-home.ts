@@ -85,8 +85,10 @@ export type OwnHomeTaxpayerAssessment = {
   zvw: number;
   zvwIsAffectedByOwnHome: false;
   taxWithoutOwnHome: number;
+  taxWithoutEligibleCosts: number;
   creditEffectOfOwnHome: number;
   ownHomeTaxBenefit: number;
+  eligibleCostsTaxBenefit: number;
 };
 
 export type OwnHomeTaxAssessmentResult = {
@@ -97,8 +99,10 @@ export type OwnHomeTaxAssessmentResult = {
   taxpayers: OwnHomeTaxpayerAssessment[];
   household: {
     taxWithoutOwnHome: number;
+    taxWithoutEligibleCosts: number;
     taxWithOwnHome: number;
     ownHomeTaxBenefit: number;
+    eligibleCostsTaxBenefit: number;
     zvw: number;
     zvwEffect: 0;
     estimatedToetsingsinkomenChange: number;
@@ -337,17 +341,15 @@ export function calculateOwnHomeTaxAssessment(input: OwnHomeTaxAssessmentInput):
   const ownHome = calculateOwnHomeResult({ ...input.ownHome, year });
   const taxpayers = input.taxpayers;
   const mode = input.allocation?.mode ?? (taxpayers.length === 2 ? "optimise" : "manual");
-  const balance = ownHome.balanceAfterHillen;
-  const cost = ownHome.eligibleCosts;
-  const evaluate = (firstShare: number) => {
+  const evaluate = (home: OwnHomeResult, firstShare: number) => {
     const shares = taxpayers.length === 1 ? [1] : [firstShare, 1 - firstShare];
     const assessments = taxpayers.map((taxpayer, index) => {
       const share = shares[index] ?? 0;
       const withHome = calculateAssessment({
         taxpayer,
         year,
-        homeBalance: balance * share,
-        deductibleCosts: cost * share,
+        homeBalance: home.balanceAfterHillen * share,
+        deductibleCosts: home.eligibleCosts * share,
       });
       const withoutHome = calculateAssessment({ taxpayer, year, homeBalance: 0, deductibleCosts: 0 });
       return { taxpayer, share, withHome, withoutHome };
@@ -358,22 +360,36 @@ export function calculateOwnHomeTaxAssessment(input: OwnHomeTaxAssessmentInput):
       totalTax: assessments.reduce((sum, item) => sum + item.withHome.finalBox1Tax, 0),
     };
   };
+  const balance = ownHome.balanceAfterHillen;
   const requestedShare = Math.min(Math.max(input.allocation?.firstTaxpayerShare ?? 0.5, 0), 1);
   const options = mode === "optimise" && taxpayers.length === 2
-    ? candidateShares({ balance, taxpayers: [...taxpayers] }).map(evaluate)
-    : [evaluate(taxpayers.length === 1 ? 1 : mode === "equal" ? 0.5 : requestedShare)];
+    ? candidateShares({ balance, taxpayers: [...taxpayers] }).map((share) => evaluate(ownHome, share))
+    : [evaluate(ownHome, taxpayers.length === 1 ? 1 : mode === "equal" ? 0.5 : requestedShare)];
   const selected = options.reduce((best, candidate) => candidate.totalTax < best.totalTax ? candidate : best);
-  const taxpayerResults = selected.assessments.map((item) => ({
+  const withoutEligibleCostsHome = calculateOwnHomeResult({
+    ...input.ownHome,
+    year,
+    mortgageInterestPaid: 0,
+    otherDeductibleCosts: 0,
+  });
+  const withoutEligibleCosts = evaluate(withoutEligibleCostsHome, selected.shares[0] ?? 1);
+  const taxpayerResults = selected.assessments.map((item, index) => ({
     id: item.taxpayer.id,
     allocatedOwnHomeBalance: roundMoney(balance * item.share),
     ...item.withHome,
     zvwIsAffectedByOwnHome: false as const,
     taxWithoutOwnHome: item.withoutHome.finalBox1Tax,
+    taxWithoutEligibleCosts: withoutEligibleCosts.assessments[index]?.withHome.finalBox1Tax ?? item.withoutHome.finalBox1Tax,
     creditEffectOfOwnHome: roundMoney(item.withHome.totalCredits - item.withoutHome.totalCredits),
     ownHomeTaxBenefit: roundMoney(item.withoutHome.finalBox1Tax - item.withHome.finalBox1Tax),
+    eligibleCostsTaxBenefit: roundMoney(
+      (withoutEligibleCosts.assessments[index]?.withHome.finalBox1Tax ?? item.withoutHome.finalBox1Tax)
+      - item.withHome.finalBox1Tax,
+    ),
   }));
   const taxWithoutOwnHome = roundMoney(selected.assessments.reduce((sum, item) => sum + item.withoutHome.finalBox1Tax, 0));
   const taxWithOwnHome = roundMoney(selected.assessments.reduce((sum, item) => sum + item.withHome.finalBox1Tax, 0));
+  const taxWithoutEligibleCosts = roundMoney(withoutEligibleCosts.assessments.reduce((sum, item) => sum + item.withHome.finalBox1Tax, 0));
   const zvw = roundMoney(taxpayerResults.reduce((sum, taxpayer) => sum + taxpayer.zvw, 0));
   const warnings = [
     ...ownHome.warnings,
@@ -393,8 +409,10 @@ export function calculateOwnHomeTaxAssessment(input: OwnHomeTaxAssessmentInput):
     taxpayers: taxpayerResults,
     household: {
       taxWithoutOwnHome,
+      taxWithoutEligibleCosts,
       taxWithOwnHome,
       ownHomeTaxBenefit: roundMoney(taxWithoutOwnHome - taxWithOwnHome),
+      eligibleCostsTaxBenefit: roundMoney(taxWithoutEligibleCosts - taxWithOwnHome),
       zvw,
       zvwEffect: 0,
       estimatedToetsingsinkomenChange: roundMoney(balance),

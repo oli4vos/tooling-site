@@ -36,6 +36,31 @@ describe("calculateMortgageDeductionAbolitionImpact", () => {
     expect(result.timeline).toHaveLength(5);
   });
 
+  it("uses the central own-home assessment when qualification and WOZ are supplied", () => {
+    const result = calculateMortgageDeductionAbolitionImpact({
+      taxYear: 2026,
+      firstMortgageYear: 2020,
+      taxableIncome: 50_000,
+      remainingMortgageDebt: 300_000,
+      mortgageRatePercent: 4,
+      mortgageType: "annuity",
+      remainingMortgageTermYears: 30,
+      annualMortgageInterestOverride: 9_000,
+      horizonYears: 2,
+      ownHomeProfile: {
+        wozValue: 280_000,
+        labourIncome: 50_000,
+        qualifiesAsMainResidence: true,
+        repaymentCompliant: true,
+        loanReportedToTaxAuthority: true,
+      },
+    });
+
+    expect(result.hraCalculationMethod).toBe("central-own-home");
+    expect(result.annualTaxBenefitNow).toBeGreaterThan(0);
+    expect(result.warnings.join(" ")).toContain("Zvw");
+  });
+
   it("sanitizes invalid and negative inputs safely", () => {
     const result = calculateMortgageDeductionAbolitionImpact({
       taxYear: Number.NaN,

@@ -1,4 +1,8 @@
-import { calculateMortgageInterestDeduction } from "@/lib/tax";
+import {
+  calculateMortgageInterestDeduction,
+  calculateOwnHomeTaxAssessment,
+  type OwnHomeAowStatus,
+} from "@/lib/tax";
 import { getDefaultFinancialYear } from "@/lib/financial-constants";
 
 export type CalculatorInput = {
@@ -11,6 +15,18 @@ export type CalculatorInput = {
   remainingMortgageTermYears: number;
   annualMortgageInterestOverride?: number;
   horizonYears: number;
+  /** Enables the central 2026 own-home assessment instead of the legacy rate approximation. */
+  ownHomeProfile?: {
+    wozValue: number;
+    labourIncome?: number;
+    otherDeductibleCosts?: number;
+    aow?: OwnHomeAowStatus;
+    iackEligible?: boolean;
+    qualifiesAsMainResidence: boolean;
+    repaymentCompliant: boolean;
+    loanReportedToTaxAuthority: boolean;
+    hasHillenException?: boolean;
+  };
 };
 
 export type TimelinePoint = {
@@ -38,6 +54,7 @@ export type CalculatorResult = {
   remainingMortgageTermYears: number;
   remainingDeductionYears: number;
   mortgageType: "annuity" | "linear" | "interestOnly";
+  hraCalculationMethod: "central-own-home" | "legacy-rate-approximation";
   timeline: TimelinePoint[];
   warnings: string[];
 };
@@ -139,6 +156,61 @@ function roundMoney(value: number) {
   return Math.round(value * 100) / 100;
 }
 
+function calculateAnnualHraBenefit(input: {
+  taxYear: number;
+  taxableIncome: number;
+  firstMortgageYear: number;
+  grossInterest: number;
+  ownHomeProfile?: CalculatorInput["ownHomeProfile"];
+}) {
+  if (!input.ownHomeProfile || input.taxYear !== 2026) {
+    const legacy = calculateMortgageInterestDeduction({
+      year: input.taxYear,
+      taxableIncome: input.taxableIncome,
+      annualMortgageInterest: input.grossInterest,
+    });
+    return {
+      taxBenefit: legacy.estimatedTaxBenefit,
+      appliedRate: legacy.appliedDeductionRate,
+      method: "legacy-rate-approximation" as const,
+      warnings: input.ownHomeProfile && input.taxYear !== 2026
+        ? ["De centrale eigenwoningrekenlaag is inhoudelijk gevalideerd voor 2026; voor dit andere jaar is de eerdere tariefbenadering gebruikt."]
+        : ["Vul WOZ en leningkwalificatie in om met de centrale eigenwoningrekenlaag te rekenen."],
+    };
+  }
+  const remainingDeductionYears = Math.max(30 - Math.max(input.taxYear - input.firstMortgageYear, 0), 0);
+  const assessment = calculateOwnHomeTaxAssessment({
+    year: 2026,
+    ownHome: {
+      wozValue: input.ownHomeProfile.wozValue,
+      mortgageInterestPaid: input.grossInterest,
+      otherDeductibleCosts: input.ownHomeProfile.otherDeductibleCosts,
+      qualification: {
+        qualifiesAsMainResidence: input.ownHomeProfile.qualifiesAsMainResidence,
+        loanStartYear: input.firstMortgageYear,
+        repaymentCompliant: input.ownHomeProfile.repaymentCompliant,
+        loanReportedToTaxAuthority: input.ownHomeProfile.loanReportedToTaxAuthority,
+        remainingDeductionYears,
+        hasHillenException: input.ownHomeProfile.hasHillenException,
+      },
+    },
+    taxpayers: [{
+      id: "belastingplichtige",
+      box1IncomeBeforeOwnHome: input.taxableIncome,
+      labourIncome: input.ownHomeProfile.labourIncome ?? input.taxableIncome,
+      aow: input.ownHomeProfile.aow ?? "none",
+      iackEligible: input.ownHomeProfile.iackEligible,
+    }],
+  });
+  const taxBenefit = assessment.household.eligibleCostsTaxBenefit;
+  return {
+    taxBenefit,
+    appliedRate: input.grossInterest > 0 ? roundMoney((taxBenefit / input.grossInterest) * 100) : 0,
+    method: "central-own-home" as const,
+    warnings: assessment.warnings,
+  };
+}
+
 export function calculateMortgageDeductionAbolitionImpact(
   input: CalculatorInput,
 ): CalculatorResult {
@@ -169,27 +241,33 @@ export function calculateMortgageDeductionAbolitionImpact(
   let annualNetCostWithDeduction = annualGrossInterestUsed;
   let annualNetCostWithoutDeduction = annualGrossInterestUsed;
   let annualDifference = 0;
+  let hraCalculationMethod: CalculatorResult["hraCalculationMethod"] = "legacy-rate-approximation";
+  const hraWarnings = new Set<string>();
 
   for (let yearOffset = 0; yearOffset < horizonYears; yearOffset += 1) {
     const calendarYear = startYear + yearOffset;
     const grossInterest = yearlyGrossInterest[yearOffset] ?? 0;
     const deductionApplies = yearOffset < remainingDeductionYears && grossInterest > 0;
-    const deduction = calculateMortgageInterestDeduction({
-      year: calendarYear,
+    const deduction = calculateAnnualHraBenefit({
+      taxYear: startYear,
       taxableIncome,
-      annualMortgageInterest: grossInterest,
+      firstMortgageYear,
+      grossInterest,
+      ownHomeProfile: input.ownHomeProfile,
     });
+    hraCalculationMethod = deduction.method;
+    deduction.warnings.forEach((warning) => hraWarnings.add(warning));
 
     const netWith = roundMoney(
-      deductionApplies ? deduction.netInterestCost : grossInterest,
+      deductionApplies ? roundMoney(Math.max(grossInterest - deduction.taxBenefit, 0)) : grossInterest,
     );
     const netWithout = roundMoney(grossInterest);
     const diff = roundMoney(netWithout - netWith);
     cumulativeDifference = roundMoney(cumulativeDifference + diff);
 
     if (yearOffset === 0) {
-      appliedDeductionRate = deduction.appliedDeductionRate;
-      annualTaxBenefitNow = deduction.estimatedTaxBenefit;
+      appliedDeductionRate = deduction.appliedRate;
+      annualTaxBenefitNow = deduction.taxBenefit;
       annualNetCostWithDeduction = netWith;
       annualNetCostWithoutDeduction = netWithout;
       annualDifference = diff;
@@ -221,12 +299,17 @@ export function calculateMortgageDeductionAbolitionImpact(
     remainingMortgageTermYears,
     remainingDeductionYears,
     mortgageType,
+    hraCalculationMethod,
     timeline,
     warnings: [
       "Dit is een indicatieve scenariovergelijking en geen officiële aangifteberekening.",
       "Renteontwikkeling is benaderd op basis van hypotheekvorm, resterende looptijd en een vaste rente-aanname.",
       `Renteaftrek is hier berekend op basis van eerste hypotheekjaar ${firstMortgageYear}, met maximaal 30 aftrekjaren.`,
       "Werkelijke netto impact hangt ook af van aflossing, rentevaste periodes en persoonlijke fiscale omstandigheden.",
+      ...hraWarnings,
+      hraCalculationMethod === "central-own-home"
+        ? "De centrale eigenwoningberekening gebruikt 2026-regels. Voor latere jaren in deze grafiek blijven die 2026-regels een scenario-aanname."
+        : "De tariefbenadering is alleen een overgangsmodus; vul het eigenwoningprofiel in voor de centrale 2026-berekening.",
     ],
   };
 }
