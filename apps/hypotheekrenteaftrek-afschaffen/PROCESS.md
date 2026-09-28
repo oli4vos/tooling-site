@@ -3,8 +3,8 @@ tool: hypotheekrenteaftrek-afschaffen
 title: Wat als hypotheekrenteaftrek stopt?
 route: /apps/hypotheekrenteaftrek-afschaffen
 status: active-public
-lastReviewed: 2026-09-23
-sourceHash: sha256:58fc3d334210d5ef2a1aa13d0bd7517f6a4e0abde48a2b9206b8c42aaae381fd
+lastReviewed: 2026-09-28
+sourceHash: sha256:a25773ea7bb031ab6cdc717399f6d78b3207d760b9b2e7e1e8336637878cf047
 sources:
   - apps/hypotheekrenteaftrek-afschaffen/app.json
   - apps/hypotheekrenteaftrek-afschaffen/Calculator.tsx

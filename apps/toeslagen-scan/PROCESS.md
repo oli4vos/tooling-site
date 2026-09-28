@@ -3,8 +3,8 @@ tool: toeslagen-scan
 title: Welke toeslagen passen mogelijk bij mij?
 route: /apps/toeslagen-scan
 status: disabled
-lastReviewed: 2026-08-11
-sourceHash: sha256:111d48e013da72bf0ee0970c9c15f1debae581ee61c4e7b01cdcae5e49350c22
+lastReviewed: 2026-09-28
+sourceHash: sha256:9d3a5e150457581f35067ed87b6bac2b2141d73a28d45fce40e4fd64798c4518
 sources:
   - apps/toeslagen-scan/app.json
   - apps/toeslagen-scan/Calculator.tsx

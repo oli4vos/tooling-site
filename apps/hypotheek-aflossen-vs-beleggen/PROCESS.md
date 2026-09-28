@@ -3,8 +3,8 @@ tool: hypotheek-aflossen-vs-beleggen
 title: Hypotheek aflossen of beleggen?
 route: /apps/hypotheek-aflossen-vs-beleggen
 status: active-public
-lastReviewed: 2026-09-22
-sourceHash: sha256:4ad9d15ab131fa56e77bfbc356ceb67179bd180d5a9d83c20acca3269801dc92
+lastReviewed: 2026-09-28
+sourceHash: sha256:876cdb67c65d1638f9083c568cb3310b9bb0789308383615ecac758cc03b9322
 sources:
   - apps/hypotheek-aflossen-vs-beleggen/app.json
   - apps/hypotheek-aflossen-vs-beleggen/Calculator.tsx

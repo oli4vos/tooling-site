@@ -3,8 +3,8 @@ tool: pensioenplafond-check
 title: Pensioenplafond-check 2027–2032
 route: /apps/pensioenplafond-check
 status: active-public
-lastReviewed: 2026-09-20
-sourceHash: sha256:f44d917dc81184a1b342365351962fa28e7db13c946c84dfcea882aab77603ac
+lastReviewed: 2026-09-28
+sourceHash: sha256:e508a42a43fb4d6815ce40e85836f033fac738de8494eb5b2e8fc6e4934ea350
 sources:
   - apps/pensioenplafond-check/app.json
   - apps/pensioenplafond-check/Calculator.tsx

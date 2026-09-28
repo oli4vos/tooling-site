@@ -3,8 +3,8 @@ tool: jaarruimte-vs-vrij-beleggen
 title: Jaarruimte versus vrij beleggen
 route: /apps/jaarruimte-vs-vrij-beleggen
 status: active-public
-lastReviewed: 2026-09-23
-sourceHash: sha256:2c1173b20eef9a44ca5e53bfbb892f7d9e63a6cda606e5339d1f607fceb28c40
+lastReviewed: 2026-09-28
+sourceHash: sha256:54b94d3a411d05e7ea4eaf93c416d446b7a497cd53e9bf224cb4cebfa91be6c5
 sources:
   - apps/jaarruimte-vs-vrij-beleggen/app.json
   - apps/jaarruimte-vs-vrij-beleggen/Calculator.tsx

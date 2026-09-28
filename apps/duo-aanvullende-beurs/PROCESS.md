@@ -3,8 +3,8 @@ tool: duo-aanvullende-beurs
 title: Aanvullende beurs berekenen
 route: /apps/duo-aanvullende-beurs
 status: active-public
-lastReviewed: 2026-09-23
-sourceHash: sha256:b74daf743a9affee3a61f0f34555f9f3caa259e79a93f9ae1df9a2eb8fb92cc0
+lastReviewed: 2026-09-28
+sourceHash: sha256:a2595cfc0c4f24917219e62df131c5eada9464534b872134cb6f5c108c90ed28
 sources:
   - apps/duo-aanvullende-beurs/app.json
   - apps/duo-aanvullende-beurs/Calculator.tsx

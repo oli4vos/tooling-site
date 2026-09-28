@@ -3,8 +3,8 @@ tool: overdrachtsbelasting-check
 title: Overdrachtsbelasting-check
 route: /apps/overdrachtsbelasting-check
 status: active-public
-lastReviewed: 2026-09-20
-sourceHash: sha256:5081bfc03cd7e1f2d9daff9f9418c4ccf0debdb8e92a4abf1ec1799ebf8bb605
+lastReviewed: 2026-09-28
+sourceHash: sha256:3dcd1ac5b236641acfb7924496c041ebbf1a70bb4df368bd30ee293f123df1d0
 sources:
   - apps/overdrachtsbelasting-check/app.json
   - apps/overdrachtsbelasting-check/Calculator.tsx

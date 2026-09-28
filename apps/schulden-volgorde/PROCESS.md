@@ -3,8 +3,8 @@ tool: schulden-volgorde
 title: Vergelijk mijn schulden
 route: /apps/schulden-volgorde
 status: disabled
-lastReviewed: 2026-08-11
-sourceHash: sha256:37a9e7ea551496426fe576025bece0f9a14d01b523c5cba7b01c8d5748a1cfb3
+lastReviewed: 2026-09-28
+sourceHash: sha256:31aef934c79161449c9bfcfe439f70417d64e27f9fac06ff81a5598e527297a8
 sources:
   - apps/schulden-volgorde/app.json
   - apps/schulden-volgorde/Calculator.tsx

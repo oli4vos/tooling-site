@@ -3,8 +3,8 @@ tool: reiskostenvergoeding-check
 title: Reiskostenvergoeding-check
 route: /apps/reiskostenvergoeding-check
 status: active-public
-lastReviewed: 2026-09-20
-sourceHash: sha256:6ede3e8595244c9716ceeb15aad0c8b8d988ddf619aad70aff43f1cd37e6a6e8
+lastReviewed: 2026-09-28
+sourceHash: sha256:be6f616ba5e0357cb5c449fd5273dac8eda05c75ea477a4aec7e610d53e23265
 sources:
   - apps/reiskostenvergoeding-check/app.json
   - apps/reiskostenvergoeding-check/Calculator.tsx

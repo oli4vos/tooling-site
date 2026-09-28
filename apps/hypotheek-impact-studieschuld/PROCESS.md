@@ -3,8 +3,8 @@ tool: hypotheek-impact-studieschuld
 title: Hypotheek-impact studieschuld
 route: /apps/hypotheek-impact-studieschuld
 status: disabled
-lastReviewed: 2026-08-11
-sourceHash: sha256:07cef2834b6713faaa8b8459fa1447e6be7ebeb2afadfb74b8b01fcd75f9428e
+lastReviewed: 2026-09-28
+sourceHash: sha256:7809427812c1f920dc4f22cd44f96277bb3829ec084b99d42ff7accf6f558715
 sources:
   - apps/hypotheek-impact-studieschuld/app.json
   - apps/hypotheek-impact-studieschuld/Calculator.tsx

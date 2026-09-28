@@ -3,8 +3,8 @@ tool: duo-stoppen-kosten-prestatiebeurs
 title: Wat kost stoppen met studeren?
 route: /apps/duo-stoppen-kosten-prestatiebeurs
 status: active-public
-lastReviewed: 2026-09-23
-sourceHash: sha256:20d3d8c00d2bf7ce7e17378cf01feda79ce641287c9c958479aad92fb8bdfd5e
+lastReviewed: 2026-09-28
+sourceHash: sha256:6daf19732a4b43962a3a2969584b92a3e493ed4ce0e7c6628c4b9fa9244d6c2a
 sources:
   - apps/duo-stoppen-kosten-prestatiebeurs/app.json
   - apps/duo-stoppen-kosten-prestatiebeurs/Calculator.tsx

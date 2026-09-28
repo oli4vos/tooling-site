@@ -3,8 +3,8 @@ tool: netto-inkomen-vergelijking
 title: Netto-inkomen 2026 versus 2027
 route: /apps/netto-inkomen-vergelijking
 status: active-public
-lastReviewed: 2026-09-23
-sourceHash: sha256:a51e6387989ef7b2417ecf5b107b6aed62765983bc57552aa06369ada632ca59
+lastReviewed: 2026-09-28
+sourceHash: sha256:08da057990ec7c6bdb35cf3fca017fdf3463e216c2b18d985ba795e94916569d
 sources:
   - apps/netto-inkomen-vergelijking/app.json
   - apps/netto-inkomen-vergelijking/Calculator.tsx

@@ -3,8 +3,8 @@ tool: duo-schuld-bij-starten-lenen
 title: Wat wordt mijn studieschuld?
 route: /apps/duo-schuld-bij-starten-lenen
 status: active-public
-lastReviewed: 2026-09-23
-sourceHash: sha256:2e31083285f03eeb7378ac0177961512826069a0b0879b22a1b84395b4e1af36
+lastReviewed: 2026-09-28
+sourceHash: sha256:fbc9bcf32d00f287da9869f8ebfdfffdd38d2e7d3c26ab116d9c433cb686828f
 sources:
   - apps/duo-schuld-bij-starten-lenen/app.json
   - apps/duo-schuld-bij-starten-lenen/Calculator.tsx

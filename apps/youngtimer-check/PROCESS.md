@@ -3,8 +3,8 @@ tool: youngtimer-check
 title: Youngtimer Check 2026–2028
 route: /apps/youngtimer-check
 status: active-public
-lastReviewed: 2026-09-20
-sourceHash: sha256:34a501f3fcf53765edff14d4c2cf535c549b5142b1ff84189da970afd8082f5b
+lastReviewed: 2026-09-28
+sourceHash: sha256:3539de6de3d6e27cca6e41f3dc6d0560e636ef1e268ccae6ea7e67245e6da226
 sources:
   - apps/youngtimer-check/app.json
   - apps/youngtimer-check/Calculator.tsx

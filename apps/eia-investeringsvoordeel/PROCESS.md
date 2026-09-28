@@ -3,8 +3,8 @@ tool: eia-investeringsvoordeel
 title: EIA Investeringsvoordeel
 route: /apps/eia-investeringsvoordeel
 status: active-public
-lastReviewed: 2026-09-20
-sourceHash: sha256:4b8b2e81c914d8671f5978deb33bc6dde85d38f3cfbcf4babc4897a004b3be63
+lastReviewed: 2026-09-28
+sourceHash: sha256:0f15e91c0332c76b0aac8aa03c65d208e245aafc5ca657584ad5fd6eca583c43
 sources:
   - apps/eia-investeringsvoordeel/app.json
   - apps/eia-investeringsvoordeel/Calculator.tsx
