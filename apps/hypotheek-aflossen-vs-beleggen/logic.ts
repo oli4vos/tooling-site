@@ -1,5 +1,10 @@
 import { getDefaultFinancialYear } from "@/lib/financial-constants";
-import { calculateBox3Tax, calculateMortgageInterestDeduction } from "@/lib/tax";
+import {
+  calculateBox3Tax,
+  calculateMortgageInterestDeduction,
+  calculateOwnHomeTaxAssessment,
+  type OwnHomeAowStatus,
+} from "@/lib/tax";
 
 export type HypotheekAflossenVsBeleggenInput = {
   remainingMortgageDebt?: number;
@@ -17,6 +22,18 @@ export type HypotheekAflossenVsBeleggenInput = {
   taxYear?: number;
   keepBuffer?: boolean;
   minimumBuffer?: number;
+  ownHomeProfile?: {
+    wozValue: number;
+    labourIncome?: number;
+    otherDeductibleCosts?: number;
+    loanStartYear?: number;
+    aow?: OwnHomeAowStatus;
+    iackEligible?: boolean;
+    remainingDeductionYears?: number;
+    qualifiesAsMainResidence: boolean;
+    repaymentCompliant: boolean;
+    loanReportedToTaxAuthority: boolean;
+  };
 };
 
 type MortgageSimulationResult = {
@@ -66,6 +83,7 @@ export type HypotheekAflossenVsBeleggenResult = {
     includeBox3Effect: boolean;
     expectedAnnualReturn: number;
     mortgageRate: number;
+    hraCalculationMethod: "central-own-home" | "legacy-rate-approximation";
   };
   timeline: {
     points: HypotheekAflossenVsBeleggenTimelinePoint[];
@@ -130,6 +148,56 @@ function calculateMonthlyPayment(principal: number, annualRate: number, termYear
     return safePrincipal / months;
   }
   return safePrincipal * (monthlyRate / (1 - (1 + monthlyRate) ** -months));
+}
+
+function calculateHomeCostBenefit(input: {
+  taxYear: number;
+  taxableIncome: number;
+  grossInterest: number;
+  remainingTermYears: number;
+  ownHomeProfile?: HypotheekAflossenVsBeleggenInput["ownHomeProfile"];
+}) {
+  if (!input.ownHomeProfile || input.taxYear !== 2026) {
+    const legacy = calculateMortgageInterestDeduction({
+      year: input.taxYear,
+      taxableIncome: input.taxableIncome,
+      annualMortgageInterest: input.grossInterest,
+    });
+    return {
+      benefit: legacy.estimatedTaxBenefit,
+      method: "legacy-rate-approximation" as const,
+      warnings: input.ownHomeProfile && input.taxYear !== 2026
+        ? ["De centrale eigenwoningrekenlaag is alleen voor 2026 gevalideerd; voor dit jaar gebruiken we tijdelijk de eerdere tariefbenadering."]
+        : ["Vul het eigenwoningprofiel in voor een volledige HRA-berekening met eigenwoningforfait en Wet Hillen."],
+    };
+  }
+  const assessment = calculateOwnHomeTaxAssessment({
+    year: 2026,
+    ownHome: {
+      wozValue: input.ownHomeProfile.wozValue,
+      mortgageInterestPaid: input.grossInterest,
+      otherDeductibleCosts: input.ownHomeProfile.otherDeductibleCosts,
+      qualification: {
+        qualifiesAsMainResidence: input.ownHomeProfile.qualifiesAsMainResidence,
+        loanStartYear: input.ownHomeProfile.loanStartYear,
+        repaymentCompliant: input.ownHomeProfile.repaymentCompliant,
+        loanReportedToTaxAuthority: input.ownHomeProfile.loanReportedToTaxAuthority,
+        remainingDeductionYears: input.ownHomeProfile.remainingDeductionYears,
+      },
+    },
+    taxpayers: [{
+      id: "belastingplichtige",
+      box1IncomeBeforeOwnHome: input.taxableIncome,
+      labourIncome: input.ownHomeProfile.labourIncome ?? input.taxableIncome,
+      aow: input.ownHomeProfile.aow ?? "none",
+      iackEligible: input.ownHomeProfile.iackEligible,
+    }],
+  });
+  return {
+    benefit: assessment.household.eligibleCostsTaxBenefit,
+    method: "central-own-home" as const,
+    warnings: assessment.warnings,
+  };
 }
 
 function simulateMortgage(input: {
@@ -353,6 +421,8 @@ export function calculateHypotheekAflossenVsBeleggen(
   const taxYear = sanitizeTaxYear(input.taxYear);
   const keepBuffer = Boolean(input.keepBuffer);
   const minimumBuffer = sanitizeMoney(input.minimumBuffer);
+  const hraWarnings = new Set<string>();
+  let hraCalculationMethod: HypotheekAflossenVsBeleggenResult["assumptions"]["hraCalculationMethod"] = "legacy-rate-approximation";
 
   const baseline = simulateMortgage({
     principal: remainingMortgageDebt,
@@ -380,18 +450,24 @@ export function calculateHypotheekAflossenVsBeleggen(
   let lostMortgageInterestDeduction = 0;
   if (includeMortgageInterestDeduction && taxableIncome > 0) {
     for (let i = 0; i < baseline.annualInterest.length; i += 1) {
-      const baseDeduction = calculateMortgageInterestDeduction({
-        annualMortgageInterest: baseline.annualInterest[i] ?? 0,
+      const baseDeduction = calculateHomeCostBenefit({
+        taxYear,
         taxableIncome,
-        year: taxYear,
+        grossInterest: baseline.annualInterest[i] ?? 0,
+        remainingTermYears,
+        ownHomeProfile: input.ownHomeProfile,
       });
-      const extraDeduction = calculateMortgageInterestDeduction({
-        annualMortgageInterest: withExtra.annualInterest[i] ?? 0,
+      const extraDeduction = calculateHomeCostBenefit({
+        taxYear,
         taxableIncome,
-        year: taxYear,
+        grossInterest: withExtra.annualInterest[i] ?? 0,
+        remainingTermYears,
+        ownHomeProfile: input.ownHomeProfile,
       });
+      hraCalculationMethod = baseDeduction.method;
+      baseDeduction.warnings.forEach((warning) => hraWarnings.add(warning));
       lostMortgageInterestDeduction += Math.max(
-        baseDeduction.estimatedTaxBenefit - extraDeduction.estimatedTaxBenefit,
+        baseDeduction.benefit - extraDeduction.benefit,
         0,
       );
     }
@@ -437,7 +513,6 @@ export function calculateHypotheekAflossenVsBeleggen(
   if (keepBuffer && currentInvestableAssets < minimumBuffer) {
     recommendation = "buffer";
   }
-
   const summary =
     recommendation === "buffer"
       ? "Bij jouw aannames is buffer/eigen geld behouden nu waarschijnlijk logischer dan direct aflossen of beleggen."
@@ -460,6 +535,10 @@ export function calculateHypotheekAflossenVsBeleggen(
       "Je huidige buffer ligt onder je minimum. Daarom krijgt buffer/eigen geld prioriteit in de samenvatting.",
     );
   }
+  hraWarnings.forEach((warning) => warnings.push(warning));
+  if (hraCalculationMethod === "central-own-home") {
+    warnings.push("De centrale eigenwoningberekening gebruikt 2026-regels. Voor latere jaren in deze meerjarige vergelijking blijft dat een expliciete 2026-fiscale scenario-aanname.");
+  }
 
   const timelinePoints: HypotheekAflossenVsBeleggenTimelinePoint[] = [];
   let cumulativeGrossInterestSaved = 0;
@@ -477,19 +556,23 @@ export function calculateHypotheekAflossenVsBeleggen(
 
     let annualLostDeduction = 0;
     if (includeMortgageInterestDeduction && taxableIncome > 0) {
-      const baseDeduction = calculateMortgageInterestDeduction({
-        annualMortgageInterest: baselineInterest,
+      const baseDeduction = calculateHomeCostBenefit({
+        taxYear,
         taxableIncome,
-        year: taxYear,
+        grossInterest: baselineInterest,
+        remainingTermYears,
+        ownHomeProfile: input.ownHomeProfile,
       });
-      const extraDeduction = calculateMortgageInterestDeduction({
-        annualMortgageInterest: withExtraInterest,
+      const extraDeduction = calculateHomeCostBenefit({
+        taxYear,
         taxableIncome,
-        year: taxYear,
+        grossInterest: withExtraInterest,
+        remainingTermYears,
+        ownHomeProfile: input.ownHomeProfile,
       });
       annualLostDeduction = roundMoney(
         Math.max(
-          baseDeduction.estimatedTaxBenefit - extraDeduction.estimatedTaxBenefit,
+          baseDeduction.benefit - extraDeduction.benefit,
           0,
         ),
       );
@@ -554,6 +637,7 @@ export function calculateHypotheekAflossenVsBeleggen(
       includeBox3Effect,
       expectedAnnualReturn,
       mortgageRate,
+      hraCalculationMethod,
     },
     timeline: {
       points: timelinePoints,

@@ -33,6 +33,16 @@ type FormState = {
   oneTimeExtraRepayment: string;
   annualExtraRepayment: string;
   taxableIncome: string;
+  labourIncome: string;
+  wozValue: string;
+  otherDeductibleCosts: string;
+  loanStartYear: string;
+  remainingDeductionYears: string;
+  aow: "none" | "full";
+  iackEligible: boolean;
+  qualifiesAsMainResidence: boolean;
+  repaymentCompliant: boolean;
+  loanReportedToTaxAuthority: boolean;
   includeMortgageInterestDeduction: boolean;
   expectedAnnualReturn: string;
   investmentHorizonYears: string;
@@ -53,6 +63,16 @@ const exampleValues: FormState = {
   oneTimeExtraRepayment: "10000",
   annualExtraRepayment: "2400",
   taxableIncome: "60000",
+  labourIncome: "60000",
+  wozValue: "400000",
+  otherDeductibleCosts: "0",
+  loanStartYear: "2020",
+  remainingDeductionYears: "24",
+  aow: "none",
+  iackEligible: false,
+  qualifiesAsMainResidence: true,
+  repaymentCompliant: true,
+  loanReportedToTaxAuthority: true,
   includeMortgageInterestDeduction: true,
   expectedAnnualReturn: "5",
   investmentHorizonYears: "20",
@@ -71,6 +91,16 @@ const defaultValues: FormState = {
   oneTimeExtraRepayment: "",
   annualExtraRepayment: "",
   taxableIncome: "",
+  labourIncome: "",
+  wozValue: "",
+  otherDeductibleCosts: "",
+  loanStartYear: "",
+  remainingDeductionYears: "",
+  aow: "none",
+  iackEligible: false,
+  qualifiesAsMainResidence: false,
+  repaymentCompliant: false,
+  loanReportedToTaxAuthority: false,
   includeMortgageInterestDeduction: true,
   expectedAnnualReturn: "",
   investmentHorizonYears: "",
@@ -201,6 +231,11 @@ function validateForm(values: FormState) {
   const oneTimeExtraRepayment = parseOptionalNumber(values.oneTimeExtraRepayment);
   const annualExtraRepayment = parseOptionalNumber(values.annualExtraRepayment);
   const taxableIncome = parseOptionalNumber(values.taxableIncome);
+  const labourIncome = parseOptionalNumber(values.labourIncome);
+  const wozValue = parseOptionalNumber(values.wozValue);
+  const otherDeductibleCosts = parseOptionalNumber(values.otherDeductibleCosts);
+  const loanStartYear = parseOptionalNumber(values.loanStartYear);
+  const remainingDeductionYears = parseOptionalNumber(values.remainingDeductionYears);
   const expectedAnnualReturn = parseOptionalNumber(values.expectedAnnualReturn);
   const investmentHorizonYears = parseOptionalNumber(values.investmentHorizonYears);
   const currentInvestableAssets = parseOptionalNumber(values.currentInvestableAssets);
@@ -212,6 +247,10 @@ function validateForm(values: FormState) {
     ["oneTimeExtraRepayment", oneTimeExtraRepayment],
     ["annualExtraRepayment", annualExtraRepayment],
     ["taxableIncome", taxableIncome],
+    ["labourIncome", labourIncome],
+    ["wozValue", wozValue],
+    ["otherDeductibleCosts", otherDeductibleCosts],
+    ["remainingDeductionYears", remainingDeductionYears],
     ["currentInvestableAssets", currentInvestableAssets],
     ["minimumBuffer", minimumBuffer],
   ] as const) {
@@ -270,6 +309,18 @@ function validateForm(values: FormState) {
           oneTimeExtraRepayment: oneTimeExtraRepayment ?? 0,
           annualExtraRepayment: annualExtraRepayment ?? 0,
           taxableIncome: taxableIncome ?? 0,
+          ownHomeProfile: {
+            labourIncome: labourIncome ?? 0,
+            wozValue: wozValue ?? 0,
+            otherDeductibleCosts: otherDeductibleCosts ?? 0,
+            loanStartYear,
+            remainingDeductionYears: remainingDeductionYears ?? 0,
+            aow: values.aow,
+            iackEligible: values.iackEligible,
+            qualifiesAsMainResidence: values.qualifiesAsMainResidence,
+            repaymentCompliant: values.repaymentCompliant,
+            loanReportedToTaxAuthority: values.loanReportedToTaxAuthority,
+          },
           includeMortgageInterestDeduction: values.includeMortgageInterestDeduction,
           expectedAnnualReturn: expectedAnnualReturn ?? 0,
           investmentHorizonYears: investmentHorizonYears ?? 0,
@@ -347,6 +398,11 @@ function CalculatorContent({
     "oneTimeExtraRepayment",
     "annualExtraRepayment",
     "taxableIncome",
+    "labourIncome",
+    "wozValue",
+    "otherDeductibleCosts",
+    "loanStartYear",
+    "remainingDeductionYears",
     "includeMortgageInterestDeduction",
     "expectedAnnualReturn",
     "investmentHorizonYears",
@@ -525,7 +581,7 @@ function CalculatorContent({
 
           <label className={mobileFlow.getFieldClassName("taxableIncome")}>
             <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">
-              Belastbaar inkomen
+              Box 1-inkomen vóór eigen woning
             </span>
             <input
               inputMode="decimal"
@@ -536,6 +592,56 @@ function CalculatorContent({
             />
             <FieldError message={errors.taxableIncome} />
           </label>
+
+          <label className="grid gap-2">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Arbeidsinkomen</span>
+            <input inputMode="decimal" value={formValues.labourIncome} onChange={(event) => updateField("labourIncome", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+            <FieldError message={errors.labourIncome} />
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">WOZ-waarde eigen woning</span>
+            <input inputMode="decimal" value={formValues.wozValue} onChange={(event) => updateField("wozValue", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+            <FieldError message={errors.wozValue} />
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Andere aftrekbare eigenwoningkosten per jaar</span>
+            <input inputMode="decimal" value={formValues.otherDeductibleCosts} onChange={(event) => updateField("otherDeductibleCosts", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+            <FieldError message={errors.otherDeductibleCosts} />
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Jaar waarin de lening startte</span>
+            <input inputMode="numeric" value={formValues.loanStartYear} onChange={(event) => updateField("loanStartYear", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+            <FieldError message={errors.loanStartYear} />
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Resterende HRA-jaren</span>
+            <input inputMode="numeric" value={formValues.remainingDeductionYears} onChange={(event) => updateField("remainingDeductionYears", event.target.value)} className="ring-focus hair h-12 rounded-md border bg-white px-4 font-mono text-[16px] tabular text-[var(--ink)] outline-none" />
+            <FieldError message={errors.remainingDeductionYears} />
+          </label>
+
+          <label className="grid gap-2">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">AOW-status</span>
+            <select value={formValues.aow} onChange={(event) => updateField("aow", event.target.value as FormState["aow"])} className="ring-focus hair h-12 rounded-md border bg-white px-4 text-[16px] text-[var(--ink)] outline-none">
+              <option value="none">Nog geen AOW</option>
+              <option value="full">Volledige AOW</option>
+            </select>
+          </label>
+
+          <label className="flex items-center gap-3 text-[14px] text-[var(--ink)]">
+            <input type="checkbox" checked={formValues.iackEligible} onChange={(event) => updateField("iackEligible", event.target.checked)} className="size-4 accent-[var(--accent)]" />
+            Recht op inkomensafhankelijke combinatiekorting (IACK)
+          </label>
+
+          <div className="grid gap-2 rounded-xl border border-[var(--hair)] bg-[var(--paper-soft)] p-4 text-[13px] text-[var(--ink-2)]">
+            <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">Kwalificatie eigenwoningschuld</span>
+            <label className="flex gap-3"><input type="checkbox" checked={formValues.qualifiesAsMainResidence} onChange={(event) => updateField("qualifiesAsMainResidence", event.target.checked)} />Hoofdverblijf; lening gebruikt voor de eigen woning.</label>
+            <label className="flex gap-3"><input type="checkbox" checked={formValues.repaymentCompliant} onChange={(event) => updateField("repaymentCompliant", event.target.checked)} />Aflossingsverplichting is nagekomen.</label>
+            <label className="flex gap-3"><input type="checkbox" checked={formValues.loanReportedToTaxAuthority} onChange={(event) => updateField("loanReportedToTaxAuthority", event.target.checked)} />Leningsgegevens zijn waar nodig doorgegeven.</label>
+          </div>
 
           <label className={mobileFlow.getFieldClassName("includeMortgageInterestDeduction")}>
             <span className="text-[12px] uppercase tracking-[0.04em] text-[var(--muted)]">

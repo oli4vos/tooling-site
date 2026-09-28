@@ -64,6 +64,33 @@ describe("calculateHypotheekAflossenVsBeleggen", () => {
     );
   });
 
+  it("uses the central own-home engine when a 2026 profile is supplied", () => {
+    const result = calculateHypotheekAflossenVsBeleggen({
+      remainingMortgageDebt: 300000,
+      mortgageRate: 4,
+      remainingTermYears: 25,
+      oneTimeExtraRepayment: 10000,
+      annualExtraRepayment: 2400,
+      taxableIncome: 60000,
+      expectedAnnualReturn: 5,
+      investmentHorizonYears: 3,
+      includeMortgageInterestDeduction: true,
+      taxYear: 2026,
+      ownHomeProfile: {
+        wozValue: 400000,
+        labourIncome: 60000,
+        loanStartYear: 2020,
+        remainingDeductionYears: 24,
+        qualifiesAsMainResidence: true,
+        repaymentCompliant: true,
+        loanReportedToTaxAuthority: true,
+      },
+    });
+
+    expect(result.assumptions.hraCalculationMethod).toBe("central-own-home");
+    expect(result.warnings.join(" ")).toContain("2026-regels");
+  });
+
   it("lets investing grow with positive return", () => {
     const result = calculateHypotheekAflossenVsBeleggen({
       remainingMortgageDebt: 250000,
