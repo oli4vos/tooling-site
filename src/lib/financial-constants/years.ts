@@ -267,6 +267,31 @@ export const FINANCIAL_CONSTANTS_BY_YEAR: Record<number, AnnualFinancialConstant
           { upTo: 78426, rate: 37.56, label: "Schijf 2 t/m 78.426" },
           { upTo: null, rate: 49.5, label: "Schijf 3 boven 78.426" },
         ],
+        mortgageInterestDeductionMaxRate: 37.56,
+        ownHome: {
+          meta: {
+            sourceLabel: "Belastingdienst eigenwoningforfait en Wet Hillen 2026",
+            lastChecked: "2026-09-28",
+            status: "definitief",
+            sourceUrl: "https://www.belastingdienst.nl/wps/wcm/connect/nl/koopwoning/content/hoe-werkt-eigenwoningforfait",
+            sourceTier: "overheidsuitleg",
+            validFrom: "2026-01-01",
+            validUntil: "2026-12-31",
+            appliesTo: "Eigenwoningforfait en aftrek wegens geen of kleine eigenwoningschuld voor 2026.",
+            ruleType: "uitvoeringsbeleid",
+            uncertainties: "De toepasselijkheid van renteaftrek blijft afhankelijk van de individuele eigenwoningschuld, leninghistorie, aflossingsverplichting, bijleenregeling en feitelijke bewoning.",
+          },
+          forfaitBands: [
+            { upTo: 12500, rate: 0 },
+            { upTo: 25000, rate: 0.1 },
+            { upTo: 50000, rate: 0.2 },
+            { upTo: 75000, rate: 0.25 },
+            { upTo: 1330000, rate: 0.35 },
+            { upTo: null, rate: 0, baseAmount: 4655, excessRate: 2.35 },
+          ],
+          hillenDeductionShare: 71.867,
+          maximumDeductionYears: 30,
+        },
         credits: {
           meta: {
             sourceLabel: "Belastingdienst heffingskortingen 2026",

@@ -74,6 +74,7 @@ export type SourceDatasetFamily =
   | "planning-debt-priority-rules"
   | "tax-box1-rates"
   | "tax-box1-credits"
+  | "tax-own-home"
   | "tax-zvw-rates"
   | "tax-box3-provisional"
   | "tax-box3-actual-return-guidance"
@@ -267,6 +268,20 @@ export type ZvwRules = {
   maxContributionIncome: number;
 };
 
+export type OwnHomeRules = {
+  meta: AssumptionMeta;
+  /** The 2026 own-home imputed income bands, based on the WOZ value. */
+  forfaitBands: Array<{
+    upTo: number | null;
+    rate: number;
+    baseAmount?: number;
+    excessRate?: number;
+  }>;
+  /** Remaining deductible share of a positive own-home balance (Wet Hillen). */
+  hillenDeductionShare: number;
+  maximumDeductionYears: number;
+};
+
 export type Box3ActualReturnRules = {
   meta: AssumptionMeta;
   includesTaxFreeAllowance: boolean;
@@ -307,6 +322,7 @@ export type AnnualFinancialConstants = {
       label: string;
     }>; 
     mortgageInterestDeductionMaxRate?: number;
+    ownHome: OwnHomeRules;
     credits: Box1CreditRules;
   };
   zvw: ZvwRules;
